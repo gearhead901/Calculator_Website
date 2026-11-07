@@ -4,9 +4,10 @@ Reference and inspiration material for this project is kept out of git (some fil
 
 It lives in Dropbox:
 
-```
-~/Library/CloudStorage/Dropbox/Claude/Calculator_Website/Inspiration/
-```
+- Mac: `~/Library/CloudStorage/Dropbox/Claude/Calculator_Website/Inspiration/`
+- Windows: `%USERPROFILE%\Dropbox\Claude\Calculator_Website\Inspiration\`
+
+The repo itself is at `C:\dev\Calculator_Website` on Windows.
 
 Contents:
 
