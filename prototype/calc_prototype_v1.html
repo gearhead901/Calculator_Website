@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calc Workshop — prototype v1</title>
+<!--
+  Calc Workshop — prototype v1
+  ----------------------------------------------------------------
+  One self-contained file: open it in any browser, no build step.
+  Layout:   top bar (units / copy link / reset) + left menu + calculator page.
+  Code map (search for these headings):
+    1. UNITS        – how values are stored (always metric "base" units) and displayed
+    2. STATE + URL  – what the page remembers, and how Copy Link works
+    3. PLOT HELPERS – tiny canvas plotting helpers (no chart library)
+    4. CALCULATORS  – each calculator is one object: inputs, compute(), renderOut(), docs
+    5. PAGE         – builds the menu, form and page, wires up events
+-->
+<style>
+  :root{
+    --bg:#f6f5f0; --card:#ffffff; --ink:#1c1e22; --muted:#6b6f76; --line:#e4e2da;
+    --accent:#2f9c90; --accent-soft:#e3f2ef;
+    --panel:#222a38; --panel-ink:#c9d1de; --grid:#344055;
+    --green:#4cc38a; --red:#e5534b; --blue:#4f8df5; --purple:#a77bf3; --orange:#f0a43a;
+    --warn-bg:#fff6e5; --warn-ink:#8a5a00;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif}
+  button,input,select{font:inherit;color:inherit}
+
+  /* ---------- top bar ---------- */
+  .topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;height:56px;padding:0 18px;
+    background:rgba(246,245,240,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  .brand{font-weight:800;letter-spacing:-.02em;font-size:18px;display:flex;align-items:center;gap:8px}
+  .brand .dot{width:12px;height:12px;border-radius:3px;background:var(--accent)}
+  .brand small{font-weight:500;color:var(--muted);font-size:12px;letter-spacing:.04em}
+  .spacer{flex:1}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
+  .seg button{border:0;background:none;padding:6px 12px;cursor:pointer;color:var(--muted)}
+  .seg button.on{background:var(--ink);color:#fff}
+  .btn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 12px;cursor:pointer}
+  .btn:hover{border-color:#cfccc0}
+  .btn.accent{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* ---------- layout ---------- */
+  .layout{display:grid;grid-template-columns:236px 1fr;min-height:calc(100vh - 56px)}
+  .sidebar{border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto}
+  .sidebar h4{margin:16px 10px 6px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .sidebar h4:first-child{margin-top:0}
+  .navitem{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;border:0;background:none;
+    padding:7px 10px;border-radius:7px;cursor:pointer}
+  .navitem:hover{background:#ecebe4}
+  .navitem.on{background:var(--accent-soft);color:#17695f;font-weight:600}
+  .navitem[disabled]{color:#a9aaa6;cursor:default;background:none}
+  .navitem .soon{font-size:10px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);border-radius:4px;padding:0 5px}
+  main{padding:28px 32px 60px;min-width:0;max-width:1280px}
+
+  /* ---------- page header ---------- */
+  .eyebrow{color:var(--accent);font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase}
+  h1{font-size:44px;line-height:1.05;letter-spacing:-.035em;margin:6px 0 8px;font-weight:800}
+  .lede{color:var(--muted);font-size:17px;max-width:720px;margin:0 0 22px}
+
+  /* ---------- calculator body ---------- */
+  .calc{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .form .sec{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:14px 0 6px;padding-top:12px;border-top:1px solid var(--line)}
+  .form .sec:first-child{margin-top:0;padding-top:0;border-top:0}
+  .field{display:grid;grid-template-columns:1fr 128px;align-items:center;gap:8px;margin:6px 0}
+  .field label{font-size:14px}
+  .field .help{grid-column:1/-1;font-size:12px;color:var(--muted);margin-top:-4px}
+  .inbox{display:flex;align-items:center;border:1px solid var(--line);border-radius:7px;background:#fbfbf9;overflow:hidden}
+  .inbox:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .inbox input,.inbox select{border:0;background:none;padding:6px 8px;width:100%;min-width:0;outline:none}
+  .inbox .unit{padding:0 8px;color:var(--muted);font-size:12px;white-space:nowrap}
+  .field.check{grid-template-columns:auto 1fr}
+  .field.check input{width:16px;height:16px;accent-color:var(--accent)}
+
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .tile .k{font-size:12px;color:var(--muted)}
+  .tile .v{font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .tile.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+  .tile.primary .k{color:#b8bcc4}
+  .warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:8px 12px;margin:0 0 12px;font-size:14px}
+
+  .panels{display:grid;gap:12px}
+  .panels.two{grid-template-columns:1fr 1fr}
+  .panels.shot{grid-template-columns:1.7fr 1fr}
+  figure.panel{margin:0;background:var(--panel);border-radius:12px;padding:10px 12px 12px;color:var(--panel-ink);min-width:0}
+  figure.panel figcaption{font-size:12px;letter-spacing:.06em;color:#9aa6b8;margin-bottom:6px}
+  figure.panel svg{display:block;width:100%;height:240px}
+  figure.panel canvas{display:block;width:100%;height:340px}
+  .readout{background:#151b26;border-radius:8px;padding:10px 12px;margin-top:10px;font-size:13px;line-height:1.7;font-variant-numeric:tabular-nums}
+  .readout b{font-weight:600}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#9aa6b8;margin-top:8px}
+  .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+
+  details.adv{margin-top:14px}
+  details.adv summary{cursor:pointer;font-weight:600}
+  table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+  th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+  th{font-size:12px;color:var(--muted);font-weight:600}
+  td.mono,code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  .pass{color:#17803d;font-weight:600}.fail{color:#c0392b;font-weight:600}
+
+  /* ---------- docs ---------- */
+  .docs{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .docs h3{margin:0 0 8px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .docs .eq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:#f3f2ec;border-radius:8px;padding:10px 12px;line-height:1.8;white-space:pre-wrap}
+  .docs p,.docs li{font-size:14px}
+  .docs ul{padding-left:18px}
+  footer{color:var(--muted);font-size:12px;margin-top:40px}
+
+  #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;transition:.2s;
+    background:var(--ink);color:#fff;padding:8px 14px;border-radius:8px;font-size:14px;pointer-events:none}
+  #toast.show{opacity:1;transform:translateX(-50%)}
+
+  /* ---------- small screens ---------- */
+  @media (max-width:1100px){ .calc{grid-template-columns:1fr} .panels.shot{grid-template-columns:1fr} }
+  @media (max-width:820px){
+    .layout{grid-template-columns:1fr}
+    .sidebar{position:static;height:auto;display:flex;gap:4px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:8px 12px}
+    .sidebar h4{display:none}
+    .navitem{width:auto;white-space:nowrap}
+    .navitem[disabled]{display:none}
+    main{padding:20px 16px 48px}
+    h1{font-size:32px}
+    .panels.two,.docs{grid-template-columns:1fr}
+    .brand small{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="dot"></span>Calc Workshop <small>PROTOTYPE v1</small></div>
+  <div class="spacer"></div>
+  <div class="seg" id="unitSeg">
+    <button data-u="imperial">Imperial</button><button data-u="metric">Metric</button>
+  </div>
+  <button class="btn" id="copyBtn" title="Copy a link with every input filled in">Copy link</button>
+  <button class="btn" id="resetBtn" title="Put this calculator back to its defaults">Reset</button>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main id="main"></main>
+</div>
+<div id="toast"></div>
+
+<script>
+/* =================================================================
+   1. UNITS
+   Every value is STORED in metric base units (mm, m, m/s, kg).
+   We only convert when SHOWING a number or READING what you typed.
+   Each kind: [label, factor-to-base, decimals]
+   ================================================================= */
+const KINDS = {
+  lenS:  { metric:['mm',1,2],     imperial:['in',25.4,4] },        // small lengths (sheet metal, wheels)
+  len:   { metric:['m',1,3],      imperial:['ft',0.3048,3] },      // field distances
+  speed: { metric:['m/s',1,2],    imperial:['ft/s',0.3048,2] },
+  mass:  { metric:['kg',1,3],     imperial:['lb',0.45359237,3] },
+  deg:   { metric:['°',1,1],      imperial:['°',1,1] },
+  rpm:   { metric:['rpm',1,0],    imperial:['rpm',1,0] },
+  pct:   { metric:['%',1,0],      imperial:['%',1,0] },
+  teeth: { metric:['T',1,0],      imperial:['T',1,0] },
+  none:  { metric:['',1,3],       imperial:['',1,3] },
+  s:     { metric:['s',1,3],      imperial:['s',1,3] },
+};
+const U       = k => KINDS[k][state.units];
+const toDisp  = (v,k) => v / U(k)[1];
+const toBase  = (v,k) => v * U(k)[1];
+const round   = (x,d) => Number.isFinite(x) ? Number(x.toFixed(d)) : x;
+const fmtNum  = (x,d) => Number.isFinite(x) ? x.toFixed(d) : '—';
+const fmtK    = (v,k,extra=0) => `${fmtNum(toDisp(v,k), U(k)[2]+extra)} ${U(k)[0]}`.trim();
+const fmtSign = (v,k) => (v>=0?'+':'−') + fmtNum(Math.abs(toDisp(v,k)), U(k)[2]);
+
+/* =================================================================
+   2. STATE + URL
+   state.values[calcId][inputKey] = value in base units.
+   The URL hash mirrors the state, so "Copy link" just copies the URL.
+   ================================================================= */
+const state = { calc:'bend', units:'imperial', values:{} };
+
+function defaultsFor(calc){
+  const v = {};
+  calc.inputs.forEach(i => { if (i.key) v[i.key] = i.def; });
+  return v;
+}
+function writeHash(){
+  const q = new URLSearchParams({ c: state.calc, u: state.units });
+  const vals = state.values[state.calc];
+  for (const [k,v] of Object.entries(vals)){
+    q.set(k, typeof v === 'boolean' ? (v?'1':'0') : typeof v === 'number' ? String(+v.toPrecision(7)) : v);
+  }
+  history.replaceState(null, '', '#' + q.toString());
+}
+function readHash(){
+  const q = new URLSearchParams(location.hash.slice(1));
+  if (q.get('u') === 'metric' || q.get('u') === 'imperial') state.units = q.get('u');
+  const calc = CALCS.find(c => c.id === q.get('c'));
+  if (!calc) return;
+  state.calc = calc.id;
+  const vals = state.values[calc.id];
+  calc.inputs.forEach(i => {
+    if (!i.key || !q.has(i.key)) return;
+    const raw = q.get(i.key);
+    if (i.type === 'check') vals[i.key] = raw === '1';
+    else if (i.type === 'select') vals[i.key] = raw;
+    else if (Number.isFinite(parseFloat(raw))) vals[i.key] = parseFloat(raw);
+  });
+}
+
+/* =================================================================
+   3. PLOT HELPERS (canvas)
+   frame() draws the dark panel + grid and returns X()/Y() functions
+   that turn base-unit values into pixel positions.
+   ================================================================= */
+const COL = {
+  panel:'#222a38', grid:'#344055', axis:'#8794a8', text:'#9aa6b8',
+  green:'#4cc38a', red:'#e5534b', blue:'#4f8df5', purple:'#a77bf3', orange:'#f0a43a', white:'#e9edf3'
+};
+function niceTicks(a, b, n=6){
+  const span = b - a; if (!(span > 0)) return [a];
+  const raw = span / n, mag = 10 ** Math.floor(Math.log10(raw));
+  const step = [1,2,2.5,5,10].map(f => f*mag).find(s => span/s <= n) || 10*mag;
+  const out = []; for (let t = Math.ceil(a/step)*step; t <= b + 1e-9; t += step) out.push(+t.toFixed(10));
+  return out;
+}
+function frame(cv, xr, yr, xKind, yKind, xLabel, yLabel){
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.clientWidth, H = cv.clientHeight;
+  cv.width = W*dpr; cv.height = H*dpr;
+  const c = cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0);
+  const m = { l:48, r:12, t:12, b:38 };
+  c.fillStyle = COL.panel; c.fillRect(0,0,W,H);
+  const X = v => m.l + (v - xr[0]) / (xr[1]-xr[0]) * (W - m.l - m.r);
+  const Y = v => H - m.b - (v - yr[0]) / (yr[1]-yr[0]) * (H - m.t - m.b);
+  c.font = '11px -apple-system,Segoe UI,sans-serif'; c.lineWidth = 1;
+  // grid lines are placed at "nice" numbers in DISPLAY units, then mapped back to base units
+  const fx = xKind ? U(xKind)[1] : 1, fy = yKind ? U(yKind)[1] : 1;
+  niceTicks(xr[0]/fx, xr[1]/fx).forEach(t => {
+    const px = X(t*fx); c.strokeStyle = COL.grid; c.beginPath(); c.moveTo(px, m.t); c.lineTo(px, H-m.b); c.stroke();
+    c.fillStyle = COL.text; c.textAlign = 'center'; c.fillText(String(t), px, H - m.b + 14);
+  });
+  niceTicks(yr[0]/fy, yr[1]/fy, 5).forEach(t => {
+    const py = Y(t*fy); c.strokeStyle = COL.grid; c.beginPath(); c.moveTo(m.l, py); c.lineTo(W-m.r, py); c.stroke();
+    c.fillStyle = COL.text; c.textAlign = 'right'; c.fillText(String(t), m.l - 6, py + 4);
+  });
+  c.fillStyle = COL.text; c.textAlign = 'center';
+  c.fillText(xLabel, m.l + (W-m.l-m.r)/2, H - 6);
+  c.save(); c.translate(12, m.t + (H-m.t-m.b)/2); c.rotate(-Math.PI/2); c.fillText(yLabel, 0, 0); c.restore();
+  return { c, X, Y, W, H, m };
+}
+function polyline(c, pts, X, Y){
+  c.beginPath(); pts.forEach((p,i) => i ? c.lineTo(X(p[0]), Y(p[1])) : c.moveTo(X(p[0]), Y(p[1]))); c.stroke();
+}
+function star(c, x, y, r){
+  c.beginPath();
+  for (let i=0;i<10;i++){ const a = -Math.PI/2 + i*Math.PI/5, rr = i%2 ? r*0.45 : r; c.lineTo(x+rr*Math.cos(a), y+rr*Math.sin(a)); }
+  c.closePath(); c.fill(); c.stroke();
+}
+const tile = (k, v, cls='') => `<div class="tile ${cls}"><div class="k">${k}</div><div class="v">${v}</div></div>`;
+
+/* =================================================================
+   4. CALCULATORS
+   Each calculator = { id, group, title, lede, inputs[], compute(v), renderOut(el,v,r), docs() }
+   compute() is pure math on base units — easy to test on its own.
+   ================================================================= */
+
+/* ---------- 4a. Sheet metal bend ---------- */
+const MATERIALS = {
+  // Starting K-factors only — real values come from your shop / vendor test bends.
+  al5052: { label:'Aluminum 5052-H32', k:0.43 },
+  al6061: { label:'Aluminum 6061-T6',  k:0.45 },
+  steel:  { label:'Mild steel (CRS)',  k:0.44 },
+  ss304:  { label:'Stainless 304',     k:0.45 },
+  custom: { label:'Custom',            k:0.44 },
+};
+const BEND = {
+  id:'bend', group:'Fabrication', title:'Sheet Metal Bend', num:'01',
+  lede:'Flat length, bend-line placement, bend allowance and bend deduction for a single bend. Flange lengths are outside (mold-line) dimensions.',
+  inputs:[
+    {section:'Material'},
+    {key:'material', label:'Material', type:'select', def:'al5052',
+      options:Object.entries(MATERIALS).map(([v,m]) => ({value:v, label:m.label}))},
+    {key:'thickness', label:'Thickness (T)', kind:'lenS', def:3.175},
+    {key:'k', label:'K-factor', kind:'none', def:0.43, help:'Where the neutral axis sits, as a fraction of T from the inside.'},
+    {section:'Bend'},
+    {key:'radius', label:'Inside radius (R)', kind:'lenS', def:3.175},
+    {key:'angle', label:'Bend angle (θ)', kind:'deg', def:90, help:'How far the flange is bent: 90° makes an L.'},
+    {section:'Part'},
+    {key:'flangeA', label:'Flange A (outside)', kind:'lenS', def:50.8},
+    {key:'flangeB', label:'Flange B (outside)', kind:'lenS', def:25.4},
+    {key:'width', label:'Part width', kind:'lenS', def:76.2},
+  ],
+  onChange(key, v){ if (key === 'material' && v.material !== 'custom') v.k = MATERIALS[v.material].k; },
+  compute(v){
+    const T = v.thickness, R = v.radius, K = v.k, th = v.angle * Math.PI/180;
+    const BA   = th * (R + K*T);                 // arc length of the neutral axis
+    const OSSB = Math.tan(th/2) * (R + T);       // outside setback: tangent point → mold-line corner
+    const BD   = 2*OSSB - BA;                    // how much shorter the flat is than A + B
+    const flat = v.flangeA + v.flangeB - BD;
+    const bendStart  = v.flangeA - OSSB;         // measured from the flange-A edge of the flat
+    const bendCenter = bendStart + BA/2;
+    const bendEnd    = bendStart + BA;
+    const warnings = [];
+    if (!(v.angle > 0 && v.angle < 180)) warnings.push('Bend angle must be between 0° and 180°.');
+    if (bendStart <= 0) warnings.push('Flange A is shorter than the outside setback — the bend would start past the edge.');
+    if (v.flangeB - OSSB <= 0) warnings.push('Flange B is shorter than the outside setback.');
+    if (R < 0.5*T) warnings.push('Inside radius is under half the thickness — check your tooling and material can do this.');
+    if (K < 0.2 || K > 0.5) warnings.push('K-factor is usually between about 0.3 and 0.5.');
+    return { T, R, K, th, BA, OSSB, BD, flat, bendStart, bendCenter, bendEnd, warnings };
+  },
+  renderOut(el, v, r){
+    const rows = [
+      ['Outside setback (OSSB)', `tan(θ/2)·(R+T) = tan(${fmtNum(v.angle/2,1)}°)·(${fmtK(r.R,'lenS')} + ${fmtK(r.T,'lenS')})`, fmtK(r.OSSB,'lenS')],
+      ['Neutral axis offset', `K·T = ${fmtNum(r.K,3)} · ${fmtK(r.T,'lenS')}`, fmtK(r.K*r.T,'lenS')],
+      ['Bend allowance (BA)', `θ·(R + K·T) = ${fmtNum(r.th,4)} rad · ${fmtK(r.R + r.K*r.T,'lenS')}`, fmtK(r.BA,'lenS')],
+      ['Bend deduction (BD)', `2·OSSB − BA`, fmtK(r.BD,'lenS')],
+      ['Flat length', `A + B − BD`, fmtK(r.flat,'lenS')],
+      ['Bend zone starts', `A − OSSB (from edge A)`, fmtK(r.bendStart,'lenS')],
+      ['Bend zone ends', `start + BA`, fmtK(r.bendEnd,'lenS')],
+      ['Outside radius', `R + T`, fmtK(r.R + r.T,'lenS')],
+    ];
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile('Flat length', fmtK(r.flat,'lenS'), 'primary')}
+        ${tile('Bend line from edge A', fmtK(r.bendCenter,'lenS'))}
+        ${tile('Bend deduction', fmtK(r.BD,'lenS'))}
+        ${tile('Bend allowance', fmtK(r.BA,'lenS'))}
+      </div>
+      ${r.warnings.map(w => `<div class="warn">⚠ ${w}</div>`).join('')}
+      <div class="panels two">
+        <figure class="panel"><figcaption>FORMED PART · θ = ${fmtNum(v.angle,1)}°</figcaption>${profileSVG(v, r)}</figure>
+        <figure class="panel"><figcaption>FLAT PATTERN · bend line dashed</figcaption>${flatSVG(v, r)}</figure>
+      </div>
+      <details class="adv card"><summary>Advanced details — every step with your numbers</summary>
+        <table><tr><th>Quantity</th><th>Formula</th><th>Value</th></tr>
+        ${rows.map(x => `<tr><td>${x[0]}</td><td class="mono">${x[1]}</td><td class="mono">${x[2]}</td></tr>`).join('')}
+        </table>
+      </details>`;
+  },
+  validation(){
+    // Hand calculation (worked in the docs): 1/16" sheet, R = 1/16", 90°, K = 0.44, A = B = 1"
+    const v = { thickness:1.5875, radius:1.5875, k:0.44, angle:90, flangeA:25.4, flangeB:25.4 };
+    const r = this.compute(v);
+    return [
+      { name:'Bend allowance', expected:0.141372, got:r.BA/25.4, unit:'in', tol:1e-4 },
+      { name:'Bend deduction', expected:0.108628, got:r.BD/25.4, unit:'in', tol:1e-4 },
+      { name:'Flat length',    expected:1.891372, got:r.flat/25.4, unit:'in', tol:1e-4 },
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <p>When sheet metal bends, the inside squeezes and the outside stretches. Somewhere in between is the <b>neutral axis</b>, which keeps its length. The K-factor says where it sits: <code>K·T</code> in from the inside face.</p>
+      <div class="eq">BA   = θ · (R + K·T)          ← length of neutral axis in the bend
+OSSB = tan(θ/2) · (R + T)       ← outside setback
+BD   = 2·OSSB − BA              ← bend deduction
+Flat = A + B − BD</div>
+      <p>θ is in radians in the BA formula. A and B are measured to the outside corner (mold line), the way most drawings dimension a flange.</p>
+    </div>
+    <div><h3>Validation</h3>
+      <p>Hand calculation: T = R = 0.0625 in, θ = 90°, K = 0.44, A = B = 1 in.<br>
+      BA = (π/2)(0.0625 + 0.0275) = 0.14137 · OSSB = 0.125 · BD = 0.25 − 0.14137 = 0.10863 · Flat = 1.89137</p>
+      ${validationTable(this)}
+      <p style="color:var(--muted)">TODO: add a case from a published textbook or shop bend chart so the check isn't only against our own hand math.</p>
+    </div>`; }
+};
+
+function profileSVG(v, r){
+  // Draw the formed part as its mold-line outline, with the stroke as thick as the metal.
+  const A = v.flangeA, B = v.flangeB, th = r.th;
+  const p0 = [0,0], p1 = [A,0], p2 = [A + B*Math.cos(th), B*Math.sin(th)];
+  const xs = [p0[0],p1[0],p2[0]], ys = [p0[1],p1[1],p2[1]];
+  let minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+  const span = Math.max(maxx-minx, maxy-miny, 1), pad = span*0.18;
+  if (maxy - miny < span*0.35){ const c=(maxy+miny)/2; miny = c - span*0.175; maxy = c + span*0.175; }
+  const fs = span*0.065, sw = Math.max(v.thickness, span*0.012);
+  const P = p => `${p[0].toFixed(3)},${(-p[1]).toFixed(3)}`;   // flip y: SVG y grows downward
+  const midA = [A/2, 0], midB = [(p1[0]+p2[0])/2, (p1[1]+p2[1])/2];
+  const nB = [Math.sin(th), -Math.cos(th)];                    // points to the outside of the bend
+  return `<svg viewBox="${minx-pad} ${-maxy-pad} ${maxx-minx+2*pad} ${maxy-miny+2*pad}" preserveAspectRatio="xMidYMid meet">
+    <polyline points="${P(p0)} ${P(p1)} ${P(p2)}" fill="none" stroke="${COL.blue}" stroke-width="${sw}" stroke-linejoin="round"/>
+    <text x="${midA[0]}" y="${fs*1.9}" fill="${COL.white}" font-size="${fs}" text-anchor="middle">A = ${fmtK(A,'lenS')}</text>
+    <text x="${midB[0]+nB[0]*fs*1.6}" y="${-(midB[1]+nB[1]*fs*1.6)}" fill="${COL.white}" font-size="${fs}" text-anchor="start">B = ${fmtK(B,'lenS')}</text>
+  </svg>`;
+}
+function flatSVG(v, r){
+  const L = Math.max(r.flat, 1e-6), Wd = v.width, span = Math.max(L, Wd), fs = span*0.055, pad = span*0.1;
+  const x0 = -pad, y0 = -fs*3.2, w = L + 2*pad, h = Wd + fs*6.4;
+  const tick = (x, y) => `<line x1="${x}" y1="${y-fs*0.4}" x2="${x}" y2="${y+fs*0.4}" stroke="${COL.text}" stroke-width="${span*0.004}"/>`;
+  const yTop = -fs*1.4, yBot = Wd + fs*1.4, sw = span*0.004;
+  return `<svg viewBox="${x0} ${y0} ${w} ${h}" preserveAspectRatio="xMidYMid meet">
+    <rect x="0" y="0" width="${L}" height="${Wd}" fill="rgba(79,141,245,.12)" stroke="${COL.blue}" stroke-width="${sw*1.5}"/>
+    <rect x="${r.bendStart}" y="0" width="${Math.max(r.BA,0)}" height="${Wd}" fill="rgba(240,164,58,.25)"/>
+    <line x1="${r.bendCenter}" y1="${-fs*0.3}" x2="${r.bendCenter}" y2="${Wd+fs*0.3}" stroke="${COL.orange}" stroke-width="${sw*1.5}" stroke-dasharray="${fs*0.5} ${fs*0.3}"/>
+    <line x1="0" y1="${yTop}" x2="${L}" y2="${yTop}" stroke="${COL.text}" stroke-width="${sw}"/>${tick(0,yTop)}${tick(L,yTop)}
+    <text x="${L/2}" y="${yTop-fs*0.5}" fill="${COL.white}" font-size="${fs}" text-anchor="middle">${fmtK(r.flat,'lenS')}</text>
+    <line x1="0" y1="${yBot}" x2="${r.bendCenter}" y2="${yBot}" stroke="${COL.orange}" stroke-width="${sw}"/>${tick(0,yBot)}${tick(r.bendCenter,yBot)}
+    <text x="${r.bendCenter/2}" y="${yBot+fs*1.3}" fill="${COL.orange}" font-size="${fs}" text-anchor="middle">${fmtK(r.bendCenter,'lenS')}</text>
+  </svg>`;
+}
+
+/* ---------- 4b. Shot trajectory ---------- */
+const G = 9.80665, RHO = 1.225;
+function makeSim(p){
+  // k = drag constant: a_drag = −k·|v|·v   (from F = ½·ρ·Cd·A·v²)
+  const area = Math.PI * (p.diam/1000/2)**2;
+  const k = p.drag ? 0.5*RHO*p.cd*area/p.mass : 0;
+  const acc = (vx, vy) => { const s = Math.hypot(vx, vy); return [-k*s*vx, -G - k*s*vy]; };
+  // Returns where the ball crosses the target height on the way DOWN (x = −∞ if it never does).
+  return function sim(angDeg, v, record){
+    const a = angDeg*Math.PI/180, dt = 0.004;
+    let x = 0, y = p.h0, vx = v*Math.cos(a), vy = v*Math.sin(a), t = 0, apex = y;
+    const pts = record ? [[x,y]] : null;
+    for (let i = 0; i < 3000; i++){
+      // one Runge-Kutta (RK4) step — a more accurate way to step the motion forward than x += v·dt
+      const [ax1,ay1] = acc(vx,vy);
+      const vx2 = vx+ax1*dt/2, vy2 = vy+ay1*dt/2; const [ax2,ay2] = acc(vx2,vy2);
+      const vx3 = vx+ax2*dt/2, vy3 = vy+ay2*dt/2; const [ax3,ay3] = acc(vx3,vy3);
+      const vx4 = vx+ax3*dt,   vy4 = vy+ay3*dt;   const [ax4,ay4] = acc(vx4,vy4);
+      const nx  = x  + dt/6*(vx +2*vx2+2*vx3+vx4), ny  = y  + dt/6*(vy +2*vy2+2*vy3+vy4);
+      const nvx = vx + dt/6*(ax1+2*ax2+2*ax3+ax4), nvy = vy + dt/6*(ay1+2*ay2+2*ay3+ay4);
+      if (ny > apex) apex = ny;
+      if (nvy < 0 && y >= p.H && ny < p.H){
+        const f = (y - p.H)/(y - ny), xc = x + f*(nx - x);
+        if (record) pts.push([xc, p.H]);
+        return { x:xc, t:t + f*dt, apex, pts, hit:true };
+      }
+      x = nx; y = ny; vx = nvx; vy = nvy; t += dt;
+      if (record) pts.push([x,y]);
+      if (vy < 0 && y < p.H) break;   // falling and already below the target: it will never get there
+    }
+    return { x:-Infinity, t, apex, pts, hit:false };
+  };
+}
+function bisect(f, lo, hi, target, iters=32){
+  // f is increasing in its argument; find arg where f(arg) = target
+  if (f(hi) < target) return null;
+  if (f(lo) >= target) return lo;
+  for (let i=0;i<iters;i++){ const mid=(lo+hi)/2; if (f(mid) < target) lo = mid; else hi = mid; }
+  return (lo+hi)/2;
+}
+const SHOT = {
+  id:'shot', group:'Shooter', title:'Shot Trajectory', num:'02',
+  lede:'Every launch angle and speed that drops the ball into the goal, and the single shot most tolerant of your shooter’s speed and angle errors.',
+  inputs:[
+    {section:'Geometry'},
+    {key:'h0', label:'Release height', kind:'len', def:0.6},
+    {key:'dist', label:'Distance to goal center', kind:'len', def:4.0},
+    {key:'H', label:'Goal height', kind:'len', def:1.83},
+    {key:'w', label:'Goal opening (front to back)', kind:'len', def:1.0},
+    {key:'ceiling', label:'Max ball height (0 = none)', kind:'len', def:0},
+    {section:'Search'},
+    {key:'amin', label:'Min launch angle', kind:'deg', def:25},
+    {key:'amax', label:'Max launch angle', kind:'deg', def:80},
+    {key:'sv', label:'Speed error (1σ)', kind:'speed', def:0.15, help:'How far your flywheel speed typically drifts.'},
+    {key:'sa', label:'Angle error (1σ)', kind:'deg', def:1.0, help:'How far your hood angle typically drifts.'},
+    {section:'Air drag'},
+    {key:'drag', label:'Include air drag', type:'check', def:false},
+    {key:'mass', label:'Ball mass', kind:'mass', def:0.215, showIf:v=>v.drag},
+    {key:'diam', label:'Ball diameter', kind:'lenS', def:150, showIf:v=>v.drag},
+    {key:'cd', label:'Drag coefficient (Cd)', kind:'none', def:0.47, showIf:v=>v.drag, help:'0.47 is a smooth sphere — a placeholder until you measure your ball.'},
+  ],
+  compute(v){
+    const p = { ...v };
+    const sim = makeSim(p);
+    const near = v.dist - v.w/2, far = v.dist + v.w/2;
+    const warnings = [];
+    if (v.w <= 0) warnings.push('Goal opening must be larger than zero.');
+    if (v.amax <= v.amin) warnings.push('Max angle must be larger than min angle.');
+    // For each launch angle: the slowest shot that lands at the near lip (red) and the fastest at the far lip (green).
+    const rows = [];
+    const step = 1;
+    for (let a = Math.ceil(v.amin); a <= v.amax + 1e-9; a += step){
+      const land = s => sim(a, s).x;
+      let lo = bisect(land, 0.2, 60, near), hi = bisect(land, 0.2, 60, far);
+      if (lo !== null && hi !== null && v.ceiling > 0){
+        const vc = bisect(s => sim(a, s).apex, 0.2, 60, v.ceiling);
+        if (vc !== null) hi = Math.min(hi, vc);
+      }
+      rows.push((lo !== null && hi !== null && hi > lo) ? { a, lo, hi } : { a, lo:null, hi:null });
+    }
+    // Score each angle: how many "standard errors" of margin does the middle speed have?
+    const margin = (row, s) => row.lo === null ? -Infinity : Math.min(s - row.lo, row.hi - s);
+    let best = null;
+    rows.forEach((row, i) => {
+      if (row.lo === null) return;
+      const s = (row.lo + row.hi)/2, sTol = (row.hi - row.lo)/2;
+      // angle tolerance at this speed: walk to neighbours while still inside, then interpolate the edge
+      const edge = dir => {
+        let j = i;
+        while (rows[j+dir] && margin(rows[j+dir], s) >= 0) j += dir;
+        const n = rows[j+dir], mj = margin(rows[j], s);
+        if (!n || !Number.isFinite(margin(n, s))) return rows[j].a;
+        const mn = margin(n, s); return rows[j].a + dir*step*mj/(mj - mn);
+      };
+      const aLo = edge(-1), aHi = edge(1);
+      const score = Math.min(sTol / v.sv, Math.min(row.a - aLo, aHi - row.a) / v.sa);
+      if (!best || score > best.score) best = { a:row.a, s, sTol, aLo, aHi, score };
+    });
+    if (best){
+      const t = sim(best.a, best.s, true); best.tof = t.t; best.apex = t.apex; best.pts = t.pts;
+    } else if (!warnings.length) warnings.push('No shot reaches the goal in this angle range — try a wider range or check the heights.');
+    // curves for the left plot (every 2°)
+    const curves = rows.filter(r => r.lo !== null && r.a % 2 === 0).map(r => ({
+      lo: sim(r.a, r.lo, true).pts, hi: sim(r.a, r.hi, true).pts }));
+    return { rows, best, curves, near, far, warnings };
+  },
+  renderOut(el, v, r){
+    const b = r.best;
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile('Launch angle', b ? fmtNum(b.a,1)+'°' : '—', 'primary')}
+        ${tile('Launch speed', b ? fmtK(b.s,'speed') : '—', 'primary')}
+        ${tile('Time of flight', b ? fmtNum(b.tof,3)+' s' : '—')}
+        ${tile('Peak height', b ? fmtK(b.apex,'len') : '—')}
+      </div>
+      ${r.warnings.map(w => `<div class="warn">⚠ ${w}</div>`).join('')}
+      <div class="panels shot">
+        <figure class="panel"><figcaption>TRAJECTORIES · side view</figcaption><canvas id="cvTraj"></canvas>
+          <div class="legend"><span><i style="background:${COL.green}"></i>fastest shot that scores</span>
+            <span><i style="background:${COL.red}"></i>slowest shot that scores</span>
+            <span><i style="background:${COL.blue}"></i>most robust shot</span></div></figure>
+        <figure class="panel"><figcaption>VALID SHOT REGION · angle vs speed</figcaption><canvas id="cvRegion"></canvas>
+          <div class="readout">${b ? `
+            <span style="color:${COL.blue}"><b>Optimal:</b> ${fmtNum(b.a,1)}° @ ${fmtK(b.s,'speed')}</span><br>
+            <span style="color:${COL.orange}"><b>Speed:</b> ${fmtSign(-b.sTol,'speed')} / ${fmtSign(b.sTol,'speed')} ${U('speed')[0]}</span><br>
+            <span style="color:${COL.purple}"><b>Angle:</b> −${fmtNum(b.a-b.aLo,1)}° / +${fmtNum(b.aHi-b.a,1)}°</span><br>
+            <span><b>Margin:</b> ${fmtNum(b.score,1)} σ before a miss</span>` : 'No valid shot.'}</div></figure>
+      </div>`;
+    drawTraj(document.getElementById('cvTraj'), v, r);
+    drawRegion(document.getElementById('cvRegion'), v, r);
+  },
+  validation(){
+    // No drag, release height = goal height → textbook range formula R = v²·sin(2θ)/g
+    const base = { h0:1, H:1, drag:false, mass:1, diam:100, cd:0 };
+    const sim = makeSim(base);
+    return [
+      { name:'45°, 7 m/s', expected:49*Math.sin(Math.PI/2)/G, got:sim(45,7).x, unit:'m', tol:1e-3 },
+      { name:'30°, 10 m/s', expected:100*Math.sin(Math.PI/3)/G, got:sim(30,10).x, unit:'m', tol:1e-3 },
+      { name:'60°, 10 m/s', expected:100*Math.sin(2*Math.PI/3)/G, got:sim(60,10).x, unit:'m', tol:1e-3 },
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <ol>
+        <li><b>Simulate one shot.</b> Step the ball forward in tiny time steps under gravity (and drag, if on).</li>
+        <li><b>Find the limits.</b> For each launch angle, search for the slowest speed that just clears the near lip (red) and the fastest that just reaches the far lip (green). Anything between scores.</li>
+        <li><b>Pick the most robust shot.</b> Score each angle by how many standard errors of speed <i>and</i> angle it can absorb before missing — the weaker of the two. Keep the best. This is the “robustness” cost idea from the 1690 Orbit talk.</li>
+      </ol>
+      <div class="eq">gravity:  a = (0, −g)
+drag:     a = −k·|v|·v      k = ½·ρ·Cd·A / m
+score   = min( speed margin / σ_speed , angle margin / σ_angle )</div>
+      <p>Next steps from your notes: add Magnus lift (spin), then fit a polynomial to the results so a robot can look shots up live.</p>
+    </div>
+    <div><h3>Validation</h3>
+      <p>With drag off and the ball released at goal height, the simulator must match the textbook range formula <code>R = v²·sin(2θ)/g</code>.</p>
+      ${validationTable(this)}
+    </div>`; }
+};
+function drawTraj(cv, v, r){
+  let ymax = Math.max(v.H, v.h0) * 1.15;
+  r.curves.forEach(c => c.hi.concat(c.lo).forEach(p => { if (p[1] > ymax) ymax = p[1]; }));
+  if (v.ceiling > 0) ymax = Math.max(ymax, v.ceiling*1.05);
+  ymax = Math.min(ymax*1.05, Math.max(v.H, v.h0)*4 + 2);
+  const xmax = r.far * 1.12;
+  const { c, X, Y, W, H, m } = frame(cv, [0, xmax], [0, ymax], 'len', 'len', `Distance (${U('len')[0]})`, `Height (${U('len')[0]})`);
+  c.save(); c.beginPath(); c.rect(m.l, m.t, W-m.l-m.r, H-m.t-m.b); c.clip();
+  c.lineWidth = 1; c.globalAlpha = 0.55;
+  r.curves.forEach(cv => { c.strokeStyle = COL.red; polyline(c, cv.lo, X, Y); c.strokeStyle = COL.green; polyline(c, cv.hi, X, Y); });
+  c.globalAlpha = 1;
+  // goal height line, goal opening, front wall
+  c.setLineDash([5,4]); c.strokeStyle = 'rgba(229,83,75,.6)'; c.beginPath(); c.moveTo(X(0), Y(v.H)); c.lineTo(X(xmax), Y(v.H)); c.stroke();
+  if (v.ceiling > 0){ c.strokeStyle = 'rgba(167,123,243,.7)'; c.beginPath(); c.moveTo(X(0), Y(v.ceiling)); c.lineTo(X(xmax), Y(v.ceiling)); c.stroke(); }
+  c.setLineDash([]);
+  c.strokeStyle = COL.red; c.lineWidth = 2.5; c.beginPath(); c.moveTo(X(r.near), Y(0)); c.lineTo(X(r.near), Y(v.H)); c.stroke();
+  c.strokeStyle = COL.green; c.lineWidth = 5; c.beginPath(); c.moveTo(X(r.near), Y(v.H)); c.lineTo(X(r.far), Y(v.H)); c.stroke();
+  if (r.best){ c.strokeStyle = COL.blue; c.lineWidth = 3; polyline(c, r.best.pts, X, Y); }
+  c.fillStyle = COL.white; c.beginPath(); c.arc(X(0), Y(v.h0), 4, 0, 7); c.fill();
+  c.restore();
+}
+function drawRegion(cv, v, r){
+  const valid = r.rows.filter(x => x.lo !== null);
+  if (!valid.length){ frame(cv, [v.amin, v.amax], [0, 10], null, 'speed', 'Launch angle (°)', `Speed (${U('speed')[0]})`); return; }
+  let smin = Math.min(...valid.map(x => x.lo)), smax = Math.max(...valid.map(x => x.hi));
+  const pad = (smax - smin)*0.12 + 0.05;
+  const amin = valid[0].a - 2, amax = valid[valid.length-1].a + 2;
+  const { c, X, Y } = frame(cv, [amin, amax], [smin-pad, smax+pad], null, 'speed', 'Launch angle (°)', `Speed (${U('speed')[0]})`);
+  // fill between the red and green limits
+  c.fillStyle = 'rgba(76,195,138,.18)'; c.beginPath();
+  valid.forEach((x,i) => i ? c.lineTo(X(x.a), Y(x.hi)) : c.moveTo(X(x.a), Y(x.hi)));
+  valid.slice().reverse().forEach(x => c.lineTo(X(x.a), Y(x.lo))); c.closePath(); c.fill();
+  c.lineWidth = 2;
+  c.strokeStyle = COL.green; polyline(c, valid.map(x => [x.a, x.hi]), X, Y);
+  c.strokeStyle = COL.red;   polyline(c, valid.map(x => [x.a, x.lo]), X, Y);
+  [['hi',COL.green],['lo',COL.red]].forEach(([k,col]) => { c.fillStyle = col; valid.forEach(x => { c.beginPath(); c.arc(X(x.a), Y(x[k]), 2.2, 0, 7); c.fill(); }); });
+  const b = r.best; if (!b) return;
+  c.strokeStyle = COL.purple; c.lineWidth = 2.5; c.beginPath(); c.moveTo(X(b.aLo), Y(b.s)); c.lineTo(X(b.aHi), Y(b.s)); c.stroke();
+  c.strokeStyle = COL.orange; c.beginPath(); c.moveTo(X(b.a), Y(b.s-b.sTol)); c.lineTo(X(b.a), Y(b.s+b.sTol)); c.stroke();
+  c.fillStyle = '#ffffff'; c.strokeStyle = COL.blue; c.lineWidth = 1.5; star(c, X(b.a), Y(b.s), 8);
+}
+
+/* ---------- 4c. Gear ratio ---------- */
+const MOTORS = {
+  // Nominal free speeds — check the vendor's current spec sheet before relying on them.
+  krakenx60: { label:'Kraken X60', rpm:6000 },
+  krakenx44: { label:'Kraken X44', rpm:7530 },
+  vortex:    { label:'NEO Vortex', rpm:6784 },
+  neo:       { label:'NEO',        rpm:5676 },
+  falcon:    { label:'Falcon 500', rpm:6380 },
+};
+const GEAR = {
+  id:'gear', group:'Power Transmission', title:'Gear Ratio', num:'03',
+  lede:'Chain up to three gear or pulley stages behind a motor and see the output speed and wheel surface speed.',
+  inputs:[
+    {section:'Motor'},
+    {key:'motor', label:'Motor', type:'select', def:'krakenx60',
+      options:Object.entries(MOTORS).map(([v,m]) => ({value:v, label:m.label}))},
+    {section:'Stages (driver → driven, 0 = unused)'},
+    {key:'s1a', label:'Stage 1 driver', kind:'teeth', def:12}, {key:'s1b', label:'Stage 1 driven', kind:'teeth', def:60},
+    {key:'s2a', label:'Stage 2 driver', kind:'teeth', def:18}, {key:'s2b', label:'Stage 2 driven', kind:'teeth', def:36},
+    {key:'s3a', label:'Stage 3 driver', kind:'teeth', def:0},  {key:'s3b', label:'Stage 3 driven', kind:'teeth', def:0},
+    {section:'Output'},
+    {key:'wheel', label:'Wheel diameter', kind:'lenS', def:101.6},
+    {key:'eff', label:'Realistic speed', kind:'pct', def:80, help:'Real mechanisms under load usually reach ~75–85% of free speed.'},
+  ],
+  compute(v){
+    const free = MOTORS[v.motor].rpm;
+    const stages = [[v.s1a,v.s1b],[v.s2a,v.s2b],[v.s3a,v.s3b]].filter(s => s[0] > 0 && s[1] > 0);
+    const ratio = stages.reduce((r,s) => r * s[1]/s[0], 1);
+    const steps = [{ label:'Motor', rpm:free }];
+    let rpm = free; stages.forEach((s,i) => { rpm = rpm * s[0]/s[1]; steps.push({ label:`After stage ${i+1}`, rpm }); });
+    const surface = rpm/60 * Math.PI * v.wheel/1000;   // m/s
+    return { free, ratio, rpm, surface, real: surface * v.eff/100, steps, warnings: stages.length ? [] : ['No stages entered — output is the motor shaft.'] };
+  },
+  renderOut(el, v, r){
+    const max = Math.max(...r.steps.map(s => s.rpm)), rowH = 34, H = r.steps.length*rowH + 10;
+    const bars = r.steps.map((s,i) => {
+      const w = Math.max(2, s.rpm/max*300);
+      return `<text x="0" y="${i*rowH+20}" fill="${COL.text}" font-size="12">${s.label}</text>
+        <rect x="110" y="${i*rowH+6}" width="${w}" height="20" rx="4" fill="${i ? COL.blue : COL.purple}"/>
+        <text x="${116+w}" y="${i*rowH+20}" fill="${COL.white}" font-size="12">${Math.round(s.rpm)} rpm</text>`; }).join('');
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile('Total ratio', fmtNum(r.ratio,2)+' : 1', 'primary')}
+        ${tile('Output free speed', Math.round(r.rpm)+' rpm')}
+        ${tile('Free surface speed', fmtK(r.surface,'speed'))}
+        ${tile(`Realistic (${v.eff}%)`, fmtK(r.real,'speed'))}
+      </div>
+      ${r.warnings.map(w => `<div class="warn">⚠ ${w}</div>`).join('')}
+      <figure class="panel"><figcaption>SPEED THROUGH THE GEARBOX</figcaption>
+        <svg viewBox="0 0 480 ${H}" style="height:${H}px">${bars}</svg></figure>`;
+  },
+  validation(){
+    const r = this.compute({ motor:'krakenx60', s1a:12, s1b:60, s2a:18, s2b:36, s3a:0, s3b:0, wheel:101.6, eff:100 });
+    return [
+      { name:'Ratio 12:60 × 18:36', expected:10, got:r.ratio, unit:':1', tol:1e-9 },
+      { name:'Output at 6000 rpm', expected:600, got:r.rpm, unit:'rpm', tol:1e-9 },
+      { name:'4 in wheel surface speed', expected:600/60*Math.PI*0.1016, got:r.surface, unit:'m/s', tol:1e-9 },
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <div class="eq">stage ratio  = driven teeth / driver teeth
+total ratio  = stage1 × stage2 × stage3
+output rpm   = motor rpm / total ratio
+surface speed = output rpm / 60 × π × wheel diameter</div>
+      <p>Pulleys and sprockets work the same way — just use tooth counts.</p>
+    </div>
+    <div><h3>Validation</h3>${validationTable(this)}</div>`; }
+};
+
+const CALCS = [BEND, SHOT, GEAR];
+const COMING = [
+  ['Power Transmission','Belt & Chain'], ['Power Transmission','Motor Curves'],
+  ['Mechanisms','Arm Torque'], ['Mechanisms','Elevator'], ['Shooter','Flywheel Energy'],
+];
+
+function validationTable(calc){
+  const rows = calc.validation();
+  return `<table><tr><th>Case</th><th>Expected</th><th>Calculator</th><th></th></tr>
+    ${rows.map(x => { const ok = Math.abs(x.got - x.expected) <= x.tol;
+      return `<tr><td>${x.name}</td><td class="mono">${x.expected.toFixed(4)} ${x.unit}</td><td class="mono">${x.got.toFixed(4)} ${x.unit}</td>
+        <td class="${ok?'pass':'fail'}">${ok?'✓ pass':'✗ off by '+Math.abs(x.got-x.expected).toExponential(1)}</td></tr>`; }).join('')}</table>`;
+}
+
+/* =================================================================
+   5. PAGE
+   ================================================================= */
+const current = () => CALCS.find(c => c.id === state.calc);
+
+function renderSidebar(){
+  const groups = [...new Set([...CALCS.map(c => c.group), ...COMING.map(x => x[0])])];
+  document.getElementById('sidebar').innerHTML = groups.map(g => `<h4>${g}</h4>` +
+    CALCS.filter(c => c.group === g).map(c => `<button class="navitem ${c.id===state.calc?'on':''}" data-calc="${c.id}">${c.title}</button>`).join('') +
+    COMING.filter(x => x[0] === g).map(x => `<button class="navitem" disabled>${x[1]}<span class="soon">soon</span></button>`).join('')
+  ).join('');
+}
+function renderForm(){
+  const calc = current(), v = state.values[calc.id];
+  document.getElementById('form').innerHTML = calc.inputs.map(i => {
+    if (i.section) return `<div class="sec">${i.section}</div>`;
+    if (i.showIf && !i.showIf(v)) return '';
+    const help = i.help ? `<div class="help">${i.help}</div>` : '';
+    if (i.type === 'check') return `<div class="field check"><input type="checkbox" id="in_${i.key}" data-key="${i.key}" ${v[i.key]?'checked':''}><label for="in_${i.key}">${i.label}</label></div>`;
+    if (i.type === 'select') return `<div class="field"><label for="in_${i.key}">${i.label}</label><div class="inbox"><select id="in_${i.key}" data-key="${i.key}">
+      ${i.options.map(o => `<option value="${o.value}" ${o.value===v[i.key]?'selected':''}>${o.label}</option>`).join('')}</select></div>${help}</div>`;
+    const shown = round(toDisp(v[i.key], i.kind), U(i.kind)[2] + 2);
+    return `<div class="field"><label for="in_${i.key}">${i.label}</label><div class="inbox">
+      <input id="in_${i.key}" data-key="${i.key}" type="number" step="any" inputmode="decimal" value="${shown}">
+      <span class="unit">${U(i.kind)[0]}</span></div>${help}</div>`;
+  }).join('');
+}
+function renderPage(){
+  const calc = current();
+  document.title = `${calc.title} — Calc Workshop`;
+  document.getElementById('main').innerHTML = `
+    <div class="eyebrow">${calc.group} · ${calc.num}</div>
+    <h1>${calc.title}.</h1>
+    <p class="lede">${calc.lede}</p>
+    <div class="calc">
+      <div class="card form" id="form"></div>
+      <div id="out"></div>
+    </div>
+    <section class="docs card">${calc.docs()}</section>
+    <footer>Prototype v1 · every formula is shown so you can check it by hand · values are starting points, not shop data.</footer>`;
+  renderSidebar(); renderForm(); update();
+  document.querySelectorAll('#unitSeg button').forEach(b => b.classList.toggle('on', b.dataset.u === state.units));
+}
+let pending = 0;
+function update(){
+  // Small delay so typing feels smooth on the heavier shot calculator.
+  clearTimeout(pending);
+  pending = setTimeout(() => {
+    const calc = current(), v = state.values[calc.id];
+    calc.renderOut(document.getElementById('out'), v, calc.compute(v));
+    writeHash();
+  }, 25);
+}
+
+// ---- events ----
+document.getElementById('sidebar').addEventListener('click', e => {
+  const b = e.target.closest('[data-calc]'); if (!b) return;
+  state.calc = b.dataset.calc; renderPage(); window.scrollTo({ top:0 });
+});
+document.getElementById('main').addEventListener('input', e => {
+  const key = e.target.dataset.key; if (!key) return;
+  const calc = current(), v = state.values[calc.id], def = calc.inputs.find(i => i.key === key);
+  if (def.type === 'check') v[key] = e.target.checked;
+  else if (def.type === 'select') v[key] = e.target.value;
+  else { const n = parseFloat(e.target.value); if (!Number.isFinite(n)) return; v[key] = toBase(n, def.kind); }
+  if (calc.onChange) calc.onChange(key, v);
+  if (def.type === 'check' || def.type === 'select') renderForm();   // some fields appear/disappear or change
+  update();
+});
+document.getElementById('unitSeg').addEventListener('click', e => {
+  const u = e.target.dataset.u; if (!u || u === state.units) return;
+  state.units = u; renderPage();
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  state.values[state.calc] = defaultsFor(current()); renderPage(); toast('Reset to defaults');
+});
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  writeHash();
+  try { await navigator.clipboard.writeText(location.href); }
+  catch { const t = document.createElement('textarea'); t.value = location.href; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+  toast('Link copied — it reopens with these exact inputs');
+});
+let toastTimer;
+function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 1800); }
+window.addEventListener('resize', () => { if (state.calc === 'shot') update(); });
+
+// ---- start ----
+CALCS.forEach(c => state.values[c.id] = defaultsFor(c));
+readHash();
+renderPage();
+</script>
+</body>
+</html>

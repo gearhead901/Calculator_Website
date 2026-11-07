@@ -1,0 +1,2259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calc Workshop — prototype v4</title>
+<!--
+  Calc Workshop — prototype v4  (v2 Chain & Belt C-C; v3 Mechanism Ratio; v4 adds the rest of the ambcalc.com set)
+  ----------------------------------------------------------------
+  One self-contained file: open it in any browser, no build step.
+  Layout:   top bar (units / copy link / reset) + left menu + calculator page.
+  Code map (search for these headings):
+    1. UNITS        – how values are stored (always metric "base" units) and displayed
+    2. STATE + URL  – what the page remembers, and how Copy Link works
+    3. PLOT HELPERS – tiny canvas plotting helpers (no chart library)
+    4. CALCULATORS  – each calculator is one object: inputs, compute(), renderOut(), docs
+    5. PAGE         – builds the menu, form and page, wires up events
+-->
+<style>
+  :root{
+    --bg:#f6f5f0; --card:#ffffff; --ink:#1c1e22; --muted:#6b6f76; --line:#e4e2da;
+    --accent:#2f9c90; --accent-soft:#e3f2ef;
+    --panel:#222a38; --panel-ink:#c9d1de; --grid:#344055;
+    --green:#4cc38a; --red:#e5534b; --blue:#4f8df5; --purple:#a77bf3; --orange:#f0a43a;
+    --warn-bg:#fff6e5; --warn-ink:#8a5a00;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif}
+  button,input,select{font:inherit;color:inherit}
+
+  /* ---------- top bar ---------- */
+  .topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;height:56px;padding:0 18px;
+    background:rgba(246,245,240,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  .brand{font-weight:800;letter-spacing:-.02em;font-size:18px;display:flex;align-items:center;gap:8px}
+  .brand .dot{width:12px;height:12px;border-radius:3px;background:var(--accent)}
+  .brand small{font-weight:500;color:var(--muted);font-size:12px;letter-spacing:.04em}
+  .spacer{flex:1}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
+  .seg button{border:0;background:none;padding:6px 12px;cursor:pointer;color:var(--muted)}
+  .seg button.on{background:var(--ink);color:#fff}
+  .btn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 12px;cursor:pointer}
+  .btn:hover{border-color:#cfccc0}
+  .btn.accent{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* ---------- layout ---------- */
+  .layout{display:grid;grid-template-columns:236px 1fr;min-height:calc(100vh - 56px)}
+  .sidebar{border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto}
+  .sidebar h4{margin:16px 10px 6px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .sidebar h4:first-child{margin-top:0}
+  .navitem{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;border:0;background:none;
+    padding:7px 10px;border-radius:7px;cursor:pointer}
+  .navitem:hover{background:#ecebe4}
+  .navitem.on{background:var(--accent-soft);color:#17695f;font-weight:600}
+  .navitem[disabled]{color:#a9aaa6;cursor:default;background:none}
+  .navitem .soon{font-size:10px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);border-radius:4px;padding:0 5px}
+  main{padding:28px 32px 60px;min-width:0;max-width:1280px}
+
+  /* ---------- page header ---------- */
+  .eyebrow{color:var(--accent);font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase}
+  h1{font-size:44px;line-height:1.05;letter-spacing:-.035em;margin:6px 0 8px;font-weight:800}
+  .lede{color:var(--muted);font-size:17px;max-width:720px;margin:0 0 22px}
+
+  /* ---------- calculator body ---------- */
+  .calc{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .form .sec{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:14px 0 6px;padding-top:12px;border-top:1px solid var(--line)}
+  .form .sec:first-child{margin-top:0;padding-top:0;border-top:0}
+  .field{display:grid;grid-template-columns:1fr 128px;align-items:center;gap:8px;margin:6px 0}
+  .field label{font-size:14px}
+  .field .help{grid-column:1/-1;font-size:12px;color:var(--muted);margin-top:-4px}
+  .inbox{display:flex;align-items:center;border:1px solid var(--line);border-radius:7px;background:#fbfbf9;overflow:hidden}
+  .inbox:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .inbox input,.inbox select{border:0;background:none;padding:6px 8px;width:100%;min-width:0;outline:none}
+  .inbox .unit{padding:0 8px;color:var(--muted);font-size:12px;white-space:nowrap}
+  .field.check{grid-template-columns:auto 1fr}
+  .field.check input{width:16px;height:16px;accent-color:var(--accent)}
+
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .tile .k{font-size:12px;color:var(--muted)}
+  .tile .v{font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .tile.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+  .tile.primary .k{color:#b8bcc4}
+  .warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:8px 12px;margin:0 0 12px;font-size:14px}
+
+  .panels{display:grid;gap:12px}
+  .panels.two{grid-template-columns:1fr 1fr}
+  .panels.shot{grid-template-columns:1.7fr 1fr}
+  figure.panel{margin:0;background:var(--panel);border-radius:12px;padding:10px 12px 12px;color:var(--panel-ink);min-width:0}
+  figure.panel figcaption{font-size:12px;letter-spacing:.06em;color:#9aa6b8;margin-bottom:6px}
+  figure.panel svg{display:block;width:100%;height:240px}
+  figure.panel canvas{display:block;width:100%;height:340px}
+  .readout{background:#151b26;border-radius:8px;padding:10px 12px;margin-top:10px;font-size:13px;line-height:1.7;font-variant-numeric:tabular-nums}
+  .readout b{font-weight:600}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#9aa6b8;margin-top:8px}
+  .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+
+  details.adv{margin-top:14px}
+  details.adv summary{cursor:pointer;font-weight:600}
+  table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+  th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+  th{font-size:12px;color:var(--muted);font-weight:600}
+  td.mono,code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  .pass{color:#17803d;font-weight:600}.fail{color:#c0392b;font-weight:600}
+
+  /* ---------- docs ---------- */
+  .docs{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .docs h3{margin:0 0 8px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .docs .eq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:#f3f2ec;border-radius:8px;padding:10px 12px;line-height:1.8;white-space:pre-wrap}
+  .docs p,.docs li{font-size:14px}
+  .docs ul{padding-left:18px}
+  footer{color:var(--muted);font-size:12px;margin-top:40px}
+
+  table.dark th{color:#9aa6b8;border-color:#344055} table.dark td{border-color:#344055;color:#c9d1de}
+  table.dark tr.now td{color:#fff;font-weight:700;background:rgba(79,141,245,.18)}
+  #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;transition:.2s;
+    background:var(--ink);color:#fff;padding:8px 14px;border-radius:8px;font-size:14px;pointer-events:none}
+  #toast.show{opacity:1;transform:translateX(-50%)}
+
+  /* ---------- small screens ---------- */
+  @media (max-width:1100px){ .calc{grid-template-columns:1fr} .panels.shot{grid-template-columns:1fr} }
+  @media (max-width:820px){
+    .layout{grid-template-columns:1fr}
+    .sidebar{position:static;height:auto;display:flex;gap:4px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:8px 12px}
+    .sidebar h4{display:none}
+    .navitem{width:auto;white-space:nowrap}
+    .navitem[disabled]{display:none}
+    main{padding:20px 16px 48px}
+    h1{font-size:32px}
+    .panels.two,.docs{grid-template-columns:1fr}
+    .brand small{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="dot"></span>Calc Workshop <small>PROTOTYPE v4</small></div>
+  <div class="spacer"></div>
+  <div class="seg" id="unitSeg">
+    <button data-u="imperial">Imperial</button><button data-u="metric">Metric</button>
+  </div>
+  <button class="btn" id="copyBtn" title="Copy a link with every input filled in">Copy link</button>
+  <button class="btn" id="resetBtn" title="Put this calculator back to its defaults">Reset</button>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main id="main"></main>
+</div>
+<div id="toast"></div>
+
+<script>
+/* =================================================================
+   1. UNITS
+   Every value is STORED in metric base units (mm, m, m/s, kg).
+   We only convert when SHOWING a number or READING what you typed.
+   Each kind: [label, factor-to-base, decimals]
+   ================================================================= */
+const KINDS = {
+  lenS:  { metric:['mm',1,2],     imperial:['in',25.4,4] },        // small lengths (sheet metal, wheels)
+  len:   { metric:['m',1,3],      imperial:['ft',0.3048,3] },      // field distances
+  speed: { metric:['m/s',1,2],    imperial:['ft/s',0.3048,2] },
+  mass:  { metric:['kg',1,3],     imperial:['lb',0.45359237,3] },
+  deg:   { metric:['°',1,1],      imperial:['°',1,1] },
+  rpm:   { metric:['rpm',1,0],    imperial:['rpm',1,0] },
+  pct:   { metric:['%',1,0],      imperial:['%',1,0] },
+  teeth: { metric:['T',1,0],      imperial:['T',1,0] },
+  none:  { metric:['',1,3],       imperial:['',1,3] },
+  s:     { metric:['s',1,3],      imperial:['s',1,3] },
+  torque:{ metric:['N·m',1,3],    imperial:['in·lb',0.112984829,2] },
+  amp:   { metric:['A',1,1],      imperial:['A',1,1] },
+  volt:  { metric:['V',1,1],      imperial:['V',1,1] },
+  count: { metric:['',1,0],       imperial:['',1,0] },
+  ratio: { metric:[': 1',1,2],    imperial:[': 1',1,2] },
+  force: { metric:['N',1,1],      imperial:['lbf',4.4482216,2] },
+  gpa:   { metric:['GPa',1,1],    imperial:['GPa',1,1] },
+  dens:  { metric:['g/cm³',1,3],  imperial:['lb/in³',27.679905,4] },
+  mohm:  { metric:['mΩ',1,1],     imperial:['mΩ',1,1] },
+  vps:   { metric:['V/s',1,0],    imperial:['V/s',1,0] },
+  ms:    { metric:['ms',1,2],     imperial:['ms',1,2] },
+  area:  { metric:['mm²',1,1],    imperial:['in²',645.16,4] },
+  inertia:{ metric:['mm⁴',1,0],   imperial:['in⁴',416231.43,5] },
+  watt:  { metric:['W',1,0],      imperial:['W',1,0] },
+};
+const U       = k => KINDS[k][state.units];
+const toDisp  = (v,k) => v / U(k)[1];
+const toBase  = (v,k) => v * U(k)[1];
+const round   = (x,d) => Number.isFinite(x) ? Number(x.toFixed(d)) : x;
+const fmtNum  = (x,d) => Number.isFinite(x) ? x.toFixed(d) : '—';
+const fmtK    = (v,k,extra=0) => `${fmtNum(toDisp(v,k), U(k)[2]+extra)} ${U(k)[0]}`.trim();
+const fmtSign = (v,k) => (v>=0?'+':'−') + fmtNum(Math.abs(toDisp(v,k)), U(k)[2]);
+
+/* =================================================================
+   2. STATE + URL
+   state.values[calcId][inputKey] = value in base units.
+   The URL hash mirrors the state, so "Copy link" just copies the URL.
+   ================================================================= */
+const state = { calc:'bend', units:'imperial', values:{} };
+
+function defaultsFor(calc){
+  const v = {};
+  calc.inputs.forEach(i => { if (i.key) v[i.key] = i.def; });
+  return v;
+}
+function writeHash(){
+  const q = new URLSearchParams({ c: state.calc, u: state.units });
+  const vals = state.values[state.calc];
+  for (const [k,v] of Object.entries(vals)){
+    q.set(k, typeof v === 'boolean' ? (v?'1':'0') : typeof v === 'number' ? String(+v.toPrecision(7)) : v);
+  }
+  history.replaceState(null, '', '#' + q.toString());
+}
+function readHash(){
+  const q = new URLSearchParams(location.hash.slice(1));
+  if (q.get('u') === 'metric' || q.get('u') === 'imperial') state.units = q.get('u');
+  const calc = CALCS.find(c => c.id === q.get('c'));
+  if (!calc) return;
+  state.calc = calc.id;
+  const vals = state.values[calc.id];
+  calc.inputs.forEach(i => {
+    if (!i.key || !q.has(i.key)) return;
+    const raw = q.get(i.key);
+    if (i.type === 'check') vals[i.key] = raw === '1';
+    else if (i.type === 'select') vals[i.key] = raw;
+    else if (Number.isFinite(parseFloat(raw))) vals[i.key] = parseFloat(raw);
+  });
+}
+
+/* =================================================================
+   3. PLOT HELPERS (canvas)
+   frame() draws the dark panel + grid and returns X()/Y() functions
+   that turn base-unit values into pixel positions.
+   ================================================================= */
+const COL = {
+  panel:'#222a38', grid:'#344055', axis:'#8794a8', text:'#9aa6b8',
+  green:'#4cc38a', red:'#e5534b', blue:'#4f8df5', purple:'#a77bf3', orange:'#f0a43a', white:'#e9edf3'
+};
+function niceTicks(a, b, n=6){
+  const span = b - a; if (!(span > 0)) return [a];
+  const raw = span / n, mag = 10 ** Math.floor(Math.log10(raw));
+  const step = [1,2,2.5,5,10].map(f => f*mag).find(s => span/s <= n) || 10*mag;
+  const out = []; for (let t = Math.ceil(a/step)*step; t <= b + 1e-9; t += step) out.push(+t.toFixed(10));
+  return out;
+}
+// Log-axis ticks: 1, 2, 5 × every power of ten inside [a, b]
+function logTicks(a, b){
+  const out = [];
+  for (let e = Math.floor(Math.log10(a)); e <= Math.ceil(Math.log10(b)); e++)
+    [1,2,5].forEach(f => { const t = f * 10**e; if (t >= a*(1-1e-9) && t <= b*(1+1e-9)) out.push(+t.toPrecision(6)); });
+  return out;
+}
+function frame(cv, xr, yr, xKind, yKind, xLabel, yLabel, opts = {}){
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.clientWidth, H = cv.clientHeight;
+  cv.width = W*dpr; cv.height = H*dpr;
+  const c = cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0);
+  const m = { l:48, r:12, t:12, b:38 };
+  c.fillStyle = COL.panel; c.fillRect(0,0,W,H);
+  // opts.xlog = true gives a logarithmic x axis (used for gear-ratio sweeps)
+  const X = opts.xlog
+    ? v => m.l + Math.log(v/xr[0]) / Math.log(xr[1]/xr[0]) * (W - m.l - m.r)
+    : v => m.l + (v - xr[0]) / (xr[1]-xr[0]) * (W - m.l - m.r);
+  const Y = v => H - m.b - (v - yr[0]) / (yr[1]-yr[0]) * (H - m.t - m.b);
+  c.font = '11px -apple-system,Segoe UI,sans-serif'; c.lineWidth = 1;
+  // grid lines are placed at "nice" numbers in DISPLAY units, then mapped back to base units
+  const fx = xKind ? U(xKind)[1] : 1, fy = yKind ? U(yKind)[1] : 1;
+  (opts.xlog ? logTicks(xr[0]/fx, xr[1]/fx) : niceTicks(xr[0]/fx, xr[1]/fx)).forEach(t => {
+    const px = X(t*fx); c.strokeStyle = COL.grid; c.beginPath(); c.moveTo(px, m.t); c.lineTo(px, H-m.b); c.stroke();
+    c.fillStyle = COL.text; c.textAlign = 'center'; c.fillText(String(t), px, H - m.b + 14);
+  });
+  niceTicks(yr[0]/fy, yr[1]/fy, 5).forEach(t => {
+    const py = Y(t*fy); c.strokeStyle = COL.grid; c.beginPath(); c.moveTo(m.l, py); c.lineTo(W-m.r, py); c.stroke();
+    c.fillStyle = COL.text; c.textAlign = 'right'; c.fillText(String(t), m.l - 6, py + 4);
+  });
+  c.fillStyle = COL.text; c.textAlign = 'center';
+  c.fillText(xLabel, m.l + (W-m.l-m.r)/2, H - 6);
+  c.save(); c.translate(12, m.t + (H-m.t-m.b)/2); c.rotate(-Math.PI/2); c.fillText(yLabel, 0, 0); c.restore();
+  return { c, X, Y, W, H, m };
+}
+function polyline(c, pts, X, Y){
+  c.beginPath(); pts.forEach((p,i) => i ? c.lineTo(X(p[0]), Y(p[1])) : c.moveTo(X(p[0]), Y(p[1]))); c.stroke();
+}
+function star(c, x, y, r){
+  c.beginPath();
+  for (let i=0;i<10;i++){ const a = -Math.PI/2 + i*Math.PI/5, rr = i%2 ? r*0.45 : r; c.lineTo(x+rr*Math.cos(a), y+rr*Math.sin(a)); }
+  c.closePath(); c.fill(); c.stroke();
+}
+const tile = (k, v, cls='') => `<div class="tile ${cls}"><div class="k">${k}</div><div class="v">${v}</div></div>`;
+const warnBox = ws => ws.map(w => `<div class="warn">⚠ ${w}</div>`).join('');
+const legend = items => `<div class="legend">${items.map(([label,col,dash]) => `<span><i style="background:${col}${dash ? ';opacity:.6' : ''}"></i>${label}</span>`).join('')}</div>`;
+// Draw several series on one frame: series = [{ pts:[[x,y]...], col, w, dash }]
+function drawSeries(f, series){
+  series.forEach(s => {
+    f.c.strokeStyle = s.col; f.c.lineWidth = s.w || 2; f.c.setLineDash(s.dash ? [6,4] : []);
+    // break the line wherever y is not a number (e.g. a motor past its limit)
+    let run = [];
+    const flush = () => { if (run.length > 1) polyline(f.c, run, f.X, f.Y); run = []; };
+    s.pts.forEach(p => Number.isFinite(p[1]) ? run.push(p) : flush()); flush();
+  });
+  f.c.setLineDash([]);
+}
+function vline(f, x, col, y0, y1){
+  f.c.strokeStyle = col; f.c.lineWidth = 1.5; f.c.setLineDash([5,4]);
+  f.c.beginPath(); f.c.moveTo(f.X(x), f.Y(y0)); f.c.lineTo(f.X(x), f.Y(y1)); f.c.stroke(); f.c.setLineDash([]);
+}
+const range = arr => { const f = arr.filter(Number.isFinite); return f.length ? [Math.min(...f), Math.max(...f)] : [0, 1]; };
+// Buttons that jump to another calculator with some inputs pre-filled (like ambcalc's "copy to ..." buttons)
+const gotoBtn = (calc, vals, label) => `<button class="btn" data-goto="${calc}" data-vals='${JSON.stringify(vals)}'>${label}</button>`;
+
+/* =================================================================
+   4. CALCULATORS
+   Each calculator = { id, group, title, lede, inputs[], compute(v), renderOut(el,v,r), docs() }
+   compute() is pure math on base units — easy to test on its own.
+   ================================================================= */
+
+/* ---------- 4a. Sheet metal bend ---------- */
+const MATERIALS = {
+  // Starting K-factors only — real values come from your shop / vendor test bends.
+  al5052: { label:'Aluminum 5052-H32', k:0.43 },
+  al6061: { label:'Aluminum 6061-T6',  k:0.45 },
+  steel:  { label:'Mild steel (CRS)',  k:0.44 },
+  ss304:  { label:'Stainless 304',     k:0.45 },
+  custom: { label:'Custom',            k:0.44 },
+};
+const BEND = {
+  id:'bend', group:'Fabrication', title:'Sheet Metal Bend', num:'01',
+  lede:'Flat length, bend-line placement, bend allowance and bend deduction for a single bend. Flange lengths are outside (mold-line) dimensions.',
+  inputs:[
+    {section:'Material'},
+    {key:'material', label:'Material', type:'select', def:'al5052',
+      options:Object.entries(MATERIALS).map(([v,m]) => ({value:v, label:m.label}))},
+    {key:'thickness', label:'Thickness (T)', kind:'lenS', def:3.175},
+    {key:'k', label:'K-factor', kind:'none', def:0.43, help:'Where the neutral axis sits, as a fraction of T from the inside.'},
+    {section:'Bend'},
+    {key:'radius', label:'Inside radius (R)', kind:'lenS', def:3.175},
+    {key:'angle', label:'Bend angle (θ)', kind:'deg', def:90, help:'How far the flange is bent: 90° makes an L.'},
+    {section:'Part'},
+    {key:'flangeA', label:'Flange A (outside)', kind:'lenS', def:50.8},
+    {key:'flangeB', label:'Flange B (outside)', kind:'lenS', def:25.4},
+    {key:'width', label:'Part width', kind:'lenS', def:76.2},
+  ],
+  onChange(key, v){ if (key === 'material' && v.material !== 'custom') v.k = MATERIALS[v.material].k; },
+  compute(v){
+    const T = v.thickness, R = v.radius, K = v.k, th = v.angle * Math.PI/180;
+    const BA   = th * (R + K*T);                 // arc length of the neutral axis
+    const OSSB = Math.tan(th/2) * (R + T);       // outside setback: tangent point → mold-line corner
+    const BD   = 2*OSSB - BA;                    // how much shorter the flat is than A + B
+    const flat = v.flangeA + v.flangeB - BD;
+    const bendStart  = v.flangeA - OSSB;         // measured from the flange-A edge of the flat
+    const bendCenter = bendStart + BA/2;
+    const bendEnd    = bendStart + BA;
+    const warnings = [];
+    if (!(v.angle > 0 && v.angle < 180)) warnings.push('Bend angle must be between 0° and 180°.');
+    if (bendStart <= 0) warnings.push('Flange A is shorter than the outside setback — the bend would start past the edge.');
+    if (v.flangeB - OSSB <= 0) warnings.push('Flange B is shorter than the outside setback.');
+    if (R < 0.5*T) warnings.push('Inside radius is under half the thickness — check your tooling and material can do this.');
+    if (K < 0.2 || K > 0.5) warnings.push('K-factor is usually between about 0.3 and 0.5.');
+    return { T, R, K, th, BA, OSSB, BD, flat, bendStart, bendCenter, bendEnd, warnings };
+  },
+  renderOut(el, v, r){
+    const rows = [
+      ['Outside setback (OSSB)', `tan(θ/2)·(R+T) = tan(${fmtNum(v.angle/2,1)}°)·(${fmtK(r.R,'lenS')} + ${fmtK(r.T,'lenS')})`, fmtK(r.OSSB,'lenS')],
+      ['Neutral axis offset', `K·T = ${fmtNum(r.K,3)} · ${fmtK(r.T,'lenS')}`, fmtK(r.K*r.T,'lenS')],
+      ['Bend allowance (BA)', `θ·(R + K·T) = ${fmtNum(r.th,4)} rad · ${fmtK(r.R + r.K*r.T,'lenS')}`, fmtK(r.BA,'lenS')],
+      ['Bend deduction (BD)', `2·OSSB − BA`, fmtK(r.BD,'lenS')],
+      ['Flat length', `A + B − BD`, fmtK(r.flat,'lenS')],
+      ['Bend zone starts', `A − OSSB (from edge A)`, fmtK(r.bendStart,'lenS')],
+      ['Bend zone ends', `start + BA`, fmtK(r.bendEnd,'lenS')],
+      ['Outside radius', `R + T`, fmtK(r.R + r.T,'lenS')],
+    ];
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile('Flat length', fmtK(r.flat,'lenS'), 'primary')}
+        ${tile('Bend line from edge A', fmtK(r.bendCenter,'lenS'))}
+        ${tile('Bend deduction', fmtK(r.BD,'lenS'))}
+        ${tile('Bend allowance', fmtK(r.BA,'lenS'))}
+      </div>
+      ${r.warnings.map(w => `<div class="warn">⚠ ${w}</div>`).join('')}
+      <div class="panels two">
+        <figure class="panel"><figcaption>FORMED PART · θ = ${fmtNum(v.angle,1)}°</figcaption>${profileSVG(v, r)}</figure>
+        <figure class="panel"><figcaption>FLAT PATTERN · bend line dashed</figcaption>${flatSVG(v, r)}</figure>
+      </div>
+      <details class="adv card"><summary>Advanced details — every step with your numbers</summary>
+        <table><tr><th>Quantity</th><th>Formula</th><th>Value</th></tr>
+        ${rows.map(x => `<tr><td>${x[0]}</td><td class="mono">${x[1]}</td><td class="mono">${x[2]}</td></tr>`).join('')}
+        </table>
+      </details>`;
+  },
+  validation(){
+    // Hand calculation (worked in the docs): 1/16" sheet, R = 1/16", 90°, K = 0.44, A = B = 1"
+    const v = { thickness:1.5875, radius:1.5875, k:0.44, angle:90, flangeA:25.4, flangeB:25.4 };
+    const r = this.compute(v);
+    return [
+      { name:'Bend allowance', expected:0.141372, got:r.BA/25.4, unit:'in', tol:1e-4 },
+      { name:'Bend deduction', expected:0.108628, got:r.BD/25.4, unit:'in', tol:1e-4 },
+      { name:'Flat length',    expected:1.891372, got:r.flat/25.4, unit:'in', tol:1e-4 },
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <p>When sheet metal bends, the inside squeezes and the outside stretches. Somewhere in between is the <b>neutral axis</b>, which keeps its length. The K-factor says where it sits: <code>K·T</code> in from the inside face.</p>
+      <div class="eq">BA   = θ · (R + K·T)          ← length of neutral axis in the bend
+OSSB = tan(θ/2) · (R + T)       ← outside setback
+BD   = 2·OSSB − BA              ← bend deduction
+Flat = A + B − BD</div>
+      <p>θ is in radians in the BA formula. A and B are measured to the outside corner (mold line), the way most drawings dimension a flange.</p>
+    </div>
+    <div><h3>Validation</h3>
+      <p>Hand calculation: T = R = 0.0625 in, θ = 90°, K = 0.44, A = B = 1 in.<br>
+      BA = (π/2)(0.0625 + 0.0275) = 0.14137 · OSSB = 0.125 · BD = 0.25 − 0.14137 = 0.10863 · Flat = 1.89137</p>
+      ${validationTable(this)}
+      <p style="color:var(--muted)">TODO: add a case from a published textbook or shop bend chart so the check isn't only against our own hand math.</p>
+    </div>`; }
+};
+
+function profileSVG(v, r){
+  // Draw the formed part as its mold-line outline, with the stroke as thick as the metal.
+  const A = v.flangeA, B = v.flangeB, th = r.th;
+  const p0 = [0,0], p1 = [A,0], p2 = [A + B*Math.cos(th), B*Math.sin(th)];
+  const xs = [p0[0],p1[0],p2[0]], ys = [p0[1],p1[1],p2[1]];
+  let minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+  const span = Math.max(maxx-minx, maxy-miny, 1), pad = span*0.18, padR = span*0.55;
+  if (maxy - miny < span*0.35){ const c=(maxy+miny)/2; miny = c - span*0.175; maxy = c + span*0.175; }
+  const fs = span*0.065, sw = Math.max(v.thickness, span*0.012);
+  const P = p => `${p[0].toFixed(3)},${(-p[1]).toFixed(3)}`;   // flip y: SVG y grows downward
+  const midA = [A/2, 0], midB = [(p1[0]+p2[0])/2, (p1[1]+p2[1])/2];
+  const nB = [Math.sin(th), -Math.cos(th)];                    // points to the outside of the bend
+  return `<svg viewBox="${minx-pad} ${-maxy-pad} ${maxx-minx+pad+padR} ${maxy-miny+2*pad}" preserveAspectRatio="xMidYMid meet">
+    <polyline points="${P(p0)} ${P(p1)} ${P(p2)}" fill="none" stroke="${COL.blue}" stroke-width="${sw}" stroke-linejoin="round"/>
+    <text x="${midA[0]}" y="${fs*1.9}" fill="${COL.white}" font-size="${fs}" text-anchor="middle">A = ${fmtK(A,'lenS')}</text>
+    <text x="${midB[0]+nB[0]*fs*1.6}" y="${-(midB[1]+nB[1]*fs*1.6)}" fill="${COL.white}" font-size="${fs}" text-anchor="start">B = ${fmtK(B,'lenS')}</text>
+  </svg>`;
+}
+function flatSVG(v, r){
+  const L = Math.max(r.flat, 1e-6), Wd = v.width, span = Math.max(L, Wd), fs = span*0.085, pad = span*0.1;
+  const x0 = -pad, y0 = -fs*3.2, w = L + 2*pad, h = Wd + fs*6.4;
+  const tick = (x, y) => `<line x1="${x}" y1="${y-fs*0.4}" x2="${x}" y2="${y+fs*0.4}" stroke="${COL.text}" stroke-width="${span*0.004}"/>`;
+  const yTop = -fs*1.4, yBot = Wd + fs*1.4, sw = span*0.004;
+  return `<svg viewBox="${x0} ${y0} ${w} ${h}" preserveAspectRatio="xMidYMid meet">
+    <rect x="0" y="0" width="${L}" height="${Wd}" fill="rgba(79,141,245,.12)" stroke="${COL.blue}" stroke-width="${sw*1.5}"/>
+    <rect x="${r.bendStart}" y="0" width="${Math.max(r.BA,0)}" height="${Wd}" fill="rgba(240,164,58,.25)"/>
+    <line x1="${r.bendCenter}" y1="${-fs*0.3}" x2="${r.bendCenter}" y2="${Wd+fs*0.3}" stroke="${COL.orange}" stroke-width="${sw*1.5}" stroke-dasharray="${fs*0.5} ${fs*0.3}"/>
+    <line x1="0" y1="${yTop}" x2="${L}" y2="${yTop}" stroke="${COL.text}" stroke-width="${sw}"/>${tick(0,yTop)}${tick(L,yTop)}
+    <text x="${L/2}" y="${yTop-fs*0.5}" fill="${COL.white}" font-size="${fs}" text-anchor="middle">${fmtK(r.flat,'lenS')}</text>
+    <line x1="0" y1="${yBot}" x2="${r.bendCenter}" y2="${yBot}" stroke="${COL.orange}" stroke-width="${sw}"/>${tick(0,yBot)}${tick(r.bendCenter,yBot)}
+    <text x="${r.bendCenter/2}" y="${yBot+fs*1.3}" fill="${COL.orange}" font-size="${fs}" text-anchor="middle">${fmtK(r.bendCenter,'lenS')}</text>
+  </svg>`;
+}
+
+/* ---------- 4b. Shot trajectory ---------- */
+const G = 9.80665, RHO = 1.225;
+function makeSim(p){
+  // k = drag constant: a_drag = −k·|v|·v   (from F = ½·ρ·Cd·A·v²)
+  const area = Math.PI * (p.diam/1000/2)**2;
+  const k = p.drag ? 0.5*RHO*p.cd*area/p.mass : 0;
+  const acc = (vx, vy) => { const s = Math.hypot(vx, vy); return [-k*s*vx, -G - k*s*vy]; };
+  // Returns where the ball crosses the target height on the way DOWN (x = −∞ if it never does).
+  return function sim(angDeg, v, record){
+    const a = angDeg*Math.PI/180, dt = 0.004;
+    let x = 0, y = p.h0, vx = v*Math.cos(a), vy = v*Math.sin(a), t = 0, apex = y;
+    const pts = record ? [[x,y]] : null;
+    for (let i = 0; i < 3000; i++){
+      // one Runge-Kutta (RK4) step — a more accurate way to step the motion forward than x += v·dt
+      const [ax1,ay1] = acc(vx,vy);
+      const vx2 = vx+ax1*dt/2, vy2 = vy+ay1*dt/2; const [ax2,ay2] = acc(vx2,vy2);
+      const vx3 = vx+ax2*dt/2, vy3 = vy+ay2*dt/2; const [ax3,ay3] = acc(vx3,vy3);
+      const vx4 = vx+ax3*dt,   vy4 = vy+ay3*dt;   const [ax4,ay4] = acc(vx4,vy4);
+      const nx  = x  + dt/6*(vx +2*vx2+2*vx3+vx4), ny  = y  + dt/6*(vy +2*vy2+2*vy3+vy4);
+      const nvx = vx + dt/6*(ax1+2*ax2+2*ax3+ax4), nvy = vy + dt/6*(ay1+2*ay2+2*ay3+ay4);
+      if (ny > apex) apex = ny;
+      if (nvy < 0 && y >= p.H && ny < p.H){
+        const f = (y - p.H)/(y - ny), xc = x + f*(nx - x);
+        if (record) pts.push([xc, p.H]);
+        return { x:xc, t:t + f*dt, apex, pts, hit:true };
+      }
+      x = nx; y = ny; vx = nvx; vy = nvy; t += dt;
+      if (record) pts.push([x,y]);
+      if (vy < 0 && y < p.H) break;   // falling and already below the target: it will never get there
+    }
+    return { x:-Infinity, t, apex, pts, hit:false };
+  };
+}
+function bisect(f, lo, hi, target, iters=32){
+  // f is increasing in its argument; find arg where f(arg) = target
+  if (f(hi) < target) return null;
+  if (f(lo) >= target) return lo;
+  for (let i=0;i<iters;i++){ const mid=(lo+hi)/2; if (f(mid) < target) lo = mid; else hi = mid; }
+  return (lo+hi)/2;
+}
+const SHOT = {
+  id:'shot', group:'Shooter', title:'Shot Trajectory', num:'02',
+  lede:'Every launch angle and speed that drops the ball into the goal, and the single shot most tolerant of your shooter’s speed and angle errors.',
+  inputs:[
+    {section:'Geometry'},
+    {key:'h0', label:'Release height', kind:'len', def:0.6096},
+    {key:'dist', label:'Distance to goal center', kind:'len', def:3.9624},
+    {key:'H', label:'Goal height', kind:'len', def:1.8288},
+    {key:'w', label:'Goal opening (front to back)', kind:'len', def:1.0668},
+    {key:'ceiling', label:'Max ball height (0 = none)', kind:'len', def:0},
+    {section:'Search'},
+    {key:'amin', label:'Min launch angle', kind:'deg', def:25},
+    {key:'amax', label:'Max launch angle', kind:'deg', def:80},
+    {key:'sv', label:'Speed error (1σ)', kind:'speed', def:0.1524, help:'How far your flywheel speed typically drifts.'},
+    {key:'sa', label:'Angle error (1σ)', kind:'deg', def:1.0, help:'How far your hood angle typically drifts.'},
+    {section:'Air drag'},
+    {key:'drag', label:'Include air drag', type:'check', def:false},
+    {key:'mass', label:'Ball mass', kind:'mass', def:0.215, showIf:v=>v.drag},
+    {key:'diam', label:'Ball diameter', kind:'lenS', def:150, showIf:v=>v.drag},
+    {key:'cd', label:'Drag coefficient (Cd)', kind:'none', def:0.47, showIf:v=>v.drag, help:'0.47 is a smooth sphere — a placeholder until you measure your ball.'},
+  ],
+  compute(v){
+    const p = { ...v };
+    const sim = makeSim(p);
+    const near = v.dist - v.w/2, far = v.dist + v.w/2;
+    const warnings = [];
+    if (v.w <= 0) warnings.push('Goal opening must be larger than zero.');
+    if (v.amax <= v.amin) warnings.push('Max angle must be larger than min angle.');
+    // For each launch angle: the slowest shot that lands at the near lip (red) and the fastest at the far lip (green).
+    const rows = [];
+    const step = 1;
+    for (let a = Math.ceil(v.amin); a <= v.amax + 1e-9; a += step){
+      const land = s => sim(a, s).x;
+      let lo = bisect(land, 0.2, 60, near), hi = bisect(land, 0.2, 60, far);
+      if (lo !== null && hi !== null && v.ceiling > 0){
+        const vc = bisect(s => sim(a, s).apex, 0.2, 60, v.ceiling);
+        if (vc !== null) hi = Math.min(hi, vc);
+      }
+      rows.push((lo !== null && hi !== null && hi > lo) ? { a, lo, hi } : { a, lo:null, hi:null });
+    }
+    // Score each angle: how many "standard errors" of margin does the middle speed have?
+    const margin = (row, s) => row.lo === null ? -Infinity : Math.min(s - row.lo, row.hi - s);
+    let best = null;
+    rows.forEach((row, i) => {
+      if (row.lo === null) return;
+      const s = (row.lo + row.hi)/2, sTol = (row.hi - row.lo)/2;
+      // angle tolerance at this speed: walk to neighbours while still inside, then interpolate the edge
+      const edge = dir => {
+        let j = i;
+        while (rows[j+dir] && margin(rows[j+dir], s) >= 0) j += dir;
+        const n = rows[j+dir], mj = margin(rows[j], s);
+        if (!n || !Number.isFinite(margin(n, s))) return rows[j].a;
+        const mn = margin(n, s); return rows[j].a + dir*step*mj/(mj - mn);
+      };
+      const aLo = edge(-1), aHi = edge(1);
+      const score = Math.min(sTol / v.sv, Math.min(row.a - aLo, aHi - row.a) / v.sa);
+      if (!best || score > best.score) best = { a:row.a, s, sTol, aLo, aHi, score };
+    });
+    if (best){
+      const t = sim(best.a, best.s, true); best.tof = t.t; best.apex = t.apex; best.pts = t.pts;
+    } else if (!warnings.length) warnings.push('No shot reaches the goal in this angle range — try a wider range or check the heights.');
+    // curves for the left plot (every 2°)
+    const curves = rows.filter(r => r.lo !== null && r.a % 2 === 0).map(r => ({
+      lo: sim(r.a, r.lo, true).pts, hi: sim(r.a, r.hi, true).pts }));
+    return { rows, best, curves, near, far, warnings };
+  },
+  renderOut(el, v, r){
+    const b = r.best;
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile('Launch angle', b ? fmtNum(b.a,1)+'°' : '—', 'primary')}
+        ${tile('Launch speed', b ? fmtK(b.s,'speed') : '—', 'primary')}
+        ${tile('Time of flight', b ? fmtNum(b.tof,3)+' s' : '—')}
+        ${tile('Peak height', b ? fmtK(b.apex,'len') : '—')}
+      </div>
+      ${r.warnings.map(w => `<div class="warn">⚠ ${w}</div>`).join('')}
+      <div class="panels shot">
+        <figure class="panel"><figcaption>TRAJECTORIES · side view</figcaption><canvas id="cvTraj"></canvas>
+          <div class="legend"><span><i style="background:${COL.green}"></i>fastest shot that scores</span>
+            <span><i style="background:${COL.red}"></i>slowest shot that scores</span>
+            <span><i style="background:${COL.blue}"></i>most robust shot</span></div></figure>
+        <figure class="panel"><figcaption>VALID SHOT REGION · angle vs speed</figcaption><canvas id="cvRegion"></canvas>
+          <div class="readout">${b ? `
+            <span style="color:${COL.blue}"><b>Optimal:</b> ${fmtNum(b.a,1)}° @ ${fmtK(b.s,'speed')}</span><br>
+            <span style="color:${COL.orange}"><b>Speed:</b> ${fmtSign(-b.sTol,'speed')} / ${fmtSign(b.sTol,'speed')} ${U('speed')[0]}</span><br>
+            <span style="color:${COL.purple}"><b>Angle:</b> −${fmtNum(b.a-b.aLo,1)}° / +${fmtNum(b.aHi-b.a,1)}°</span><br>
+            <span><b>Margin:</b> ${fmtNum(b.score,1)} σ before a miss</span>` : 'No valid shot.'}</div></figure>
+      </div>`;
+    drawTraj(document.getElementById('cvTraj'), v, r);
+    drawRegion(document.getElementById('cvRegion'), v, r);
+  },
+  validation(){
+    // No drag, release height = goal height → textbook range formula R = v²·sin(2θ)/g
+    const base = { h0:1, H:1, drag:false, mass:1, diam:100, cd:0 };
+    const sim = makeSim(base);
+    return [
+      { name:'45°, 7 m/s', expected:49*Math.sin(Math.PI/2)/G, got:sim(45,7).x, unit:'m', tol:1e-3 },
+      { name:'30°, 10 m/s', expected:100*Math.sin(Math.PI/3)/G, got:sim(30,10).x, unit:'m', tol:1e-3 },
+      { name:'60°, 10 m/s', expected:100*Math.sin(2*Math.PI/3)/G, got:sim(60,10).x, unit:'m', tol:1e-3 },
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <ol>
+        <li><b>Simulate one shot.</b> Step the ball forward in tiny time steps under gravity (and drag, if on).</li>
+        <li><b>Find the limits.</b> For each launch angle, search for the slowest speed that just clears the near lip (red) and the fastest that just reaches the far lip (green). Anything between scores.</li>
+        <li><b>Pick the most robust shot.</b> Score each angle by how many standard errors of speed <i>and</i> angle it can absorb before missing — the weaker of the two. Keep the best. This is the “robustness” cost idea from the 1690 Orbit talk.</li>
+      </ol>
+      <div class="eq">gravity:  a = (0, −g)
+drag:     a = −k·|v|·v      k = ½·ρ·Cd·A / m
+score   = min( speed margin / σ_speed , angle margin / σ_angle )</div>
+      <p>Next steps from your notes: add Magnus lift (spin), then fit a polynomial to the results so a robot can look shots up live.</p>
+    </div>
+    <div><h3>Validation</h3>
+      <p>With drag off and the ball released at goal height, the simulator must match the textbook range formula <code>R = v²·sin(2θ)/g</code>.</p>
+      ${validationTable(this)}
+    </div>`; }
+};
+function drawTraj(cv, v, r){
+  let ymax = Math.max(v.H, v.h0) * 1.15;
+  r.curves.forEach(c => c.hi.concat(c.lo).forEach(p => { if (p[1] > ymax) ymax = p[1]; }));
+  if (v.ceiling > 0) ymax = Math.max(ymax, v.ceiling*1.05);
+  ymax = Math.min(ymax*1.05, Math.max(v.H, v.h0)*4 + 2);
+  const xmax = r.far * 1.12;
+  const { c, X, Y, W, H, m } = frame(cv, [0, xmax], [0, ymax], 'len', 'len', `Distance (${U('len')[0]})`, `Height (${U('len')[0]})`);
+  c.save(); c.beginPath(); c.rect(m.l, m.t, W-m.l-m.r, H-m.t-m.b); c.clip();
+  c.lineWidth = 1; c.globalAlpha = 0.55;
+  r.curves.forEach(cv => { c.strokeStyle = COL.red; polyline(c, cv.lo, X, Y); c.strokeStyle = COL.green; polyline(c, cv.hi, X, Y); });
+  c.globalAlpha = 1;
+  // goal height line, goal opening, front wall
+  c.setLineDash([5,4]); c.strokeStyle = 'rgba(229,83,75,.6)'; c.beginPath(); c.moveTo(X(0), Y(v.H)); c.lineTo(X(xmax), Y(v.H)); c.stroke();
+  if (v.ceiling > 0){ c.strokeStyle = 'rgba(167,123,243,.7)'; c.beginPath(); c.moveTo(X(0), Y(v.ceiling)); c.lineTo(X(xmax), Y(v.ceiling)); c.stroke(); }
+  c.setLineDash([]);
+  c.strokeStyle = COL.red; c.lineWidth = 2.5; c.beginPath(); c.moveTo(X(r.near), Y(0)); c.lineTo(X(r.near), Y(v.H)); c.stroke();
+  c.strokeStyle = COL.green; c.lineWidth = 5; c.beginPath(); c.moveTo(X(r.near), Y(v.H)); c.lineTo(X(r.far), Y(v.H)); c.stroke();
+  if (r.best){ c.strokeStyle = COL.blue; c.lineWidth = 3; polyline(c, r.best.pts, X, Y); }
+  c.fillStyle = COL.white; c.beginPath(); c.arc(X(0), Y(v.h0), 4, 0, 7); c.fill();
+  c.restore();
+}
+function drawRegion(cv, v, r){
+  const valid = r.rows.filter(x => x.lo !== null);
+  if (!valid.length){ frame(cv, [v.amin, v.amax], [0, 10], null, 'speed', 'Launch angle (°)', `Speed (${U('speed')[0]})`); return; }
+  let smin = Math.min(...valid.map(x => x.lo)), smax = Math.max(...valid.map(x => x.hi));
+  const pad = (smax - smin)*0.12 + 0.05;
+  const amin = valid[0].a - 2, amax = valid[valid.length-1].a + 2;
+  const { c, X, Y } = frame(cv, [amin, amax], [smin-pad, smax+pad], null, 'speed', 'Launch angle (°)', `Speed (${U('speed')[0]})`);
+  // fill between the red and green limits
+  c.fillStyle = 'rgba(76,195,138,.18)'; c.beginPath();
+  valid.forEach((x,i) => i ? c.lineTo(X(x.a), Y(x.hi)) : c.moveTo(X(x.a), Y(x.hi)));
+  valid.slice().reverse().forEach(x => c.lineTo(X(x.a), Y(x.lo))); c.closePath(); c.fill();
+  c.lineWidth = 2;
+  c.strokeStyle = COL.green; polyline(c, valid.map(x => [x.a, x.hi]), X, Y);
+  c.strokeStyle = COL.red;   polyline(c, valid.map(x => [x.a, x.lo]), X, Y);
+  [['hi',COL.green],['lo',COL.red]].forEach(([k,col]) => { c.fillStyle = col; valid.forEach(x => { c.beginPath(); c.arc(X(x.a), Y(x[k]), 2.2, 0, 7); c.fill(); }); });
+  const b = r.best; if (!b) return;
+  c.strokeStyle = COL.purple; c.lineWidth = 2.5; c.beginPath(); c.moveTo(X(b.aLo), Y(b.s)); c.lineTo(X(b.aHi), Y(b.s)); c.stroke();
+  c.strokeStyle = COL.orange; c.beginPath(); c.moveTo(X(b.a), Y(b.s-b.sTol)); c.lineTo(X(b.a), Y(b.s+b.sTol)); c.stroke();
+  c.fillStyle = '#ffffff'; c.strokeStyle = COL.blue; c.lineWidth = 1.5; star(c, X(b.a), Y(b.s), 8);
+}
+
+/* ---------- 4c. Gear ratio ---------- */
+/* Shared motor list — the same spec-sheet numbers ambcalc.com uses (ref/motors.json, v1.3.1), at 12 V:
+   rpm = free speed, ts = stall torque (N·m), if = free current (A), is = stall current (A).
+   Check the vendor's current spec sheet before relying on them. */
+const MOTOR_DB = Object.fromEntries([
+  ['krakenx60','Kraken X60',6065,7.16,2,374.4],      ['krakenx60foc','Kraken X60 FOC',5785,9.36,2,476.1],
+  ['krakenx44','Kraken X44',7758,4.11,1.4,279.1],    ['krakenx44foc','Kraken X44 FOC',7368,5.01,1.4,329.2],
+  ['neo','NEO 1.1',5676,2.6,1.8,105],                ['neo2','NEO 2.0',5676,3.75,1.8,150],
+  ['vortex','NEO Vortex',6784,3.6,3.615,211],        ['neo550','NEO 550',11000,0.97,1.4,100],
+  ['minion','Minion',7704,3.17,4,211.6],             ['minionfoc','Minion FOC',7644,3.2,4,207.2],
+  ['falcon','Falcon 500',6380,4.69,1.5,257],         ['falconfoc','Falcon 500 FOC',6080,5.84,1.5,304],
+  ['pulsar775','Pulsar 775',7500,3.1,2.6,188.7],     ['pro775','775pro',18730,0.71,0.7,134],
+  ['redline','Redline',21020,0.7,3.8,130],           ['cim','CIM',5330,2.41,2.7,131],
+  ['minicim','Mini CIM',5843,1.41,3,89],             ['bag','BAG Motor',13180,0.43,1.8,53],
+  ['am775','AM 775',5800,0.28,1.6,18],               ['am9015','AM 9015',14270,0.36,3.7,71],
+  ['rs775','BB RS-775',13050,0.72,2.7,97],           ['rs550','BB RS-550',19000,0.38,0.4,84],
+  ['johnson','Johnson Motor',410,4.4,0,26],          ['snowblower','Snowblower Motor',100,7.91,5,24],
+  ['neverest','NeveRest',5480,0.173,0.4,9.8],        ['throttle','Throttle Motor',5300,0.13,1,7],
+  ['bosch','Bosch Motor',24,22,3,12],                ['dynamo','Dynamo',3084,0.32,0.28,6.5],
+  ['window','Window Motor',90,9.24,1.5,16.25],
+].map(([k,label,rpm,ts,iF,iS]) => [k, { label, rpm, ts, if:iF, is:iS }]));
+const MOTORS = MOTOR_DB;   // the Gear Ratio calculator only needs .rpm
+const motorOptions = (extra = []) => [...Object.entries(MOTOR_DB).map(([v,m]) => ({value:v, label:m.label})), ...extra];
+// The five inputs every motor-driven calculator shares: motor + its spec-sheet numbers (p = key prefix)
+const motorInputs = (p = '', def = 'krakenx60', showIf) => {
+  const m = MOTOR_DB[def];
+  return [
+    {key:p+'motor', label:'Motor', type:'select', def, options:motorOptions([{value:'custom', label:'Custom (type your own)'}]), showIf},
+    {key:p+'fs', label:'Free speed', kind:'rpm', def:m.rpm, showIf},
+    {key:p+'ts', label:'Stall torque', kind:'torque', def:m.ts, showIf},
+    {key:p+'if', label:'Free current', kind:'amp', def:m.if, showIf},
+    {key:p+'is', label:'Stall current', kind:'amp', def:m.is, showIf},
+  ];
+};
+// Picking a motor copies its numbers into the fields. Returns true so the form redraws.
+function fillMotor(key, v, p = ''){
+  if (key !== p+'motor') return false;
+  const s = MOTOR_DB[v[key]];
+  if (s){ v[p+'fs'] = s.rpm; v[p+'ts'] = s.ts; v[p+'if'] = s.if; v[p+'is'] = s.is; }
+  return true;
+}
+const motorOk = (v, p = '') => v[p+'fs'] > 0 && v[p+'ts'] > 0 && v[p+'is'] > v[p+'if'] && v[p+'if'] >= 0;
+const MOTOR_BAD = 'Motor numbers look wrong — stall current must be bigger than free current, and all must be positive.';
+const GEAR = {
+  id:'gear', group:'Power Transmission', title:'Gear Ratio', num:'03',
+  lede:'Chain up to three gear or pulley stages behind a motor and see the output speed and wheel surface speed.',
+  inputs:[
+    {section:'Motor'},
+    {key:'motor', label:'Motor', type:'select', def:'krakenx60',
+      options:Object.entries(MOTORS).map(([v,m]) => ({value:v, label:m.label}))},
+    {section:'Stages (driver → driven, 0 = unused)'},
+    {key:'s1a', label:'Stage 1 driver', kind:'teeth', def:12}, {key:'s1b', label:'Stage 1 driven', kind:'teeth', def:60},
+    {key:'s2a', label:'Stage 2 driver', kind:'teeth', def:18}, {key:'s2b', label:'Stage 2 driven', kind:'teeth', def:36},
+    {key:'s3a', label:'Stage 3 driver', kind:'teeth', def:0},  {key:'s3b', label:'Stage 3 driven', kind:'teeth', def:0},
+    {section:'Output'},
+    {key:'wheel', label:'Wheel diameter', kind:'lenS', def:101.6},
+    {key:'eff', label:'Realistic speed', kind:'pct', def:80, help:'Real mechanisms under load usually reach ~75–85% of free speed.'},
+  ],
+  compute(v){
+    const free = MOTORS[v.motor].rpm;
+    const stages = [[v.s1a,v.s1b],[v.s2a,v.s2b],[v.s3a,v.s3b]].filter(s => s[0] > 0 && s[1] > 0);
+    const ratio = stages.reduce((r,s) => r * s[1]/s[0], 1);
+    const steps = [{ label:'Motor', rpm:free }];
+    let rpm = free; stages.forEach((s,i) => { rpm = rpm * s[0]/s[1]; steps.push({ label:`After stage ${i+1}`, rpm }); });
+    const surface = rpm/60 * Math.PI * v.wheel/1000;   // m/s
+    return { free, ratio, rpm, surface, real: surface * v.eff/100, steps, warnings: stages.length ? [] : ['No stages entered — output is the motor shaft.'] };
+  },
+  renderOut(el, v, r){
+    const max = Math.max(...r.steps.map(s => s.rpm)), rowH = 34, H = r.steps.length*rowH + 10;
+    const bars = r.steps.map((s,i) => {
+      const w = Math.max(2, s.rpm/max*300);
+      return `<text x="0" y="${i*rowH+20}" fill="${COL.text}" font-size="12">${s.label}</text>
+        <rect x="110" y="${i*rowH+6}" width="${w}" height="20" rx="4" fill="${i ? COL.blue : COL.purple}"/>
+        <text x="${116+w}" y="${i*rowH+20}" fill="${COL.white}" font-size="12">${Math.round(s.rpm)} rpm</text>`; }).join('');
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile('Total ratio', fmtNum(r.ratio,2)+' : 1', 'primary')}
+        ${tile('Output free speed', Math.round(r.rpm)+' rpm')}
+        ${tile('Free surface speed', fmtK(r.surface,'speed'))}
+        ${tile(`Realistic (${v.eff}%)`, fmtK(r.real,'speed'))}
+      </div>
+      ${r.warnings.map(w => `<div class="warn">⚠ ${w}</div>`).join('')}
+      <figure class="panel"><figcaption>SPEED THROUGH THE GEARBOX</figcaption>
+        <svg viewBox="0 0 480 ${H}" preserveAspectRatio="xMinYMid meet" style="height:${H}px">${bars}</svg></figure>`;
+  },
+  validation(){
+    const r = this.compute({ motor:'krakenx60', s1a:12, s1b:60, s2a:18, s2b:36, s3a:0, s3b:0, wheel:101.6, eff:100 });
+    const rpm = MOTORS.krakenx60.rpm;
+    return [
+      { name:'Ratio 12:60 × 18:36', expected:10, got:r.ratio, unit:':1', tol:1e-9 },
+      { name:`Output at ${rpm} rpm`, expected:rpm/10, got:r.rpm, unit:'rpm', tol:1e-9 },
+      { name:'4 in wheel surface speed', expected:rpm/10/60*Math.PI*0.1016, got:r.surface, unit:'m/s', tol:1e-9 },
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <div class="eq">stage ratio  = driven teeth / driver teeth
+total ratio  = stage1 × stage2 × stage3
+output rpm   = motor rpm / total ratio
+surface speed = output rpm / 60 × π × wheel diameter</div>
+      <p>Pulleys and sprockets work the same way — just use tooth counts.</p>
+    </div>
+    <div><h3>Validation</h3>${validationTable(this)}</div>`; }
+};
+
+/* ---------- 4d. Chain / belt center distance ---------- */
+const DRIVES = {
+  // p = pitch (mm). u = belt pitch-line offset (mm): how far the belt's pitch line sits outside the pulley OD.
+  c25:   { label:'#25 chain',      kind:'chain', p:6.35 },
+  c35:   { label:'#35 chain',      kind:'chain', p:9.525 },
+  gt2:   { label:'GT2 3 mm belt',  kind:'belt',  p:3, u:0.381 },
+  htd5:  { label:'HTD 5 mm belt',  kind:'belt',  p:5, u:0.5715 },
+  cchain:{ label:'Custom chain',   kind:'chain', p:null },
+  cbelt: { label:'Custom belt',    kind:'belt',  p:null, u:0 },
+};
+// Chain length in pitches for center distance c (in pitches) — the textbook (Shigley) chain formula
+const chainLenP = (c, N1, N2) => 2*c + (N1+N2)/2 + ((N2-N1)/(2*Math.PI))**2 / c;
+// Belt length (mm) on the pitch circles for center distance C — exact open-belt geometry
+function beltLen(C, D1, D2){
+  const big = Math.max(D1,D2), small = Math.min(D1,D2), phi = Math.asin((big-small)/(2*C));
+  return 2*C*Math.cos(phi) + Math.PI*(big+small)/2 + phi*(big-small);
+}
+function beltGeom(v){
+  const d = DRIVES[v.drive], chain = d.kind === 'chain', p = v.pitch;
+  const N1 = Math.round(v.n1), N2 = Math.round(v.n2);
+  // pitch diameter: chain sits on a polygon, a belt wraps a smooth circle
+  const pd = N => chain ? p/Math.sin(Math.PI/N) : N*p/Math.PI;
+  const od = N => chain ? p*(0.6 + 1/Math.tan(Math.PI/N)) : N*p/Math.PI - 2*(d.u || 0);
+  const D1 = pd(N1), D2 = pd(N2);
+  const k = ((N2-N1)/(2*Math.PI))**2;
+  const lenP = C => chain ? chainLenP(C/p, N1, N2) : beltLen(C, D1, D2)/p;   // length in pitches
+  const Cmin = Math.max(Math.abs(D1-D2)/2 + 1e-9, chain ? p*Math.sqrt(k/2) + 1e-9 : 0);
+  // Method 1 (what the calculator uses): numerically find C where the length equals L pitches
+  const solveC = L => {
+    if (!(L > 0) || lenP(Cmin) > L) return null;
+    let lo = Cmin, hi = L*p;
+    for (let i = 0; i < 80; i++){ const mid = (lo+hi)/2; if (lenP(mid) < L) lo = mid; else hi = mid; }
+    return (lo+hi)/2;
+  };
+  return { d, chain, p, N1, N2, D1, D2, od1:od(N1), od2:od(N2), k, lenP, solveC };
+}
+const BELT = {
+  id:'belt', group:'Power Transmission', title:'Chain & Belt C-C', num:'04',
+  lede:'Pick a chain or timing belt, two sprockets or pulleys, and either a target center distance or a link/tooth count. Get the exact center-to-center distance, the nearest real sizes, and a fit check.',
+  inputs:[
+    {section:'Drive'},
+    {key:'drive', label:'Chain / belt', type:'select', def:'gt2',
+      options:Object.entries(DRIVES).map(([v,d]) => ({value:v, label:d.label}))},
+    {key:'pitch', label:'Pitch', kind:'lenS', def:3},
+    {key:'n1', label:'Sprocket / pulley 1', kind:'teeth', def:18},
+    {key:'n2', label:'Sprocket / pulley 2', kind:'teeth', def:36},
+    {section:'Solve'},
+    {key:'mode', label:'Solve by', type:'select', def:'cc',
+      options:[{value:'cc', label:'Target C-C distance'}, {value:'count', label:'Link / tooth count'}]},
+    {key:'target', label:'Target C-C', kind:'lenS', def:101.6, showIf:v => v.mode === 'cc'},
+    {key:'round', label:'Round', type:'select', def:'nearest', showIf:v => v.mode === 'cc',
+      options:[{value:'nearest', label:'Nearest'}, {value:'up', label:'Up (longer)'}, {value:'down', label:'Down (shorter)'}]},
+    {key:'count', label:'Belt teeth / chain links', kind:'teeth', def:100, showIf:v => v.mode === 'count'},
+    {key:'step', label:'Count step', kind:'teeth', def:1, help:'Chain: 2 keeps an even link count (no half link). Belts: use 5 if your supplier only stocks every 5 teeth.'},
+    {key:'adder', label:'C-C adder', kind:'lenS', def:0, help:'Extra spacing added to the answer, if your team adds some for tension. 0 = exact.'},
+  ],
+  onChange(key, v){
+    if (key !== 'drive') return;
+    const d = DRIVES[v.drive];
+    if (d.p) v.pitch = d.p;
+    v.step = d.kind === 'chain' ? 2 : 1;
+  },
+  compute(v){
+    const g = beltGeom(v), warnings = [];
+    const step = Math.max(1, Math.round(v.step));
+    if (g.N1 < 8 || g.N2 < 8) warnings.push('Very small sprocket/pulley — under 8 teeth is unusual.');
+    let count, targetCount = null;
+    if (v.mode === 'cc'){
+      targetCount = g.lenP(Math.max(v.target, 1e-6));
+      const fn = { nearest:Math.round, up:Math.ceil, down:Math.floor }[v.round];
+      count = fn(targetCount/step)*step;
+    } else count = Math.round(v.count);
+    const C = g.solveC(count);
+    if (C === null){ warnings.push('That chain/belt is too short to wrap these two sprockets/pulleys.'); return { g, count, warnings, C:null }; }
+    const phi = Math.asin(Math.abs(g.D1-g.D2)/(2*C));
+    const wrapSmall = Math.PI - 2*phi, nSmall = Math.min(g.N1, g.N2);
+    const inMesh = nSmall * wrapSmall/(2*Math.PI);
+    const clearance = C - (g.od1 + g.od2)/2;
+    if (clearance < 0) warnings.push('The sprockets/pulleys overlap at this center distance.');
+    if (g.chain && count % 2) warnings.push('Odd link count — you would need an offset (half) link.');
+    if (!g.chain && inMesh < 6) warnings.push(`Only ${inMesh.toFixed(1)} teeth in mesh on the small pulley — a common rule of thumb is at least 6, or the belt may skip.`);
+    const nearby = [];
+    for (let i = -3; i <= 3; i++){ const n = count + i*step, c = g.solveC(n); if (n > 0 && c !== null) nearby.push({ n, C:c + v.adder, now:i === 0 }); }
+    return { g, count, targetCount, C, Cf:C + v.adder, length:count*g.p, wrapSmall, inMesh, clearance, nearby, warnings };
+  },
+  renderOut(el, v, r){
+    const g = r.g, noun = g.chain ? 'links' : 'teeth';
+    if (r.C === null){ el.innerHTML = r.warnings.map(w => `<div class="warn">⚠ ${w}</div>`).join(''); return; }
+    const delta = v.mode === 'cc' ? r.Cf - v.target : null;
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile(g.chain ? 'Chain size' : 'Belt size', `${r.count} ${noun}`, 'primary')}
+        ${tile('C-C distance', fmtK(r.Cf,'lenS'), 'primary')}
+        ${delta !== null ? tile('Change from target', fmtSign(delta,'lenS') + ' ' + U('lenS')[0]) : ''}
+        ${tile(g.chain ? 'Chain length' : 'Belt pitch length', fmtK(r.length,'lenS'))}
+        ${tile('Clearance between ODs', fmtK(r.clearance,'lenS'))}
+      </div>
+      ${r.warnings.map(w => `<div class="warn">⚠ ${w}</div>`).join('')}
+      <div class="panels two">
+        <figure class="panel"><figcaption>LAYOUT · pitch circles dashed, outside diameters solid</figcaption>${beltSVG(r)}</figure>
+        <figure class="panel"><figcaption>NEARBY SIZES</figcaption>
+          <table class="dark"><tr><th>${g.chain ? 'Links' : 'Belt teeth'}</th><th>C-C</th>${v.mode === 'cc' ? '<th>vs target</th>' : ''}</tr>
+          ${r.nearby.map(n => `<tr class="${n.now ? 'now' : ''}"><td>${n.n}${g.chain && n.n % 2 ? ' <span title="needs offset link">*</span>' : ''}</td>
+            <td class="mono">${fmtK(n.C,'lenS')}</td>${v.mode === 'cc' ? `<td class="mono">${fmtSign(n.C - v.target,'lenS')}</td>` : ''}</tr>`).join('')}
+          </table></figure>
+      </div>
+      <details class="adv card"><summary>Advanced details</summary>
+        <table><tr><th>Quantity</th><th>Formula</th><th>Value</th></tr>
+          <tr><td>Pitch diameter 1 / 2</td><td class="mono">${g.chain ? 'p / sin(180°/N)' : 'N·p / π'}</td><td class="mono">${fmtK(g.D1,'lenS')} / ${fmtK(g.D2,'lenS')}</td></tr>
+          <tr><td>Outside diameter 1 / 2</td><td class="mono">${g.chain ? 'p·(0.6 + cot(180°/N))' : 'PD − 2·(pitch-line offset)'}</td><td class="mono">${fmtK(g.od1,'lenS')} / ${fmtK(g.od2,'lenS')}</td></tr>
+          ${r.targetCount !== null ? `<tr><td>Exact length at target C-C</td><td class="mono">before rounding</td><td class="mono">${r.targetCount.toFixed(3)} ${noun}</td></tr>` : ''}
+          <tr><td>Wrap on small ${g.chain ? 'sprocket' : 'pulley'}</td><td class="mono">180° − 2·asin((D−d)/2C)</td><td class="mono">${(r.wrapSmall*180/Math.PI).toFixed(1)}°</td></tr>
+          <tr><td>Teeth in mesh (small)</td><td class="mono">N_small · wrap / 360°</td><td class="mono">${r.inMesh.toFixed(1)}</td></tr>
+          <tr><td>Exact C-C (before adder)</td><td class="mono">solved numerically</td><td class="mono">${fmtK(r.C,'lenS',1)}</td></tr>
+        </table>
+      </details>`;
+  },
+  validation(){
+    const solve = (drive, p, n1, n2, count) => beltGeom({ drive, pitch:p, n1, n2 }).solveC(count);
+    // Shigley's closed-form inverse of the chain length formula
+    const shigley = (p, N1, N2, L) => { const A = (N1+N2)/2 - L, k = ((N2-N1)/(2*Math.PI))**2; return p/4*(-A + Math.sqrt(A*A - 8*k)); };
+    // Common belt approximation: L ≈ 2C + π(D+d)/2 + (D−d)²/4C, solved for C
+    const approx = (D, d, L) => { const b = 4*L - 2*Math.PI*(D+d); return (b + Math.sqrt(b*b - 32*(D-d)**2))/16; };
+    const D18 = 18*3/Math.PI, D48 = 48*3/Math.PI;
+    return [
+      { name:'#25 chain 16T/16T, 60 links (exact: (60−16)/2 · p)', expected:(60-16)/2*6.35, got:solve('c25',6.35,16,16,60), unit:'mm', tol:1e-6 },
+      { name:'#25 chain 15T/42T, 80 links (Shigley closed form)',  expected:shigley(6.35,15,42,80), got:solve('c25',6.35,15,42,80), unit:'mm', tol:1e-6 },
+      { name:'GT2 36T/36T, 150T belt (exact: (150−36)/2 · p)',     expected:(150-36)/2*3, got:solve('gt2',3,36,36,150), unit:'mm', tol:1e-6 },
+      { name:'GT2 18T/48T, 150T belt (approx. formula, ±0.1 mm)',   expected:approx(D48,D18,450), got:solve('gt2',3,18,48,150), unit:'mm', tol:0.1 },
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <p><b>Chain</b> (the textbook formula, e.g. Shigley's <i>Mechanical Engineering Design</i>), with C in pitches:</p>
+      <div class="eq">L = 2C + (N1+N2)/2 + ((N2−N1)/2π)² / C</div>
+      <p><b>Timing belt</b> — exact geometry on the pitch circles, PD = N·p/π:</p>
+      <div class="eq">φ = asin((D−d) / 2C)
+L = 2C·cos φ + π(D+d)/2 + φ·(D−d)</div>
+      <p>The calculator finds the length at your target C-C, rounds it to a real link or tooth count, then searches (bisection) for the C-C that gives exactly that length.</p>
+    </div>
+    <div><h3>Validation — two methods must agree</h3>
+      <ul>
+        <li>Equal sprockets/pulleys have an exact answer: C = (L − N)/2 · p.</li>
+        <li>The chain formula can be rearranged into a closed form (Shigley) — the numeric solver must match it.</li>
+        <li>For unequal belts, the common approximation formula should land within 0.1 mm.</li>
+      </ul>
+      ${validationTable(this)}
+    </div>`; }
+};
+
+function beltSVG(r){
+  // Pulley 1 at (0,0), pulley 2 at (C,0). Belt follows the pitch circles; outer tangent lines join them.
+  const g = r.g, C = r.C, r1 = g.D1/2, r2 = g.D2/2, o1 = g.od1/2, o2 = g.od2/2;
+  const a = Math.acos(Math.max(-1, Math.min(1, (r1 - r2)/C)));   // angle of the tangent points
+  const pts = [];
+  for (let i = 0; i <= 60; i++){ const t = a + (2*Math.PI - 2*a)*i/60; pts.push([r1*Math.cos(t), r1*Math.sin(t)]); }
+  for (let i = 0; i <= 60; i++){ const t = -a + 2*a*i/60; pts.push([C + r2*Math.cos(t), r2*Math.sin(t)]); }
+  const path = 'M' + pts.map(p => `${p[0].toFixed(3)},${(-p[1]).toFixed(3)}`).join(' L') + ' Z';
+  const R = Math.max(r1, r2, o1, o2), w = C + Math.max(r1,o1) + Math.max(r2,o2), fs = Math.max(w, 2*R)*0.05;
+  const x0 = -Math.max(r1,o1) - fs, y0 = -R - fs, W = w + 2*fs, H = 2*R + fs*4.5, sw = Math.max(w, 2*R)*0.004;
+  const yd = R + fs*1.6;
+  return `<svg viewBox="${x0} ${y0} ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+    <circle cx="0" cy="0" r="${o1}" fill="rgba(79,141,245,.12)" stroke="${COL.blue}" stroke-width="${sw}"/>
+    <circle cx="${C}" cy="0" r="${o2}" fill="rgba(79,141,245,.12)" stroke="${COL.blue}" stroke-width="${sw}"/>
+    <circle cx="0" cy="0" r="${r1}" fill="none" stroke="${COL.text}" stroke-width="${sw*0.7}" stroke-dasharray="${fs*0.3} ${fs*0.25}"/>
+    <circle cx="${C}" cy="0" r="${r2}" fill="none" stroke="${COL.text}" stroke-width="${sw*0.7}" stroke-dasharray="${fs*0.3} ${fs*0.25}"/>
+    <path d="${path}" fill="none" stroke="${COL.green}" stroke-width="${sw*2.5}" stroke-linejoin="round"/>
+    <text x="0" y="${fs*0.35}" fill="${COL.white}" font-size="${fs}" text-anchor="middle">${g.N1}T</text>
+    <text x="${C}" y="${fs*0.35}" fill="${COL.white}" font-size="${fs}" text-anchor="middle">${g.N2}T</text>
+    <line x1="0" y1="${yd}" x2="${C}" y2="${yd}" stroke="${COL.orange}" stroke-width="${sw}"/>
+    <line x1="0" y1="${yd-fs*0.4}" x2="0" y2="${yd+fs*0.4}" stroke="${COL.orange}" stroke-width="${sw}"/>
+    <line x1="${C}" y1="${yd-fs*0.4}" x2="${C}" y2="${yd+fs*0.4}" stroke="${COL.orange}" stroke-width="${sw}"/>
+    <text x="${C/2}" y="${yd+fs*1.3}" fill="${COL.orange}" font-size="${fs}" text-anchor="middle">C-C ${fmtK(r.Cf,'lenS')}</text>
+  </svg>`;
+}
+
+const G0 = 9.80665;   // gravity, m/s²
+/* Cross-checks against the live ambcalc.com (v1.3.1, checked 2026-11-03): the same inputs were typed into both
+   sites and ambcalc's displayed numbers copied here. ambcalc rounds what it shows, so the tolerance is half its last digit. */
+const amb = (name, expected, got, unit, tol) => ({ name:'<b>ambcalc.com</b> · ' + name, expected, got, unit, tol });
+const LB = 4.448/G0, FT = 0.3048;      // ambcalc's "lbs" force → kg of weight; feet → m
+const AMB_CHECKS = {
+  mech:() => { const v = { ...defaultsFor(MECH), volt:10, load:20*LB }, a = mechAt(v, 9);
+    return [ amb('2× Kraken X60, 10 V, ¾ in, 20 lb, 80 %, 9:1 — free speed', 9.36, a.freeRpm/60, 'rev/s', 0.0051),
+      amb('… loaded speed', 9.18, a.loadRpm/60, 'rev/s', 0.0051), amb('… loaded linear speed', 3.6, a.loadLin/FT, 'ft/s', 0.0051),
+      amb('… current per motor', 7.79, a.I, 'A', 0.0051), amb('… stall load', 1013.99, a.stallMass/LB, 'lbf', 0.0051),
+      amb('… stall voltage', 0.2, a.stallV, 'V', 0.0051), amb('… efficiency', 62.7, a.sysEff*100, '%', 0.051),
+      amb('… max-efficiency ratio', 2.61, mechSolve({ ...v, solve:'maxeff' }), ':1', 0.0051) ]; },
+  startup:() => { const v = { ...defaultsFor(STARTUP), mass:20*0.4535, load:20*LB };
+    return [ amb('2× Kraken X60, 60 A, ¾ in, 20 lb, 4 ft — at 20:1', 2.03, startupSim(v, 20).time, 's', 0.0051),
+      amb('… at 5:1', 0.54, startupSim(v, 5).time, 's', 0.0051), amb('… at 20:1, braking to a stop', 2.03, startupSim({ ...v, stop:'stopped' }, 20).time, 's', 0.0051) ]; },
+  drive:() => { const v = { ...defaultsFor(DRIVE), weight:154*0.453592 }, a = driveSim(v, 6.75);
+    return [ amb('4× Kraken X60, 154 lb, 4 in, 6.75:1 — free speed', 15.68, a.freeSpeed/FT, 'ft/s', 0.0051),
+      amb('… pushing current', 85.7, a.pushCurrent, 'A', 0.051), amb('… 20 ft sprint, predictive brake', 2.6, a.time, 's', 0.0051),
+      amb('… no stop', 1.8, driveSim({ ...v, stopT:'none' }, 6.75).time, 's', 0.0051),
+      amb('… no stop, 40 A limit', 2.02, driveSim({ ...v, stopT:'none', ilim:40 }, 6.75).time, 's', 0.0051) ]; },
+  gbox:c => { const d = defaultsFor(c), two = c.compute(d), one = c.compute({ ...d, stages:'1' });
+    const top = ['9(10) 32 16 45','8(10) 32 18 45','9(10) 30 16 48','8(10) 30 18 48','9(10) 36 18 45','10(12) 32 16 50'];
+    return [ amb('10:1 ±5 %, Falcon pinion, 2 stages — options found', 8646, two.total, '', 0),
+      amb('… same top 6 gearboxes in the same order', 6, top.filter((s,i) => two.out[i].gears.map(g => g.name).join(' ') === s).length, '', 0),
+      amb('… 1 stage — options found', 5, one.total, '', 0) ]; },
+  swap:c => { const r = c.compute(defaultsFor(c)), f = (k,A,B) => r.out.find(o => o.f.key === k && o.A === A && o.B === B);
+    return [ amb('3 in C-C, 2:1 ±5 % — options found (same 52)', 52, r.out.length, '', 0),
+      amb('… 5 mm belt 28:58 C-C', 3.001, f('p5',28,58).c/25.4, 'in', 0.00051), amb('… 3 mm belt 23:48 C-C', 3.005, f('p3',23,48).c/25.4, 'in', 0.00051),
+      amb('… #25 chain 20:42 C-C (chain formula differs: within 0.002 in)', 2.996, f('s25',20,42).c/25.4, 'in', 0.002) ]; },
+  planet:c => { const r = c.compute({ type:'maxplanetary', ratio:50 });
+    return [ amb('MAXPlanetary 50:1 — stacks found', 7, r.out.length, '', 0),
+      amb('… same ratio order (48, 45, 45, 60, 64, 36, 36)', 7, [48,45,45,60,64,36,36].filter((x,i) => Math.round(r.out[i].R) === x).length, '', 0) ]; },
+  proj:c => { const d = defaultsFor(c), dd = { ...d, drag:true, cd:0.47, diam:177.8, bmass:0.5*0.453592, spin:600 };
+    const a = c.compute(d), b = c.compute(dd), h = c.compute({ ...dd, mode:'height', hf:8*FT }), l = c.compute({ ...d, mode:'launch', dist:12*FT, hf:8*FT, thf:-40 });
+    return [ amb('2 ft, 30 ft/s, 50°: height at 12 ft (ambcalc g = 9.8)', 10.058, a.out.hf/FT, 'ft', 0.01),
+      amb('… with drag + 10 rev/s backspin', 10.478, b.out.hf/FT, 'ft', 0.01), amb('… distance where it falls to 8 ft (drag)', 18.224, h.out.dist/FT, 'ft', 0.02),
+      amb('Launch for 12 ft, 8 ft, −40°: speed', 25.13, l.v0/FT, 'ft/s', 0.0051), amb('… angle', 61.47, l.th0*180/Math.PI, '°', 0.0051) ]; },
+  mcurve:() => { const k = MOTOR_DB.krakenx60, n = MOTOR_DB.vortex;
+    const v = { afs:k.rpm, ats:k.ts, aif:k.if, ais:k.is, avolt:12, ailim:0, an:1, aratio:1, bfs:n.rpm, bts:n.ts, bif:n.if, bis:n.is, bvolt:10, bilim:0, bn:2, bratio:3 };
+    const A = mcCurve(v,'a').at(3.6), B = mcCurve(v,'b').at(10.8);
+    return [ amb('Kraken X60 at 3.6 N·m — speed', 3015.559, A.rpm, 'rpm', 0.0011), amb('… current', 189.24, A.amps, 'A', 0.0011),
+      amb('2× Vortex, 10 V, 3:1 at 10.8 N·m — current', 213.41, B.amps, 'A', 0.0011), amb('… power', 852.503, B.watts, 'W', 0.0011), amb('… efficiency', 39.947, B.eff, '%', 0.0011) ]; },
+  beam:c => { const b = { ...defaultsFor(c), mode:'btwn', mat:'al6061', l:762, a:381, F:50*4.448 };
+    return [ amb('6061, 30 in, 50 lbf center, ½ in hex — deflection', 0.19, c.compute({ ...b, sect:'hex', hex:12.7 }).defl/25.4, 'in', 0.0051),
+      amb('… ½×1 in bar — I', 17343, c.compute({ ...b, sect:'rect', width:12.7, height:25.4 }).s.I, 'mm⁴', 0.51),
+      amb('… ½×1 in bar — deflection', 0.02, c.compute({ ...b, sect:'rect', width:12.7, height:25.4 }).defl/25.4, 'in', 0.0051) ]; },
+  screw:() => { const d = { ...defaultsFor(SCREW), F:50*4.448 }, a = screwAt(d), b = screwAt({ ...d, starts:4 });
+    return [ amb('½-10 Acme, steel/bronze, lubed, 50 lb — efficiency', 34.2, a.eff*100, '%', 0.051), amb('… raise torque', 2.33, a.Traise/0.113, 'in·lb', 0.0051),
+      amb('… lower torque', 0.71, a.Tlower/0.113, 'in·lb', 0.0051), amb('… equivalent radius', 0.0159, a.rEq/25.4, 'in', 0.00005),
+      amb('4-start — efficiency', 65.2, b.eff*100, '%', 0.051), amb('4-start — lower torque (back-drives)', -1.61, b.Tlower/0.113, 'in·lb', 0.0051) ]; },
+};
+/* ---------- 4e. Mechanism ratio ---------- */
+/* Straight-line DC motor model, same as ambcalc.com:
+   every spec-sheet number (free speed, stall torque, both currents) scales with voltage / 12 V,
+   and gearbox efficiency + motor count are folded into one "total stall torque". */
+function mechAt(v, G){
+  const n = Math.max(1, Math.round(v.n)), eff = v.eff/100, r = v.radius/1000, s = v.volt/12;
+  const wf   = v.fs * Math.PI/30 * s;                    // free speed at this voltage (rad/s)
+  const Ttot = v.ts * s * eff * n;                       // total stall torque after the gearbox losses (N·m)
+  const kI   = (v.is - v.if) / (v.ts * eff * n);         // amps per motor for each N·m of output torque (× G)
+  const If   = v.if * s;                                 // free current per motor at this voltage
+  const loadT = v.load * G0 * r;                         // torque the load puts on the output (N·m)
+  const Imax = v.ilim > 0 ? Math.min(v.is*s, v.ilim) : v.is*s;          // most current one motor can draw
+  const Tmax = Ttot * (Imax - If) / (v.is*s - If);                      // most output torque (× G), after any limit
+  const I    = kI * loadT / G + If;                                     // current per motor to move the load
+  const moves = G > 0 && I <= Imax && loadT < Tmax * G;
+  const wOut = moves ? wf/G * (1 - loadT/(Ttot*G)) : 0;                 // loaded output speed (rad/s)
+  return {
+    n, wf, Ttot, kI, If, loadT, Imax, Tmax, Inatural:I, I:Math.min(I, Imax), moves,
+    freeRpm: wf/G * 30/Math.PI, loadRpm: wOut * 30/Math.PI,
+    freeLin: wf/G * r, loadLin: wOut * r,
+    stallMass: Tmax * G / (G0 * r),                      // heaviest load it can hold at this ratio
+    stallV: loadT / (Ttot * G) * v.volt,                 // volts needed just to hold the load still
+    sysEff: moves ? (wOut * loadT) / (I * n * v.volt) : 0,   // useful power out ÷ electrical power in
+  };
+}
+// Ratio that makes one chosen output hit a target — each line is the formula above solved for G.
+function mechSolve(v){
+  const a = mechAt(v, 1), r = v.radius/1000, T = a.loadT;
+  switch (v.solve){
+    case 'ratio':    return v.ratio;
+    case 'lin':      return mechSolve({ ...v, solve:'rpm', tRpm: v.tLin/r * 30/Math.PI });
+    case 'rpm': { const w = v.tRpm * Math.PI/30, d = 1 - 4*(T/a.Ttot)*(w/a.wf);
+                 return d < 0 || !(w > 0) ? NaN : a.wf/(2*w) * (1 + Math.sqrt(d)); }   // the bigger (slower-motor) root
+    case 'freelin':  return a.wf * r / v.tFreeLin;
+    case 'current':  return v.tAmp > a.If ? a.kI * T / (v.tAmp - a.If) : NaN;
+    case 'stall':    return v.tStall * G0 * r / a.Tmax;
+    case 'stallv':   return T / (a.Ttot * v.tStallV / v.volt);
+    case 'maxpower': return 2 * T / a.Ttot;
+    case 'maxeff':   return T / a.Ttot * (1 + Math.sqrt(v.is / v.if));
+  }
+  return NaN;
+}
+const MECH = {
+  id:'mech', group:'Mechanisms', title:'Mechanism Ratio', num:'05',
+  lede:'Motor + gear ratio + load → how fast a winch, elevator or arm really moves, how much current it pulls, and the heaviest load it can hold. Or type the speed / current / stall load you want and it finds the ratio.',
+  inputs:[
+    {section:'Motor'},
+    ...motorInputs(),
+    {key:'n', label:'Number of motors', kind:'count', def:2},
+    {key:'volt', label:'Voltage', kind:'volt', def:12, help:'Try 10 V to model battery sag late in a match.'},
+    {key:'ilim', label:'Current limit / motor', kind:'amp', def:0, help:'0 = no limit. A limit lowers the heaviest load you can hold.'},
+    {section:'Mechanism'},
+    {key:'radius', label:'Radius', kind:'lenS', def:19.05, help:'Winch/elevator: drum or sprocket pitch radius. Arm: pivot to center of mass (worst case: arm level).'},
+    {key:'load', label:'Load (weight)', kind:'mass', def:9.0718474, help:'Elevator: carriage + game piece. Climb: whole robot. Arm: arm + game piece.'},
+    {key:'eff', label:'Gearbox efficiency', kind:'pct', def:80},
+    {section:'Solve'},
+    {key:'solve', label:'Pick the ratio by', type:'select', def:'ratio', options:[
+      {value:'ratio', label:'Gear ratio (type it)'}, {value:'lin', label:'Target loaded linear speed'}, {value:'rpm', label:'Target loaded output rpm'},
+      {value:'freelin', label:'Target free linear speed'}, {value:'current', label:'Target current / motor'}, {value:'stall', label:'Target stall load'},
+      {value:'stallv', label:'Target stall voltage'}, {value:'maxpower', label:'Max power'}, {value:'maxeff', label:'Max efficiency'}]},
+    {key:'ratio', label:'Gear ratio', kind:'ratio', def:9, showIf:v => v.solve === 'ratio', help:'Total reduction. Work it out with the Gear Ratio calculator.'},
+    {key:'tLin', label:'Loaded linear speed', kind:'speed', def:1.2192, showIf:v => v.solve === 'lin'},
+    {key:'tRpm', label:'Loaded output speed', kind:'rpm', def:600, showIf:v => v.solve === 'rpm'},
+    {key:'tFreeLin', label:'Free linear speed', kind:'speed', def:1.524, showIf:v => v.solve === 'freelin'},
+    {key:'tAmp', label:'Current per motor', kind:'amp', def:40, showIf:v => v.solve === 'current'},
+    {key:'tStall', label:'Stall load', kind:'mass', def:45.359237, showIf:v => v.solve === 'stall'},
+    {key:'tStallV', label:'Stall voltage', kind:'volt', def:3, showIf:v => v.solve === 'stallv'},
+  ],
+  onChange(key, v){ return fillMotor(key, v); },
+  compute(v){
+    if (!motorOk(v)) return { bad:true, warnings:[MOTOR_BAD] };
+    if (!(v.radius > 0)) return { bad:true, warnings:['Radius must be bigger than zero.'] };
+    if (!(v.eff > 0)) return { bad:true, warnings:['Efficiency must be bigger than zero.'] };
+    if (!(v.volt > 0)) return { bad:true, warnings:['Voltage must be bigger than zero.'] };
+    const G = mechSolve(v);
+    if (!(G > 0) || !Number.isFinite(G)) return { bad:true, warnings:['No gear ratio can hit that target with this motor and load — try a smaller speed or a bigger current.'] };
+    const at = mechAt(v, G), warnings = [];
+    const sugg = [
+      { name:'Max power', note:'fastest under load — motor at half its stall torque', G:mechSolve({ ...v, solve:'maxpower' }) },
+      { name:'Max efficiency', note:'least heat & battery — motor near free speed', G:mechSolve({ ...v, solve:'maxeff' }) },
+      { name:'Just holds (stall)', note:'any lower ratio and the load wins', G:at.loadT / at.Tmax },
+    ];
+    if (!at.moves) warnings.push(at.Inatural > at.Imax && v.ilim > 0 && v.ilim < v.is*v.volt/12
+      ? `Current limit hit — moving this load needs ${at.Inatural.toFixed(1)} A per motor but the limit is ${v.ilim} A. The mechanism will not move.`
+      : 'The load is heavier than the motors can hold at this ratio — it will not move (or will back-drive). Use a bigger ratio.');
+    else if (at.Inatural > 40) warnings.push(`Each motor pulls ${at.Inatural.toFixed(0)} A while moving the load — fine for short moves, but it will get hot (and trip breakers) if held for long.`);
+    return { G, at, sugg, warnings };
+  },
+  renderOut(el, v, r){
+    if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
+    const a = r.at, pct = x => (x*100).toFixed(1) + '%';
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile('Gear ratio', fmtNum(r.G,2)+' : 1', 'primary')}
+        ${tile('Loaded linear speed', fmtK(a.loadLin,'speed'), 'primary')}
+        ${tile('Loaded output speed', fmtNum(a.loadRpm,1)+' rpm')}
+        ${tile('Free linear speed', fmtK(a.freeLin,'speed'))}
+        ${tile('Free output speed', fmtNum(a.freeRpm,1)+' rpm')}
+        ${tile('Current per motor', fmtK(a.I,'amp'))}
+        ${tile('Stall load', fmtK(a.stallMass,'mass',-1))}
+        ${tile('Stall voltage', fmtK(a.stallV,'volt',1))}
+        ${tile('System efficiency', pct(a.sysEff))}
+      </div>
+      ${warnBox(r.warnings)}
+      <div class="panels two">
+        <figure class="panel"><figcaption>LOADED SPEED vs GEAR RATIO</figcaption><canvas id="mechSpeed"></canvas>
+          ${legend([['loaded speed',COL.blue],['max power',COL.green,1],['max efficiency',COL.purple,1],['stall',COL.red,1]])}</figure>
+        <figure class="panel"><figcaption>CURRENT PER MOTOR & EFFICIENCY vs GEAR RATIO</figcaption><canvas id="mechAmp"></canvas>
+          ${legend([['current (A)',COL.orange],['system efficiency (%)',COL.blue],...(v.ilim > 0 ? [['current limit',COL.red,1]] : [])])}</figure>
+      </div>
+      <figure class="panel" style="margin-top:12px"><figcaption>SUGGESTED RATIOS · click one to use it</figcaption>
+        <table class="dark"><tr><th>Goal</th><th>Ratio</th><th>Loaded speed</th><th>Current / motor</th><th></th></tr>
+        ${r.sugg.map(s => { const ok = s.G > 0 && Number.isFinite(s.G), q = ok ? mechAt(v, s.G) : null;
+          return `<tr><td><b>${s.name}</b><br><span style="font-size:12px;color:#9aa6b8">${s.note}</span></td>
+            <td class="mono">${ok ? s.G.toFixed(2)+' : 1' : '—'}</td>
+            <td class="mono">${ok ? fmtK(q.loadLin,'speed') : '—'}</td>
+            <td class="mono">${ok ? fmtK(q.I,'amp') : '—'}</td>
+            <td>${ok ? `<button class="btn" style="color:var(--ink)" data-set='${JSON.stringify({solve:'ratio', ratio:+s.G.toFixed(2)})}'>Use</button>` : ''}</td></tr>`; }).join('')}
+        </table></figure>
+      <div style="margin-top:12px">${gotoBtn('startup', { motor:v.motor, fs:v.fs, ts:v.ts, if:v.if, is:v.is, n:v.n, volt:v.volt,
+        radius:v.radius, load:v.load, mass:v.load, eff:v.eff, ratio:+r.G.toFixed(2) }, 'Open in Mechanism Startup →')}</div>
+      <details class="adv card"><summary>Advanced details</summary>
+        <table><tr><th>Quantity</th><th>Formula</th><th>Value</th></tr>
+          <tr><td>Free speed at ${v.volt} V</td><td class="mono">ω_f · V/12</td><td class="mono">${fmtNum(a.wf*30/Math.PI,0)} rpm</td></tr>
+          <tr><td>Total stall torque</td><td class="mono">T_s · V/12 · eff · n</td><td class="mono">${fmtK(a.Ttot,'torque')}</td></tr>
+          <tr><td>Load torque at output</td><td class="mono">m · g · r</td><td class="mono">${fmtK(a.loadT,'torque')}</td></tr>
+          <tr><td>Load as share of stall</td><td class="mono">m·g·r / (T_total · G)</td><td class="mono">${pct(a.loadT/(a.Ttot*r.G))}</td></tr>
+          <tr><td>Max current per motor</td><td class="mono">min(I_s · V/12, limit)</td><td class="mono">${fmtK(a.Imax,'amp')}</td></tr>
+        </table>
+      </details>`;
+    mechPlots(v, r);
+  },
+  validation(){
+    const base = { fs:6000, ts:7.09, is:366, if:2, n:1, volt:12, ilim:0, radius:25.4, eff:100 };
+    const free = mechAt({ ...base, load:0 }, 1);
+    const half = mechAt({ ...base, load:(7.09/2)/(G0*0.0254) }, 1);
+    const hold = mechAt({ ...base, load:10 }, 10);
+    return [
+      { name:'No load, 1:1, 12 V → spec free speed', expected:6000, got:free.freeRpm, unit:'rpm', tol:1e-6 },
+      { name:'Half stall torque → half free speed', expected:3000, got:half.loadRpm, unit:'rpm', tol:1e-6 },
+      { name:'Stall load = T_s·G / g·r', expected:7.09*10/(G0*0.0254), got:hold.stallMass, unit:'kg', tol:1e-6 },
+      { name:'Max-power ratio puts load at half stall', expected:0.5, got:(t => t.loadT/(t.Ttot*mechSolve({ ...base, load:10, solve:'maxpower' })))(hold), unit:'', tol:1e-9 },
+      { name:'Solve-by-rpm gives back the same ratio', expected:10, got:mechSolve({ ...base, load:10, solve:'rpm', tRpm:hold.loadRpm }), unit:':1', tol:1e-6 },
+      ...AMB_CHECKS.mech(),
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <p>A DC motor is close to a straight line between free speed (no torque) and stall (no speed). Like ambcalc.com, every spec-sheet number scales with voltage/12, and gearbox efficiency and motor count fold into one total stall torque:</p>
+      <div class="eq">T_total = T_stall · V/12 · eff · n
+output speed  = ω_free·V/12 / G · (1 − m·g·r / (T_total·G))
+current/motor = (I_s − I_f)/(T_s·eff·n) · m·g·r/G + I_f·V/12
+stall load    = T_total · G / (g·r)
+stall voltage = m·g·r / (T_total·G) · V
+max power: G = 2·m·g·r / T_total
+max eff.:  G = m·g·r / T_total · (1 + √(I_s/I_f))</div>
+      <p>"Pick the ratio by" runs these backwards: give a target speed, current, stall load or voltage and it solves for G.</p>
+    </div>
+    <div><h3>Validation</h3>
+      <ul>
+        <li>No load at 12 V must give exactly the spec free speed; half stall torque must give half free speed.</li>
+        <li>Solving backwards from an output must give back the ratio it came from.</li>
+        <li>Rows marked <b>ambcalc.com</b> were read off the live site with the same inputs.</li>
+      </ul>
+      ${validationTable(this)}
+    </div>`; }
+};
+
+function mechPlots(v, r){
+  const cs = document.getElementById('mechSpeed'), ca = document.getElementById('mechAmp');
+  if (!cs || !ca) return;
+  // Same window ambcalc draws: from the max-power ratio to the max-efficiency ratio (widened to include yours)
+  let lo = r.sugg[0].G, hi = r.sugg[1].G;
+  if (!(lo > 0 && hi > lo)){ lo = r.G/4; hi = r.G*4; }
+  lo = Math.min(lo, r.G) / 1.15; hi = Math.max(hi, r.G) * 1.15;
+  const pts = []; for (let i = 0; i <= 160; i++){ const G = lo * (hi/lo)**(i/160); pts.push([G, mechAt(v, G)]); }
+  const sMax = Math.max(1e-6, ...pts.map(p => p[1].loadLin), r.at.freeLin) * 1.08;
+  let f = frame(cs, [lo, hi], [0, sMax], 'ratio', 'speed', 'gear ratio (: 1, log scale)', `speed (${U('speed')[0]})`, { xlog:true });
+  r.sugg.forEach((s,i) => { if (s.G >= lo && s.G <= hi) vline(f, s.G, [COL.green,COL.purple,COL.red][i], 0, sMax); });
+  drawSeries(f, [{ pts:pts.map(p => [p[0], p[1].loadLin]), col:COL.blue, w:2.5 }, { pts:pts.map(p => [p[0], p[1].freeLin]), col:COL.text, w:1, dash:1 }]);
+  f.c.fillStyle = '#fff'; f.c.strokeStyle = COL.blue; f.c.lineWidth = 1.5; star(f.c, f.X(r.G), f.Y(r.at.loadLin), 8);
+  const aMax = Math.max(100, ...pts.map(p => p[1].I)) * 1.08;
+  f = frame(ca, [lo, hi], [0, aMax], 'ratio', null, 'gear ratio (: 1, log scale)', 'amps  /  efficiency %', { xlog:true });
+  if (v.ilim > 0 && v.ilim < aMax) drawSeries(f, [{ pts:[[lo, v.ilim],[hi, v.ilim]], col:COL.red, w:1.5, dash:1 }]);
+  drawSeries(f, [{ pts:pts.map(p => [p[0], p[1].I]), col:COL.orange, w:2.5 }, { pts:pts.map(p => [p[0], p[1].moves ? p[1].sysEff*100 : NaN]), col:COL.blue, w:2 }]);
+  f.c.fillStyle = '#fff'; f.c.strokeStyle = COL.orange; f.c.lineWidth = 1.5; star(f.c, f.X(r.G), f.Y(r.at.I), 8);
+}
+
+/* ---------- 4f. Mechanism startup (time to move) ---------- */
+/* Steps the motion forward in time (RK4, 1 ms steps) instead of assuming steady speed,
+   so it includes the time to speed up and the current limit. Same model as ambcalc.com/startup. */
+function startupSim(v, G){
+  const n = Math.max(1, Math.round(v.n)), eff = v.eff/100, r = v.radius/1000;
+  const Ts = v.ts * eff * n, If = v.if * n, Is = v.is * n, wf = v.fs * Math.PI/30;
+  const kT = Ts / (Is - If), kB = 12 / wf, R = 12 / (Is - If);       // torque/amp, volts per rad/s, resistance
+  const ilim = (v.ilim > 0 ? v.ilim : Infinity) * n;
+  const J = v.mass * r*r;                                             // moving mass as inertia at the output (kg·m²)
+  const loadT = v.load * G0 * r;                                      // gravity load torque (N·m)
+  const dt = v.dt/1000, Vb = v.volt;
+  const target = v.by === 'pos'
+    ? (v.units === 'rot' ? v.tRot*Math.PI/180 : v.tLin/r)            // rad at the output
+    : (v.units === 'rot' ? v.tRotV*Math.PI/30 : v.tLinV/r);          // rad/s at the output
+  const T = [0], X = [0], W = [0], A = [], I = [], lim = [];
+  if (kT * ilim * G <= loadT) return { T:[0, v.tmax], X:[0,0], W:[0,0], A:[0,0], I:[0,0], lim:[false,false], stuck:true, time:v.tmax, reached:false };
+  let V = Vb;
+  const deriv = w => {                                                // → [dθ/dt, dω/dt, current]
+    let i = (V - w*G*kB) / R + If;
+    i = Math.min(Math.abs(i), ilim) * Math.sign(i);
+    return [w, (kT*(i - If)*G - loadT) / J, i];
+  };
+  let reached = false;
+  while (T[T.length-1] <= v.tmax){
+    const x0 = X[X.length-1], w0 = W[W.length-1];
+    if (v.by === 'pos' && v.stop === 'stopped'){
+      // brake (full reverse voltage) once the stopping distance says we must
+      const stopAt = target - w0*w0 / (2*((kT*(ilim + If)*G + loadT)/J));
+      if (x0 >= stopAt) V = -Vb;
+      if (w0 < 0){ reached = true; break; }
+    } else if ((v.by === 'pos' && x0 > target) || (v.by === 'vel' && w0 > target)){ reached = true; break; }
+    const k1 = deriv(w0), k2 = deriv(w0 + dt/2*k1[1]), k3 = deriv(w0 + dt/2*k2[1]), k4 = deriv(w0 + dt*k3[1]);
+    A.push(k1[1]); I.push(k1[2]); lim.push(Math.abs(k1[2]) === ilim);
+    X.push(x0 + dt/6*(k1[0] + 2*k2[0] + 2*k3[0] + k4[0]));
+    W.push(w0 + dt/6*(k1[1] + 2*k2[1] + 2*k3[1] + k4[1]));
+    T.push(T[T.length-1] + dt);
+  }
+  A.unshift(A[0] ?? 0); I.unshift(I[0] ?? 0); lim.unshift(lim[0] ?? false);
+  return { T, X, W, A, I, lim, time:T[T.length-1], reached, target };
+}
+const STARTUP = {
+  id:'startup', group:'Mechanisms', title:'Mechanism Startup', num:'06',
+  lede:'How long does it take to move an arm or elevator to its target, or spin it up to speed? Simulates speeding up, the current limit and (optionally) braking to a stop — and sweeps every ratio to find the fastest.',
+  inputs:[
+    {section:'Motor'},
+    ...motorInputs(),
+    {key:'n', label:'Number of motors', kind:'count', def:2},
+    {key:'volt', label:'Voltage', kind:'volt', def:12},
+    {key:'ilim', label:'Current limit / motor', kind:'amp', def:60, help:'Stator current limit. 0 = none (ambcalc assumes 60 A when left blank).'},
+    {section:'Mechanism'},
+    {key:'radius', label:'Radius', kind:'lenS', def:19.05, help:'Drum/sprocket radius, or for an arm the pivot-to-center-of-mass distance.'},
+    {key:'mass', label:'Moving mass', kind:'mass', def:9.0718474, help:'What has to be accelerated (sets the inertia: m·r²).'},
+    {key:'load', label:'Load (weight)', kind:'mass', def:9.0718474, help:'Constant force the motors must fight (gravity). 0 for a flywheel or turret.'},
+    {key:'eff', label:'Gearbox efficiency', kind:'pct', def:90},
+    {section:'Target'},
+    {key:'by', label:'Run until', type:'select', def:'pos', options:[{value:'pos', label:'Reaching a position'}, {value:'vel', label:'Reaching a speed'}]},
+    {key:'units', label:'Measured as', type:'select', def:'lin', options:[{value:'lin', label:'Linear (distance)'}, {value:'rot', label:'Rotation (angle)'}]},
+    {key:'tLin', label:'Target distance', kind:'len', def:1.2192, showIf:v => v.by === 'pos' && v.units === 'lin'},
+    {key:'tRot', label:'Target angle', kind:'deg', def:90, showIf:v => v.by === 'pos' && v.units === 'rot'},
+    {key:'tLinV', label:'Target speed', kind:'speed', def:1.524, showIf:v => v.by === 'vel' && v.units === 'lin'},
+    {key:'tRotV', label:'Target speed', kind:'rpm', def:300, showIf:v => v.by === 'vel' && v.units === 'rot'},
+    {key:'stop', label:'At the target', type:'select', def:'speed', showIf:v => v.by === 'pos',
+      options:[{value:'speed', label:'Still moving (just pass it)'}, {value:'stopped', label:'Stopped (brake to it)'}]},
+    {section:'Simulation'},
+    {key:'ratio', label:'Gear ratio to simulate', kind:'ratio', def:20},
+    {key:'rmin', label:'Sweep from ratio', kind:'ratio', def:1},
+    {key:'rmax', label:'Sweep to ratio', kind:'ratio', def:200},
+    {key:'tmax', label:'Max time', kind:'s', def:3},
+    {key:'dt', label:'Time step', kind:'ms', def:1},
+  ],
+  onChange(key, v){ return fillMotor(key, v); },
+  compute(v){
+    if (!motorOk(v)) return { bad:true, warnings:[MOTOR_BAD] };
+    if (!(v.radius > 0 && v.mass > 0 && v.eff > 0 && v.ratio > 0)) return { bad:true, warnings:['Radius, moving mass, efficiency and ratio must all be bigger than zero.'] };
+    if (!(v.dt >= 0.05 && v.tmax > 0 && v.tmax/(v.dt/1000) <= 200000)) return { bad:true, warnings:['Time step must be at least 0.05 ms, and max time ÷ time step at most 200 000.'] };
+    if (!(v.rmin > 0 && v.rmax > v.rmin)) return { bad:true, warnings:['The sweep needs 0 < "from" < "to".'] };
+    const sim = startupSim(v, v.ratio), warnings = [];
+    const sweep = []; for (let i = 0; i <= 40; i++){ const G = v.rmin * (v.rmax/v.rmin)**(i/40); const s = startupSim(v, G); sweep.push([G, s.reached ? s.time : NaN]); }
+    const ok = sweep.filter(p => Number.isFinite(p[1]));
+    const best = ok.length ? ok.reduce((a,b) => b[1] < a[1] ? b : a) : null;
+    if (sim.stuck) warnings.push('The load is too heavy for these motors at this ratio (and current limit) — it will not move.');
+    else if (!sim.reached) warnings.push(`It did not reach the target within ${v.tmax} s.`);
+    const peakI = Math.max(...sim.I.map(Math.abs)) / Math.max(1, Math.round(v.n));
+    const limited = sim.lim.some(Boolean);
+    return { sim, sweep, best, peakI, limited, warnings };
+  },
+  renderOut(el, v, r){
+    if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
+    const s = r.sim, rad = v.radius/1000;
+    const endPos = v.units === 'rot' ? `${fmtNum(s.X[s.X.length-1]*180/Math.PI,1)}°` : fmtK(s.X[s.X.length-1]*rad,'len');
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile('Time to target', s.reached ? fmtNum(s.time,3)+' s' : `> ${v.tmax} s`, 'primary')}
+        ${tile('Fastest ratio in sweep', r.best ? fmtNum(r.best[0],1)+' : 1' : '—', 'primary')}
+        ${tile('Its time', r.best ? fmtNum(r.best[1],3)+' s' : '—')}
+        ${tile('Peak current / motor', fmtK(r.peakI,'amp'))}
+        ${tile('Hit current limit?', r.limited ? 'Yes' : 'No')}
+        ${tile('Position at end', endPos)}
+      </div>
+      ${warnBox(r.warnings)}
+      ${r.best ? `<p style="margin:0 0 12px"><button class="btn" data-set='${JSON.stringify({ratio:+r.best[0].toFixed(2)})}'>Simulate the fastest ratio (${r.best[0].toFixed(2)} : 1)</button></p>` : ''}
+      <div class="panels two">
+        <figure class="panel"><figcaption>TIME TO TARGET vs GEAR RATIO</figcaption><canvas id="suSweep"></canvas>
+          ${legend([['time to target (s)',COL.white],['your ratio',COL.red,1]])}</figure>
+        <figure class="panel"><figcaption>MOTION AT ${fmtNum(v.ratio,2)} : 1</figcaption><canvas id="suSim"></canvas>
+          ${legend([[v.by === 'pos' ? `position (% of target)` : 'speed (% of target)',COL.blue],['current / motor (% of stall)',COL.orange],['current-limited',COL.red,1]])}</figure>
+      </div>`;
+    startupPlots(v, r);
+  },
+  validation(){
+    // Constant-torque check: heavy mass, no gravity load, low current limit → constant current → constant acceleration, x = ½·a·t²
+    const v = { fs:6000, ts:7.09, if:2, is:366, n:1, volt:12, ilim:20, radius:25.4, mass:1000, load:0, eff:100,
+      by:'pos', units:'lin', tLin:0.02, stop:'speed', tmax:5, dt:1 };
+    const s = startupSim(v, 50);
+    const kT = 7.09/364, a = kT*(20-2)*50/(1000*0.0254*0.0254) * 0.0254;      // linear acceleration (m/s²) while limited
+    return [
+      { name:'Current-limited start: t = √(2d / a)', expected:Math.sqrt(2*0.02/a), got:s.time, unit:'s', tol:2e-3 },
+      ...AMB_CHECKS.startup(),
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <div class="eq">current  i = (V − ω·G·k_B)/R + I_f   (capped at the limit)
+torque   T = k_T·(i − I_f)·G − m_load·g·r
+accel.   α = T / (m·r²)
+k_T = T_s·eff·n/(I_s−I_f)·n   k_B = 12/ω_f   R = 12/(I_s−I_f)</div>
+      <p>Every time step (1 ms) it works out the current from the back-EMF, caps it at the limit, turns that into torque and acceleration, and steps speed and position forward with RK4. "Stopped" flips to full reverse voltage once the remaining distance equals the braking distance. The ratio sweep repeats the whole run at 41 ratios.</p>
+    </div>
+    <div><h3>Validation</h3>
+      <p>While the current limit holds, torque is constant, so the time must match the constant-acceleration formula t = √(2d/a).</p>
+      ${validationTable(this)}</div>`; }
+};
+function startupPlots(v, r){
+  const cs = document.getElementById('suSweep'), cm = document.getElementById('suSim'); if (!cs || !cm) return;
+  const tm = Math.max(v.tmax, ...r.sweep.map(p => p[1]).filter(Number.isFinite)) * 1.05;
+  let f = frame(cs, [v.rmin, v.rmax], [0, tm], 'ratio', 's', 'gear ratio (: 1, log scale)', 'time to target (s)', { xlog:true });
+  drawSeries(f, [{ pts:r.sweep, col:COL.white, w:2.5 }]);
+  if (v.ratio >= v.rmin && v.ratio <= v.rmax) vline(f, v.ratio, COL.red, 0, tm);
+  if (r.best){ f.c.fillStyle = '#fff'; f.c.strokeStyle = COL.green; f.c.lineWidth = 1.5; star(f.c, f.X(r.best[0]), f.Y(r.best[1]), 8); }
+  const s = r.sim, n = Math.max(1, Math.round(v.n)), tgt = Math.abs(s.target || 1);
+  const prog = (v.by === 'pos' ? s.X : s.W).map((x,i) => [s.T[i], x/tgt*100]);
+  const amps = s.I.map((x,i) => [s.T[i], x/n/v.is*100]);
+  const yr = range([...prog.map(p => p[1]), ...amps.map(p => p[1]), 0, 100]);
+  f = frame(cm, [0, Math.max(s.time, 1e-3)], [Math.min(0, yr[0]), yr[1]*1.08], 's', null, 'time (s)', '% of target  /  % of stall current');
+  drawSeries(f, [{ pts:prog, col:COL.blue, w:2.5 }, { pts:amps, col:COL.orange, w:2 },
+    { pts:amps.map((p,i) => [p[0], s.lim[i] ? p[1] : NaN]), col:COL.red, w:3, dash:1 }]);
+}
+
+/* ---------- 4g. Drivetrain sprint ---------- */
+/* Same model as ambcalc.com/drivetrain: motor + battery resistance + wheel slip (static/kinetic friction)
+   + speed-dependent gearbox loss, stepped every 1 ms. */
+function driveSim(v, G){
+  const n = Math.max(1, Math.round(v.n)), eff = v.eff/100;
+  const wf = v.fs*Math.PI/30, Ts = v.ts*n, If = v.if*n, Is = v.is*n;
+  const xmax = v.dist, dt = v.dt/1000, Rtot = v.res/1000;
+  const Imax = v.ilim > 0 ? v.ilim*n : Infinity, dVmax = (v.vramp > 0 ? v.vramp : 1200) * dt;
+  const m = v.weight, r = v.wheel/2/1000;
+  const mus = v.cofs * v.driven/100, muk = v.cofk * v.driven/100;
+  const km = Ts/(Is - If), ke = 12/wf, R = 12/(Is - If), L = 1e-4;    // L = winding inductance (H), roughly
+  const Tss = 9.8*m*mus*r, Tsk = 9.8*m*muk*r, Tloss = Ts*(1 - eff), vmax = wf/G*r;
+  const freeSpeed = vmax, pushCurrent = (Tsk/G/(km*eff) + If)/n;
+  let t = 0, x = 0, vel = 0, V = v.vrest, I = 0, slip = false, stop = false, connected = true;
+  const rows = [];
+  main: while (t < v.tmax){
+    I = connected ? (V + L/dt*I - vel*G/r*ke)/(R + L/dt) : 0;
+    I = Math.min(Math.abs(I), Imax) * Math.sign(I);
+    let Tm = (I - If)*km;
+    let T = Tm*G*eff - Tloss*(vel/vmax) - (stop ? Tloss/eff : 0);
+    if (slip && Math.abs(T) < Tsk) slip = false;
+    else if (!slip && Math.abs(T) > Tss) slip = true;
+    if (slip){ T = Tsk*Math.sign(T); Tm = T/(G*eff); I = (Math.abs(Tm/km) + If)*Math.sign(Tm); }
+    const a = T/r/m;
+    vel += a*dt; x += vel*dt + 0.5*a*dt*dt;
+    if (v.stopM !== 'reverse' && stop) I = 0;
+    rows.push([t, x, vel, a, I, V, slip]);
+    if (v.stopT === 'none'){ if (x > xmax) break main; }
+    else if (v.stopT === 'after'){ if (x > xmax){ stop = true; if (vel < 0.1) break main; } }
+    else {   // predictive: start stopping when the remaining distance equals the stopping distance
+      if (x > xmax - vel*vel/(2*(v.stopM === 'coast' ? 2*Tloss/r/m : 9.8*muk))) stop = true;
+      if (stop && vel < 0.1) break main;
+    }
+    let Vnew;
+    if (!stop) Vnew = v.vrest - Rtot*I;
+    else if (v.stopM === 'coast'){ Vnew = 0; connected = false; }
+    else if (v.stopM === 'brake') Vnew = 0;
+    else Vnew = -(v.vrest - Rtot*I);
+    V = Math.abs(Vnew - V) > dVmax ? V + dVmax*Math.sign(Vnew - V) : Vnew;
+    t += dt;
+  }
+  return { rows, time:rows.length ? rows[rows.length-1][0] : 0, finished:t < v.tmax, freeSpeed, pushCurrent };
+}
+const DRIVE = {
+  id:'drive', group:'Mechanisms', title:'Drivetrain Simulator', num:'07',
+  lede:'Sprint the robot a set distance: battery sag, current limits, wheel slip and stopping are all simulated. Sweeps gear ratios to show the trade-off between top speed, sprint time and pushing current.',
+  inputs:[
+    {section:'Motors'},
+    ...motorInputs(),
+    {key:'n', label:'Number of drive motors', kind:'count', def:4},
+    {key:'eff', label:'Gearbox efficiency', kind:'pct', def:80},
+    {key:'ilim', label:'Current limit / motor', kind:'amp', def:0, help:'0 = no limit.'},
+    {section:'Electrical'},
+    {key:'vrest', label:'Battery resting voltage', kind:'volt', def:12.7},
+    {key:'res', label:'Battery + wiring resistance', kind:'mohm', def:25, help:'Makes the voltage sag when current is high. ~20–30 mΩ is typical.'},
+    {key:'vramp', label:'Voltage ramp', kind:'vps', def:0, help:'Fastest the voltage may change. 0 = no ramp.'},
+    {section:'Robot'},
+    {key:'weight', label:'Robot weight', kind:'mass', def:69.853168, help:'With bumpers and battery (154 lb = 125 + 15 + 14).'},
+    {key:'driven', label:'Weight on driven wheels', kind:'pct', def:100},
+    {key:'wheel', label:'Wheel diameter', kind:'lenS', def:101.6},
+    {key:'cofs', label:'Static friction coeff.', kind:'none', def:1.1},
+    {key:'cofk', label:'Sliding friction coeff.', kind:'none', def:1.0},
+    {key:'ratio', label:'Gear ratio', kind:'ratio', def:6.75, help:'e.g. 6.75 : 1 for a common swerve module.'},
+    {section:'Sprint'},
+    {key:'dist', label:'Sprint distance', kind:'len', def:6.096},
+    {key:'stopT', label:'Stopping', type:'select', def:'predictive', options:[{value:'predictive', label:'Predictive (stop at the line)'}, {value:'after', label:'Stop after the line'}, {value:'none', label:'No stop (cross the line)'}]},
+    {key:'stopM', label:'Stop by', type:'select', def:'brake', showIf:v => v.stopT !== 'none', options:[{value:'coast', label:'Coast'}, {value:'brake', label:'Brake'}, {value:'reverse', label:'Reverse'}]},
+    {key:'tmax', label:'Max sim time', kind:'s', def:4},
+    {key:'dt', label:'Time step', kind:'ms', def:1},
+    {key:'rmin', label:'Sweep from ratio', kind:'ratio', def:3},
+    {key:'rmax', label:'Sweep to ratio', kind:'ratio', def:20},
+  ],
+  onChange(key, v){ return fillMotor(key, v); },
+  compute(v){
+    if (!motorOk(v)) return { bad:true, warnings:[MOTOR_BAD] };
+    if (!(v.weight > 0 && v.wheel > 0 && v.eff > 0 && v.ratio > 0 && v.dist > 0)) return { bad:true, warnings:['Weight, wheel, efficiency, ratio and distance must all be bigger than zero.'] };
+    if (!(v.dt >= 0.05 && v.tmax > 0 && v.tmax/(v.dt/1000) <= 200000)) return { bad:true, warnings:['Time step must be at least 0.05 ms, and max time ÷ time step at most 200 000.'] };
+    if (!(v.rmin > 0 && v.rmax > v.rmin)) return { bad:true, warnings:['The sweep needs 0 < "from" < "to".'] };
+    const sim = driveSim(v, v.ratio), warnings = [];
+    const sweep = []; for (let i = 0; i <= 30; i++){ const G = v.rmin*(v.rmax/v.rmin)**(i/30), s = driveSim(v, G); sweep.push({ G, time:s.finished ? s.time : NaN, free:s.freeSpeed, push:s.pushCurrent }); }
+    const ok = sweep.filter(s => Number.isFinite(s.time)), best = ok.length ? ok.reduce((a,b) => b.time < a.time ? b : a) : null;
+    if (!sim.finished) warnings.push(`The sprint did not finish within ${v.tmax} s — raise the max sim time.`);
+    const slipped = sim.rows.some(r => r[6]), minV = Math.min(...sim.rows.map(r => r[5]));
+    if (slipped) warnings.push('The wheels slip at some point — the motors are stronger than the carpet can take at this ratio.');
+    return { sim, sweep, best, slipped, minV, warnings };
+  },
+  renderOut(el, v, r){
+    if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
+    const s = r.sim, n = Math.max(1, Math.round(v.n));
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile('Sprint time', s.finished ? fmtNum(s.time,2)+' s' : `> ${v.tmax} s`, 'primary')}
+        ${tile('Free speed', fmtK(s.freeSpeed,'speed'), 'primary')}
+        ${tile('Pushing current / motor', fmtK(s.pushCurrent,'amp'))}
+        ${tile('Lowest battery voltage', fmtK(r.minV,'volt'))}
+        ${tile('Peak speed', fmtK(Math.max(...s.rows.map(x => x[2])),'speed'))}
+        ${tile('Fastest ratio in sweep', r.best ? fmtNum(r.best.G,2)+' : 1' : '—')}
+      </div>
+      ${warnBox(r.warnings)}
+      <div class="panels two">
+        <figure class="panel"><figcaption>SPRINT AT ${fmtNum(v.ratio,2)} : 1</figcaption><canvas id="dtSim"></canvas>
+          ${legend([[`position (${U('len')[0]})`,COL.blue],[`speed (${U('speed')[0]})`,COL.green],['voltage (V)',COL.purple],['current / motor ÷ 10 (A)',COL.orange],['slipping',COL.red,1]])}</figure>
+        <figure class="panel"><figcaption>RATIO SWEEP</figcaption><canvas id="dtSweep"></canvas>
+          ${legend([['sprint time (s)',COL.white],[`free speed (${U('speed')[0]})`,COL.green],['pushing current ÷ 10 (A)',COL.orange],['your ratio',COL.red,1]])}</figure>
+      </div>`;
+    drivePlots(v, r);
+  },
+  validation(){
+    // Free speed is pure kinematics; pushing current is the current at the sliding-friction torque.
+    const v = { fs:6000, ts:7.09, if:2, is:366, n:4, eff:100, ilim:0, vrest:12, res:0, vramp:0, weight:50, driven:100, wheel:101.6, cofs:1.1, cofk:1, dist:3, stopT:'none', stopM:'brake', tmax:4, dt:1 };
+    const s = driveSim(v, 8);
+    return [
+      { name:'Free speed = ω_f / G · r', expected:6000*Math.PI/30/8*0.0508, got:s.freeSpeed, unit:'m/s', tol:1e-9 },
+      { name:'Pushing current = μ·m·g·r/G/k_T + I_f', expected:(9.8*50*1*0.0508/8/(7.09/364)+2*4)/4, got:s.pushCurrent, unit:'A', tol:1e-9 },
+      // ambcalc's version crashes on sprints shorter than 720 time steps (a leftover debug line); this one must not.
+      { name:'Very short sprint (6 in) still finishes, in under 0.72 s', expected:1,
+        got:(t => t.finished && t.time > 0 && t.time < 0.72 ? 1 : 0)(driveSim({ ...v, dist:0.1524 }, 8)), unit:'', tol:0 },
+      ...AMB_CHECKS.drive(),
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <div class="eq">current  I = (V + L/dt·I_prev − v·G/r·k_e) / (R + L/dt)
+torque   T = k_m(I − I_f)·G·eff − T_loss·v/v_max
+slip if  |T| > μ_s·m·g·r   (then T = μ_k·m·g·r)
+battery  V = V_rest − R_batt·I</div>
+      <p>Each 1 ms step finds the motor current (with a little winding inductance), the wheel torque after gearbox losses, checks whether the wheels break traction, then moves the robot. Battery voltage sags with current. "Predictive" starts stopping when the remaining distance equals the stopping distance.</p>
+    </div>
+    <div><h3>Validation</h3>${validationTable(this)}</div>`; }
+};
+function drivePlots(v, r){
+  const ca = document.getElementById('dtSim'), cb = document.getElementById('dtSweep'); if (!ca || !cb) return;
+  const rows = r.sim.rows, n = Math.max(1, Math.round(v.n));
+  const fl = U('len')[1], fs = U('speed')[1];
+  const pos = rows.map(x => [x[0], x[1]/fl]), spd = rows.map(x => [x[0], x[2]/fs]), vol = rows.map(x => [x[0], x[5]]), amp = rows.map(x => [x[0], x[4]/n/10]);
+  const yr = range([...pos, ...spd, ...vol, ...amp].map(p => p[1]));
+  let f = frame(ca, [0, Math.max(r.sim.time, 1e-3)], [Math.min(0, yr[0]), yr[1]*1.08], 's', null, 'time (s)', 'value (see legend)');
+  drawSeries(f, [{ pts:pos, col:COL.blue }, { pts:spd, col:COL.green }, { pts:vol, col:COL.purple }, { pts:amp, col:COL.orange },
+    { pts:rows.map((x,i) => [x[0], x[6] ? spd[i][1] : NaN]), col:COL.red, w:4, dash:1 }]);
+  const sw = r.sweep, yr2 = range(sw.flatMap(s => [s.time, s.free/fs, s.push/10]));
+  f = frame(cb, [v.rmin, v.rmax], [0, yr2[1]*1.08], 'ratio', null, 'gear ratio (: 1, log scale)', 'value (see legend)', { xlog:true });
+  drawSeries(f, [{ pts:sw.map(s => [s.G, s.time]), col:COL.white, w:2.5 }, { pts:sw.map(s => [s.G, s.free/fs]), col:COL.green }, { pts:sw.map(s => [s.G, s.push/10]), col:COL.orange }]);
+  if (v.ratio >= v.rmin && v.ratio <= v.rmax) vline(f, v.ratio, COL.red, 0, yr2[1]*1.08);
+}
+
+/* ---------- 4h. Gearbox options (search vendor gear catalogs) ---------- */
+// 20 DP gear catalogs from ambcalc.com (ref/gears-*.json). "9/10" = a 9-tooth gear cut on a 10-tooth blank
+// (profile-shifted): it meshes like 9 teeth for the ratio but takes the space of 10 for center distance.
+// clr = how much room (in) the shaft/boss of that type needs — used by the axle-clearance check.
+const GEAR_TYPES = {
+  hex12:{ label:'1/2" Hex', clr:0.577 },   hex38:{ label:'3/8" Hex', clr:0.433 },  bearing:{ label:'Bearing Bore', clr:0 },
+  cim:{ label:'CIM Gear', clr:0.315 },     splinexs:{ label:'SplineXS Gear', clr:0.313 }, falcon:{ label:'Falcon Gear', clr:0.293 },
+  m775:{ label:'775 Gear', clr:0.197 },    m550:{ label:'550 Gear', clr:0.125 },  bag:{ label:'BAG Gear', clr:0.157 },
+  maxspline:{ label:'MAXSpline', clr:1.376 }, splinexl:{ label:'SplineXL', clr:1.375 },
+};
+const evens = (a, b) => Array.from({ length:(b-a)/2+1 }, (_, i) => String(a + 2*i));
+const GEAR_CATALOG = {
+  vex:{ label:'VEX', hex12:evens(18,84), hex38:'14 16 18 20 22 24 26 28 32 38 50 52', bearing:'48 54 60 64 66 70 72',
+        cim:'9/10 10/12 11/12 12 13/14 14', falcon:'8/10 9/10 10/12 11/12 12 13/14 14', m775:'6/8 8/10', m550:'6/8 8/10', bag:'6/8 8/10' },
+  wcp:{ label:'WCP', hex12:evens(16,84), hex38:'14 14/16 16 16/18 '+evens(18,52).join(' '), cim:'9/10 10/12 11/12 12 12/14 13/14 14 14/16 15/16 16',
+        splinexs:'8/10 9/10 10/12 11/12 12 12/14 13/14 14 14/16 15/16 16', falcon:'8/10 9/10 10/12 11/12 12 13/14 14',
+        m775:'6/8 8/10', m550:'6/8 8/10', bag:'6/8 8/10', splinexl:evens(34,84) },
+  rev:{ label:'REV', hex12:'16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48 50 52 56 60 62 64 66 68 72 80', bearing:'60 64 68 80',
+        cim:'10/12 11/12 12 13/14 14', maxspline:'32 36 40 48 52 54 56 58 60 64 68 80' },
+  am: { label:'AndyMark', hex12:'18 20 24 25 29 30 32 35 36 38 40 43 45 46 48 50 52 56', hex38:'14 15 16 17 18 19 20 21 24 25 28 30 34 35 38 40 50 52',
+        bearing:'50', cim:'12 14 15 16 17 35', falcon:'12 14 16' },
+};
+// → [{ t: teeth, s: size it occupies }] for one gear type across the chosen vendors (no duplicates)
+function gearsOf(type, v){
+  const seen = new Map();
+  Object.entries(GEAR_CATALOG).forEach(([vendor, cat]) => {
+    if (!v[vendor] || !cat[type]) return;
+    (Array.isArray(cat[type]) ? cat[type] : cat[type].split(' ')).forEach(g => { const [t, s] = g.split('/').map(Number); seen.set(g, { t, s:s || t, name:g.replace('/', '(') + (g.includes('/') ? ')' : '') }); });
+  });
+  return [...seen.values()].sort((a,b) => a.t - b.t || a.s - b.s);
+}
+const typeOptions = Object.entries(GEAR_TYPES).map(([value, t]) => ({ value, label:t.label }));
+const teethLim = (g, v, i) => (!(v['min'+i] > 0) || g.t >= v['min'+i]) && (!(v['max'+i] > 0) || g.t <= v['max'+i]);
+const GBOX = {
+  id:'gbox', group:'Power Transmission', title:'Gearbox Options', num:'08',
+  lede:'Type the ratio you want; get every 1- or 2-stage spur gearbox you can build from VEX, WCP, REV and AndyMark 20 DP gears, closest match first, with center distances and an axle-clearance check.',
+  inputs:[
+    {section:'Target'},
+    {key:'ratio', label:'Total ratio', kind:'ratio', def:10},
+    {key:'dev', label:'Max deviation', kind:'pct', def:5},
+    {key:'stages', label:'Stages', type:'select', def:'2', options:[{value:'1', label:'1 stage'}, {value:'2', label:'2 stages'}]},
+    {section:'Sources'},
+    {key:'vex', label:'VEX', type:'check', def:true}, {key:'wcp', label:'WCP', type:'check', def:true},
+    {key:'rev', label:'REV', type:'check', def:true}, {key:'am', label:'AndyMark', type:'check', def:true},
+    {section:'Gear 1 (input pinion)'},
+    {key:'type1', label:'Bore', type:'select', def:'falcon', options:typeOptions},
+    {key:'min1', label:'Min teeth', kind:'teeth', def:0}, {key:'max1', label:'Max teeth', kind:'teeth', def:0},
+    {section:'Gear 2 (stage 1 output)', showIf:v => v.stages === '2'},
+    {key:'type2', label:'Bore', type:'select', def:'hex12', options:typeOptions, showIf:v => v.stages === '2', help:'Gears 2 and 3 share a shaft.'},
+    {key:'min2', label:'Min teeth', kind:'teeth', def:0, showIf:v => v.stages === '2'}, {key:'max2', label:'Max teeth', kind:'teeth', def:0, showIf:v => v.stages === '2'},
+    {section:'Gear 3 (stage 2 input)', showIf:v => v.stages === '2'},
+    {key:'min3', label:'Min teeth', kind:'teeth', def:0, showIf:v => v.stages === '2'}, {key:'max3', label:'Max teeth', kind:'teeth', def:0, showIf:v => v.stages === '2'},
+    {section:'Output gear'},
+    {key:'type4', label:'Bore', type:'select', def:'hex12', options:typeOptions},
+    {key:'min4', label:'Min teeth', kind:'teeth', def:0}, {key:'max4', label:'Max teeth', kind:'teeth', def:0, help:'0 = no limit.'},
+    {section:'Clearance (2-stage)', showIf:v => v.stages === '2'},
+    {key:'clr1', label:'Gear 3 must clear axle 1', type:'check', def:false, showIf:v => v.stages === '2'},
+    {key:'clr4', label:'Gear 2 must clear axle 4', type:'check', def:true, showIf:v => v.stages === '2'},
+  ],
+  compute(v){
+    if (!(v.ratio > 0)) return { bad:true, warnings:['Enter a ratio bigger than zero.'] };
+    if (!['vex','wcp','rev','am'].some(k => v[k])) return { bad:true, warnings:['Tick at least one vendor.'] };
+    const lo = v.ratio*(1 - v.dev/100), hi = v.ratio*(1 + v.dev/100), two = v.stages === '2';
+    const g1 = gearsOf(v.type1, v).filter(g => teethLim(g, v, 1)), g4 = gearsOf(v.type4, v).filter(g => teethLim(g, v, 4));
+    const g2 = two ? gearsOf(v.type2, v).filter(g => teethLim(g, v, 2)) : [], g3 = two ? gearsOf(v.type2, v).filter(g => teethLim(g, v, 3)) : [];
+    const out = [];
+    const cc = (a, b) => (a.s + b.s)/40*25.4;                                // 20 DP: C-C (in) = (N1 + N2)/40
+    for (const a of g1) for (const d of g4){
+      if (!two){ const R = d.t/a.t; if (R >= lo && R <= hi) out.push({ gears:[a,d], R, cc:[cc(a,d)] }); continue; }
+      for (const b of g2) for (const c of g3){
+        const R = b.t/a.t * d.t/c.t; if (R < lo || R > hi) continue;
+        // clearance: distance from the other stage's axle to this gear's outside edge (OD = (N+2)/20 in)
+        if (v.clr1 && (a.s + b.s - (c.s + 2))/40 < GEAR_TYPES[v.type1].clr) continue;
+        if (v.clr4 && (c.s + d.s - (b.s + 2))/40 < GEAR_TYPES[v.type4].clr) continue;
+        out.push({ gears:[a,b,c,d], R, cc:[cc(a,b), cc(c,d)] });
+      }
+    }
+    const size = o => o.gears.reduce((s, g) => s + g.s*g.s, 0);           // smaller gears first when equally close
+    out.sort((x,y) => Math.abs(x.R/v.ratio - 1) - Math.abs(y.R/v.ratio - 1) || size(x) - size(y));
+    const warnings = [];
+    if (!g1.length) warnings.push(`No ${GEAR_TYPES[v.type1].label} gears from the ticked vendors.`);
+    if (!out.length && g1.length) warnings.push('No gearbox found — widen the deviation, allow more vendors, or try 2 stages.');
+    return { out, total:out.length, warnings };
+  },
+  renderOut(el, v, r){
+    if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
+    const two = v.stages === '2', rows = r.out.slice(0, 60);
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile('Options found', String(r.total), 'primary')}
+        ${tile('Closest ratio', r.out[0] ? fmtNum(r.out[0].R,3)+' : 1' : '—', 'primary')}
+        ${tile('Its error', r.out[0] ? fmtNum((r.out[0].R/v.ratio - 1)*100,2)+' %' : '—')}
+      </div>
+      ${warnBox(r.warnings)}
+      <figure class="panel"><figcaption>GEARBOXES · closest first${r.total > 60 ? ` (first 60 of ${r.total})` : ''}</figcaption>
+        <table class="dark"><tr><th>Stage 1</th>${two ? '<th>Stage 2</th>' : ''}<th>Ratio</th><th>Error</th><th>C-C${two ? ' 1 / 2' : ''}</th></tr>
+        ${rows.map(o => `<tr><td class="mono">${o.gears[0].name} : ${o.gears[1].name}</td>${two ? `<td class="mono">${o.gears[2].name} : ${o.gears[3].name}</td>` : ''}
+          <td class="mono">${o.R.toFixed(2)} : 1</td><td class="mono">${((o.R/v.ratio - 1)*100).toFixed(2)}%</td>
+          <td class="mono">${o.cc.map(c => fmtK(c,'lenS')).join(' / ')}</td></tr>`).join('')}
+        </table></figure>`;
+  },
+  validation(){
+    const one = this.compute({ ratio:2, dev:0, stages:'1', vex:true, wcp:false, rev:false, am:false, type1:'hex12', type4:'hex12', min1:0,max1:0,min4:0,max4:0 });
+    return [
+      { name:'VEX ½" hex, exactly 2:1 in one stage: 18:36 … 42:84 = 13 pairs', expected:13, got:one.total, unit:'', tol:0 },
+      { name:'Smallest one is 18:36 → C-C = (18+36)/40 in', expected:54/40*25.4, got:one.out[0].cc[0], unit:'mm', tol:1e-9 },
+      ...AMB_CHECKS.gbox(this),
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <div class="eq">ratio  = (gear 2 / gear 1) × (gear 4 / gear 3)
+C-C    = (N_a + N_b) / (2 · 20 DP)   [inches]
+OD     = (N + 2) / 20 DP
+clears = C-C(other stage) − OD/2 ≥ shaft room</div>
+      <p>Every combination of catalog gears is tried; ones inside the deviation are kept and sorted by how close they are, then by size. A profile-shifted gear like 9(10) counts as 9 teeth for the ratio and 10 for spacing.</p>
+    </div>
+    <div><h3>Validation</h3>${validationTable(this)}</div>`; }
+};
+
+/* ---------- 4i. Reduction swap (same center distance, new ratio) ---------- */
+const SWAP_FAMILIES = [
+  { key:'g',   label:'20 DP gears',     kind:'gear', min:14, max:84 },
+  { key:'p3',  label:'3 mm belt',       kind:'gt2',  min:18, max:60 },
+  { key:'p5',  label:'5 mm belt',       kind:'htd5', min:18, max:60 },
+  { key:'s25', label:'#25 chain',       kind:'c25',  min:16, max:72 },
+  { key:'s35', label:'#35 chain',       kind:'c35',  min:12, max:60 },
+];
+const SWAP = {
+  id:'swap', group:'Power Transmission', title:'Reduction Swap', num:'09',
+  lede:'Your two shafts are fixed. Which gears, pulleys or sprockets give a new ratio at the same center distance? Searches 20 DP gears, 3 mm / 5 mm belts and #25 / #35 chain.',
+  inputs:[
+    {section:'Current center distance'},
+    {key:'cur', label:'Get it from', type:'select', def:'dist', options:[{value:'dist', label:'A measured distance'}, {value:'gears', label:'Current gears'}, {value:'belt', label:'Current belt / chain'}]},
+    {key:'cc', label:'C-C distance', kind:'lenS', def:76.2, showIf:v => v.cur === 'dist'},
+    {key:'cg1', label:'Gear 1', kind:'teeth', def:20, showIf:v => v.cur === 'gears'},
+    {key:'cg2', label:'Gear 2', kind:'teeth', def:60, showIf:v => v.cur === 'gears'},
+    {key:'cdp', label:'Diametral pitch', kind:'none', def:20, showIf:v => v.cur === 'gears'},
+    {key:'cdrive', label:'Belt / chain', type:'select', def:'gt2', showIf:v => v.cur === 'belt',
+      options:['c25','c35','gt2','htd5'].map(k => ({ value:k, label:DRIVES[k].label }))},
+    {key:'cp1', label:'Pulley / sprocket 1', kind:'teeth', def:18, showIf:v => v.cur === 'belt'},
+    {key:'cp2', label:'Pulley / sprocket 2', kind:'teeth', def:36, showIf:v => v.cur === 'belt'},
+    {key:'clinks', label:'Belt teeth / chain links', kind:'teeth', def:80, showIf:v => v.cur === 'belt'},
+    {key:'ccdev', label:'Max C-C deviation', kind:'lenS', def:0.254},
+    {section:'New ratio'},
+    {key:'ratio', label:'Target ratio', kind:'ratio', def:2},
+    {key:'rdev', label:'Max deviation', kind:'pct', def:5},
+    {section:'Search'},
+    ...SWAP_FAMILIES.flatMap(f => [
+      {key:f.key+'on', label:f.label, type:'check', def:true},
+      {key:f.key+'min', label:'… smallest', kind:'teeth', def:f.min, showIf:v => v[f.key+'on']},
+      {key:f.key+'max', label:'… biggest', kind:'teeth', def:f.max, showIf:v => v[f.key+'on']},
+    ]),
+  ],
+  compute(v){
+    let cc;
+    if (v.cur === 'dist') cc = v.cc;
+    else if (v.cur === 'gears') cc = (v.cg1 + v.cg2)/(2*v.cdp)*25.4;
+    else cc = beltGeom({ drive:v.cdrive, pitch:DRIVES[v.cdrive].p, n1:v.cp1, n2:v.cp2 }).solveC(Math.round(v.clinks));
+    if (!(cc > 0)) return { bad:true, warnings:['That current setup does not give a real center distance (belt too short?).'] };
+    const lo = v.ratio*(1 - v.rdev/100), hi = v.ratio*(1 + v.rdev/100), out = [];
+    SWAP_FAMILIES.forEach(f => {
+      if (!v[f.key+'on']) return;
+      const mn = Math.round(v[f.key+'min']), mx = Math.round(v[f.key+'max']);
+      for (let A = mn; A <= mx; A++) for (let B = Math.max(mn, Math.ceil(A*lo)); B <= Math.min(mx, Math.floor(A*hi)); B++){
+        if (f.kind === 'gear'){ const c = (A + B)/40*25.4; if (Math.abs(c - cc) <= v.ccdev) out.push({ f, A, B, R:B/A, c, len:null }); continue; }
+        const g = beltGeom({ drive:f.kind, pitch:DRIVES[f.kind].p, n1:A, n2:B });
+        const len = Math.round(g.lenP(cc)), c = g.solveC(len);              // nearest whole belt / chain, then its exact C-C
+        if (c !== null && Math.abs(c - cc) <= v.ccdev) out.push({ f, A, B, R:B/A, c, len });
+      }
+    });
+    out.sort((a,b) => Math.abs(a.c - cc) - Math.abs(b.c - cc));
+    return { cc, out, warnings: out.length ? [] : ['Nothing fits — loosen the C-C deviation or the ratio deviation.'] };
+  },
+  renderOut(el, v, r){
+    if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
+    const rows = r.out.slice(0, 80);
+    el.innerHTML = `
+      <div class="tiles">${tile('Center distance', fmtK(r.cc,'lenS'), 'primary')}${tile('Options found', String(r.out.length), 'primary')}</div>
+      ${warnBox(r.warnings)}
+      <figure class="panel"><figcaption>OPTIONS · closest C-C first${r.out.length > 80 ? ' (first 80)' : ''}</figcaption>
+        <table class="dark"><tr><th>Type</th><th>Driver</th><th>Driven</th><th>Ratio</th><th>C-C</th><th>Off by</th><th>Belt teeth / links</th></tr>
+        ${rows.map(o => `<tr><td>${o.f.label}</td><td class="mono">${o.A}</td><td class="mono">${o.B}</td><td class="mono">${o.R.toFixed(2)} : 1</td>
+          <td class="mono">${fmtK(o.c,'lenS')}</td><td class="mono">${fmtSign(o.c - r.cc,'lenS')}</td><td class="mono">${o.len ?? ''}${o.len && o.f.kind.startsWith('c') && o.len % 2 ? ' *' : ''}</td></tr>`).join('')}
+        </table>
+        <div class="legend"><span>* odd link count — needs an offset (half) link</span></div></figure>`;
+  },
+  validation(){
+    const r = this.compute({ cur:'gears', cg1:20, cg2:60, cdp:20, ccdev:0.01, ratio:3, rdev:0, gon:true, gmin:14, gmax:84, p3on:false, p5on:false, s25on:false, s35on:false });
+    return [
+      { name:'20:60 gears at 20 DP → C-C = 80/40 in', expected:2*25.4, got:r.cc, unit:'mm', tol:1e-9 },
+      { name:'Exact 3:1 gear swaps at the same C-C (only 20:60)', expected:1, got:r.out.length, unit:'', tol:0 },
+      ...AMB_CHECKS.swap(this),
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <p>Gears: C-C = (N1 + N2)/(2·DP). Belts and chains use the same exact geometry as the Chain &amp; Belt C-C calculator: find the length that fits your C-C, round to a whole belt/chain, and solve for its real C-C. Pairs inside both deviations are listed, closest first.</p>
+      <p><b>Known difference from ambcalc:</b> for chain, ambcalc treats sprockets as smooth circles (PD = N·p/π); this site uses the chain formula (Shigley), so chain C-C can differ by a few hundredths of an inch.</p>
+    </div>
+    <div><h3>Validation</h3>${validationTable(this)}</div>`; }
+};
+
+/* ---------- 4j. Planetary gearbox stacks ---------- */
+const PLANETARIES = {
+  maxplanetary:  { label:'REV MAXPlanetary',   stages:[3,4,5,9] },
+  ultraplanetary:{ label:'REV UltraPlanetary', stages:[3,4,5] },
+  versaplanetary:{ label:'VEX VersaPlanetary', stages:[3,4,5,7,9,10] },
+};
+const PLANET = {
+  id:'planet', group:'Power Transmission', title:'Planetary Gearbox', num:'10',
+  lede:'Which stages should you stack to get close to a ratio? Lists every combination of stages from 0.66× to 1.5× your target, closest first, and the extra reduction you would still need.',
+  inputs:[
+    {key:'type', label:'Gearbox', type:'select', def:'maxplanetary', options:Object.entries(PLANETARIES).map(([value,p]) => ({ value, label:p.label }))},
+    {key:'ratio', label:'Desired ratio', kind:'ratio', def:50},
+  ],
+  compute(v){
+    const st = PLANETARIES[v.type].stages, D = v.ratio, out = [];
+    if (!(D > 1)) return { bad:true, warnings:['Desired ratio must be bigger than 1.'] };
+    // Grow stacks one stage at a time (smallest-first, never going back down the list so each set appears once)
+    // and stop growing a stack once it reaches the target — like ambcalc's search tree.
+    const grow = (counts, start, R) => {
+      if (R/D > 0.66 && R/D < 1.5) out.push({ R, counts:[...counts] });
+      if (R >= D) return;
+      for (let i = start; i < st.length; i++){ counts[i]++; grow(counts, i, R*st[i]); counts[i]--; }
+    };
+    grow(st.map(() => 0), 0, 1);
+    const n = o => o.counts.reduce((a,b) => a+b, 0);
+    out.sort((a,b) => Math.abs(Math.log(a.R/D)) - Math.abs(Math.log(b.R/D)) || n(a) - n(b));
+    return { st, out, warnings:[] };
+  },
+  renderOut(el, v, r){
+    if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
+    el.innerHTML = `
+      <div class="tiles">${tile('Closest stack', r.out[0] ? fmtNum(r.out[0].R,0)+' : 1' : '—', 'primary')}${tile('Combinations', String(r.out.length))}</div>
+      <figure class="panel"><figcaption>STAGE COMBINATIONS · closest first</figcaption>
+        <table class="dark"><tr><th>Ratio</th><th>Stages</th><th>Made of</th><th>Still needed</th></tr>
+        ${r.out.map(o => `<tr><td class="mono">${+o.R.toFixed(2)} : 1</td><td class="mono">${o.counts.reduce((a,b)=>a+b,0)}</td>
+          <td>${o.counts.map((c,i) => c ? `${c}× ${r.st[i]}:1` : '').filter(Boolean).join(', ')}</td>
+          <td class="mono">${o.R < v.ratio ? (v.ratio/o.R).toFixed(2)+' : 1 more' : o.R > v.ratio ? '1 : '+(o.R/v.ratio).toFixed(2)+' (overdrive)' : 'none'}</td></tr>`).join('')}
+        </table></figure>`;
+  },
+  validation(){
+    const r = this.compute({ type:'maxplanetary', ratio:45 });
+    return [
+      { name:'MAXPlanetary 45:1 → best is 5×9 exactly', expected:45, got:r.out[0].R, unit:':1', tol:1e-9 },
+      { name:'… and it uses 2 stages', expected:2, got:r.out[0].counts.reduce((a,b)=>a+b,0), unit:'', tol:0 },
+      ...AMB_CHECKS.planet(this),
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3><p>A stack's ratio is the product of its stages (3:1 × 5:1 = 15:1). Every stack is tried until it reaches the target; stacks between 0.66× and 1.5× the target are listed. "Still needed" is the extra reduction (from a belt, chain or gear stage) to land exactly on target.</p></div>
+    <div><h3>Validation</h3>${validationTable(this)}</div>`; }
+};
+
+/* ---------- 4k. Projectile (with optional drag + backspin lift) ---------- */
+const RHO_AIR = 1.2754;   // kg/m³ — the value ambcalc uses
+// Fly one ball until it lands or stop(x,y,vx,vy) says so. 1 ms steps, like ambcalc.com/projectile.
+function projFly(v, h0, v0, th0, stop){
+  const dt = 0.001, r = v.diam/2000, m = v.bmass, w = v.spin*Math.PI/30, drag = v.drag && v.mode !== 'launch';
+  let x = 0, y = h0, vx = v0*Math.cos(th0), vy = v0*Math.sin(th0);
+  const pts = [[x, y]];
+  for (let i = 0; i < 200000 && y >= 0 && !stop(x, y, vx, vy); i++){
+    let ax = 0, ay = -G0;
+    if (drag){
+      const sp = Math.hypot(vx, vy), S = r*w/sp, Cl = S < 0.1 ? 1.6*S : 0.6*S + 0.1, k = Math.PI/2*RHO_AIR*r*r*sp/m;   // ½ρA·|v|/m
+      ax = -k*(Cl*vy + v.cd*vx); ay = k*(Cl*vx - v.cd*vy) - G0;
+    }
+    vx += dt*ax; vy += dt*ay;
+    x += dt*vx + dt*dt*ax/2; y += dt*vy + dt*dt*ay/2;
+    pts.push([x, y]);
+  }
+  return { pts, x, y, vx, vy };
+}
+const PROJ = {
+  id:'proj', group:'Shooter', title:'Projectile', num:'11',
+  lede:'Throw a ball: where is it when it reaches the target? Or work backwards from the target to the launch speed and angle. Optional air drag and backspin lift.',
+  inputs:[
+    {key:'mode', label:'Find', type:'select', def:'dist', options:[{value:'dist', label:'Height & angle at a distance'}, {value:'height', label:'Distance & angle at a height'}, {value:'launch', label:'Launch speed & angle (no drag)'}]},
+    {section:'Launch'},
+    {key:'h0', label:'Launch height', kind:'len', def:0.6096},
+    {key:'v0', label:'Launch speed', kind:'speed', def:9.144, showIf:v => v.mode !== 'launch'},
+    {key:'th0', label:'Launch angle', kind:'deg', def:50, showIf:v => v.mode !== 'launch'},
+    {section:'Target'},
+    {key:'dist', label:'Target distance', kind:'len', def:3.6576, showIf:v => v.mode !== 'height'},
+    {key:'hf', label:'Target height', kind:'len', def:2.4384, showIf:v => v.mode !== 'dist'},
+    {key:'rising', label:'Hit it on the way up', type:'check', def:false, showIf:v => v.mode === 'height'},
+    {key:'thf', label:'Entry angle', kind:'deg', def:-40, showIf:v => v.mode === 'launch', help:'Negative = coming down into the target.'},
+    {section:'Air', showIf:v => v.mode !== 'launch'},
+    {key:'drag', label:'Include drag & spin', type:'check', def:false, showIf:v => v.mode !== 'launch'},
+    {key:'cd', label:'Drag coefficient', kind:'none', def:0.47, showIf:v => v.drag && v.mode !== 'launch', help:'~0.47 for a smooth sphere, higher for foam/dimpled balls.'},
+    {key:'diam', label:'Ball diameter', kind:'lenS', def:177.8, showIf:v => v.drag && v.mode !== 'launch'},
+    {key:'bmass', label:'Ball mass', kind:'mass', def:0.2268, showIf:v => v.drag && v.mode !== 'launch'},
+    {key:'spin', label:'Backspin', kind:'rpm', def:0, showIf:v => v.drag && v.mode !== 'launch'},
+    {section:'Obstacle'},
+    {key:'obs', label:'Show an obstacle', type:'check', def:false},
+    {key:'obsD', label:'Obstacle distance', kind:'len', def:2.4384, showIf:v => v.obs},
+    {key:'obsH', label:'Obstacle height', kind:'len', def:1.8288, showIf:v => v.obs},
+  ],
+  compute(v){
+    const warnings = []; let fl, v0 = v.v0, th0 = v.th0*Math.PI/180, out = {};
+    if (v.mode === 'launch'){
+      if (!(v.dist > 0)) return { bad:true, warnings:['Target distance must be bigger than zero.'] };
+      const tf = Math.tan(v.thf*Math.PI/180);
+      th0 = Math.atan(2*(v.hf - v.h0)/v.dist - tf);
+      v0 = Math.sqrt(G0*v.dist/Math.abs(Math.tan(th0) - tf)) / Math.cos(th0);
+      if (!Number.isFinite(v0)) return { bad:true, warnings:['No throw can hit that target at that entry angle.'] };
+      fl = projFly(v, v.h0, v0, th0, x => x >= v.dist);
+      out = { hf:fl.y, thf:Math.atan2(fl.vy, fl.vx), dist:fl.x };
+    } else if (v.mode === 'dist'){
+      fl = projFly(v, v.h0, v0, th0, x => x >= v.dist);
+      if (Math.abs(fl.x - v.dist) < 0.1) out = { hf:fl.y, thf:Math.atan2(fl.vy, fl.vx), dist:fl.x };
+      else warnings.push('The ball lands before it reaches the target distance.');
+    } else {
+      const stop = v.rising ? (x,y,vx,vy) => vy >= 0 && y >= v.hf : (x,y,vx,vy) => vy <= 0 && y <= v.hf;
+      fl = projFly(v, v.h0, v0, th0, stop);
+      if (Math.abs(fl.y - v.hf) <= 0.05) out = { hf:fl.y, thf:Math.atan2(fl.vy, fl.vx), dist:fl.x };
+      else warnings.push(v.rising ? 'The ball never reaches that height on the way up.' : 'The ball never comes down through that height (too high, or it lands first).');
+    }
+    const apex = Math.max(...fl.pts.map(p => p[1]));
+    if (v.obs){
+      const near = fl.pts.find(p => p[0] >= v.obsD);
+      if (near && near[1] < v.obsH) warnings.push('The ball hits the obstacle.');
+    }
+    return { v0, th0, fl, out, apex, time:(fl.pts.length - 1)/1000, warnings };
+  },
+  renderOut(el, v, r){
+    if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
+    const o = r.out, has = o.dist !== undefined;
+    el.innerHTML = `
+      <div class="tiles">
+        ${v.mode === 'launch' ? tile('Launch speed', fmtK(r.v0,'speed'), 'primary') + tile('Launch angle', fmtNum(r.th0*180/Math.PI,2)+'°', 'primary') : ''}
+        ${v.mode !== 'height' && v.mode !== 'launch' ? tile('Height at target', has ? fmtK(o.hf,'len') : '—', 'primary') : ''}
+        ${v.mode === 'height' ? tile('Distance at height', has ? fmtK(o.dist,'len') : '—', 'primary') : ''}
+        ${tile('Entry angle', has ? fmtNum(o.thf*180/Math.PI,2)+'°' : '—', v.mode === 'launch' ? '' : 'primary')}
+        ${tile('Highest point', fmtK(r.apex,'len'))}
+        ${tile('Flight time', fmtNum(r.time,3)+' s')}
+      </div>
+      ${warnBox(r.warnings)}
+      <figure class="panel"><figcaption>TRAJECTORY · equal scales</figcaption><canvas id="projPlot" style="height:420px"></canvas>
+        ${legend([['ball path',COL.blue],['target',COL.green],...(v.obs ? [['obstacle',COL.red]] : [])])}</figure>`;
+    const cv = document.getElementById('projPlot'), pts = r.fl.pts;
+    const W = cv.clientWidth - 60, H = 420 - 50;
+    const xm = Math.max(...pts.map(p => p[0]), v.dist || 0, v.obs ? v.obsD : 0) * 1.08, ym = Math.max(r.apex, v.hf || 0, v.obs ? v.obsH : 0) * 1.12;
+    const s = Math.max(xm/W, ym/H);                                     // same metres-per-pixel both ways
+    const f = frame(cv, [0, W*s], [0, H*s], 'len', 'len', `distance (${U('len')[0]})`, `height (${U('len')[0]})`);
+    if (v.obs) drawSeries(f, [{ pts:[[v.obsD,0],[v.obsD,v.obsH]], col:COL.red, w:4 }]);
+    drawSeries(f, [{ pts:pts.filter((p,i) => i % 5 === 0 || i === pts.length-1), col:COL.blue, w:2.5 }]);
+    if (r.out.dist !== undefined){ f.c.fillStyle = '#fff'; f.c.strokeStyle = COL.green; f.c.lineWidth = 1.5; star(f.c, f.X(r.out.dist), f.Y(r.out.hf), 8); }
+  },
+  validation(){
+    // No drag: closed-form parabola
+    const v = { mode:'dist', h0:0, v0:10, th0:45, dist:5, drag:false, obs:false };
+    const r = this.compute(v), y = 5 - G0*25/(2*50);
+    const back = this.compute({ mode:'launch', h0:0, dist:5, hf:r.out.hf, thf:r.out.thf*180/Math.PI, drag:false, obs:false });
+    return [
+      { name:'45°, 10 m/s, height at 5 m: y = x − g·x²/v²', expected:y, got:r.out.hf, unit:'m', tol:0.01 },
+      { name:'Launch solver gives back the 10 m/s', expected:10, got:back.v0, unit:'m/s', tol:0.02 },
+      ...AMB_CHECKS.proj(this),
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <div class="eq">no drag:  a = (0, −g)
+with drag & spin (ambcalc's model):
+  S  = r·ω / |v|       (spin ratio)
+  C_L = 1.6·S  if S &lt; 0.1,  else 0.6·S + 0.1
+  a  = ½ρA|v|/m · (−C_L·v_y − C_D·v_x,  C_L·v_x − C_D·v_y) − (0, g)
+launch solver (no drag):
+  tan θ0 = 2(h_f − h_0)/d − tan θ_f
+  v0 = √(g·d / |tan θ0 − tan θ_f|) / cos θ0</div>
+      <p>The ball is stepped forward every millisecond until it reaches the target distance or height. The Shot Trajectory calculator does the harder job of finding the most error-tolerant shot.</p>
+    </div>
+    <div><h3>Validation</h3>${validationTable(this)}</div>`; }
+};
+
+/* ---------- 4l. Motor curves (compare up to three) ---------- */
+const MC = ['a','b','c'], MC_COL = [COL.blue, COL.orange, COL.green];
+const mcInputs = (p, def, i) => {
+  const used = i === 0 ? () => true : v => v[p+'motor'] !== 'none';
+  const custom = v => v[p+'motor'] === 'custom', m = MOTOR_DB[def] || MOTOR_DB.krakenx60;
+  return [
+    {section:`Motor ${i+1}`},
+    {key:p+'motor', label:'Motor', type:'select', def, options:[...(i ? [{value:'none', label:'— none —'}] : []), ...motorOptions([{value:'custom', label:'Custom'}])]},
+    {key:p+'fs', label:'Free speed', kind:'rpm', def:m.rpm, showIf:custom},
+    {key:p+'ts', label:'Stall torque', kind:'torque', def:m.ts, showIf:custom},
+    {key:p+'if', label:'Free current', kind:'amp', def:m.if, showIf:custom},
+    {key:p+'is', label:'Stall current', kind:'amp', def:m.is, showIf:custom},
+    {key:p+'volt', label:'Voltage', kind:'volt', def:12, showIf:used},
+    {key:p+'ilim', label:'Current limit / motor', kind:'amp', def:0, showIf:used, help:i ? undefined : '0 = no limit.'},
+    {key:p+'n', label:'How many', kind:'count', def:1, showIf:used},
+    {key:p+'ratio', label:'Gear ratio', kind:'ratio', def:1, showIf:used},
+  ];
+};
+// One motor (set) as a function of OUTPUT torque T (N·m). Matches ambcalc.com/motor_curves.
+function mcCurve(v, p){
+  const s = v[p+'volt']/12, n = Math.max(1, Math.round(v[p+'n'])), G = v[p+'ratio'];
+  const Ts = v[p+'ts'], If = v[p+'if'], Is = v[p+'is'], wf = v[p+'fs'];
+  const Imax = v[p+'ilim'] > 0 ? Math.min(v[p+'ilim'], Is*s) : Is*s;
+  const maxT = Ts*(Imax - If*s)/(Is - If) * n * G;
+  const at = T => {
+    if (T > maxT + 1e-12) return { rpm:NaN, amps:NaN, watts:NaN, eff:NaN };
+    const rpm = wf*s/G * (1 - T/(Ts*n*G*s)), amps = If*n*s + (Is - If)*T/(Ts*G), watts = rpm*T*Math.PI/30;
+    return { rpm, amps, watts, eff:watts/(v[p+'volt']*amps)*100 };
+  };
+  return { label:MOTOR_DB[v[p+'motor']]?.label || 'Custom', maxT, at, freeRpm:wf*s/G };
+}
+const MCURVE = {
+  id:'mcurve', group:'Power Transmission', title:'Motor Curves', num:'12',
+  lede:'Speed, current, power and efficiency against output torque for up to three motors — with voltage, current limits, motor count and gearing — on the same axes.',
+  inputs:[...mcInputs('a','krakenx60',0), ...mcInputs('b','vortex',1), ...mcInputs('c','none',2)],
+  onChange(key, v){ return MC.some(p => fillMotor(key, v, p)); },
+  compute(v){
+    const used = MC.filter((p,i) => i === 0 || v[p+'motor'] !== 'none');
+    for (const p of used) if (!motorOk(v, p) || !(v[p+'ratio'] > 0) || !(v[p+'volt'] > 0)) return { bad:true, warnings:[MOTOR_BAD + ' Voltage and ratio must be bigger than zero.'] };
+    const curves = used.map(p => ({ p, ...mcCurve(v, p) }));
+    const Tm = Math.max(...curves.map(c => c.maxT));
+    const Ts = Array.from({ length:241 }, (_, i) => Tm*i/240);
+    curves.forEach(c => { c.pts = Ts.map(T => [T, c.at(T)]); const P = c.pts.map(q => q[1].watts).filter(Number.isFinite), E = c.pts.map(q => q[1].eff).filter(Number.isFinite);
+      c.peakW = Math.max(...P); c.peakEff = Math.max(...E); });
+    return { curves, Tm, warnings:[] };
+  },
+  renderOut(el, v, r){
+    if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
+    const leg = legend(r.curves.map(c => [`${MC.indexOf(c.p)+1}: ${v[c.p+'n']}× ${c.label} @ ${v[c.p+'ratio']}:1`, MC_COL[MC.indexOf(c.p)]]));
+    el.innerHTML = `
+      <figure class="panel" style="margin-bottom:12px"><figcaption>SUMMARY</figcaption>
+        <table class="dark"><tr><th>#</th><th>Motor</th><th>Free speed</th><th>Max torque</th><th>Peak power</th><th>Peak efficiency</th></tr>
+        ${r.curves.map(c => `<tr><td><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${MC_COL[MC.indexOf(c.p)]}"></i> ${MC.indexOf(c.p)+1}</td><td>${v[c.p+'n']}× ${c.label}</td>
+          <td class="mono">${fmtNum(c.freeRpm,0)} rpm</td><td class="mono">${fmtK(c.maxT,'torque')}</td><td class="mono">${fmtNum(c.peakW,0)} W</td><td class="mono">${fmtNum(c.peakEff,1)} %</td></tr>`).join('')}
+        </table></figure>
+      <div class="panels two">
+        ${[['mcSpeed','SPEED (rpm)'],['mcAmps','TOTAL CURRENT (A)'],['mcPower','POWER (W)'],['mcEff','EFFICIENCY (%)']].map(([id,cap]) =>
+          `<figure class="panel"><figcaption>${cap} vs OUTPUT TORQUE</figcaption><canvas id="${id}"></canvas>${leg}</figure>`).join('')}
+      </div>`;
+    [['mcSpeed','rpm'],['mcAmps','amps'],['mcPower','watts'],['mcEff','eff']].forEach(([id, k]) => {
+      const cv = document.getElementById(id); if (!cv) return;
+      const yr = range(r.curves.flatMap(c => c.pts.map(q => q[1][k])));
+      const f = frame(cv, [0, r.Tm], [0, (yr[1] || 1)*1.08], 'torque', null, `output torque (${U('torque')[0]})`, { rpm:'rpm', amps:'A', watts:'W', eff:'%' }[k]);
+      drawSeries(f, r.curves.map(c => ({ pts:c.pts.map(q => [q[0], q[1][k]]), col:MC_COL[MC.indexOf(c.p)], w:2.5 })));
+    });
+  },
+  validation(){
+    const v = { afs:6000, ats:7.09, aif:2, ais:366, avolt:12, ailim:0, an:1, aratio:1, amotor:'custom' };
+    const c = mcCurve(v, 'a'), h = c.at(7.09/2);
+    return [
+      { name:'Half stall torque → half free speed', expected:3000, got:h.rpm, unit:'rpm', tol:1e-9 },
+      { name:'Peak power = ω_f · T_s / 4', expected:6000*Math.PI/30*7.09/4, got:h.watts, unit:'W', tol:1e-9 },
+      ...AMB_CHECKS.mcurve(this),
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <div class="eq">speed   = ω_f·V/12 / G · (1 − T / (T_s·n·G·V/12))
+current = n·I_f·V/12 + (I_s − I_f) · T / (T_s·G)
+power   = speed · T        efficiency = power / (V · current)
+max T   = T_s · (I_max − I_f·V/12)/(I_s − I_f) · n · G</div>
+      <p>Each curve stops at the most torque that motor set can make — at stall, or sooner if you set a current limit. Peak power is always at half the stall torque.</p></div>
+    <div><h3>Validation</h3>${validationTable(this)}</div>`; }
+};
+
+/* ---------- 4n. Beam bending & twist ---------- */
+// E, G in GPa; density g/cm³ — same values as ambcalc.com (ref/materials.json)
+const BEAM_MATS = {
+  al7075:{ label:'7075-T6 Aluminum', E:71.7, G:26.9, d:2.81 },
+  al6061:{ label:'6061-T6 Aluminum', E:68.9, G:26,   d:2.7 },
+  steel: { label:'Carbon Steel',     E:206,  G:70,   d:7.84 },
+  ss:    { label:'Stainless Steel',  E:193,  G:77,   d:8.03 },
+  custom:{ label:'Custom' },
+};
+// Section properties in mm: A (mm²), I (mm⁴, for bending with the load along "height"), J (mm⁴, torsion), c (mm, farthest fiber)
+function section(v){
+  const t = v.thick;
+  switch (v.sect){
+    case 'hex':  { const s = v.hex; return { A:Math.sqrt(3)/2*s*s, I:5*Math.sqrt(3)/144*s**4, J:0.1154*s**4, c:s/2 }; }
+    case 'round':{ const d = v.od; return { A:Math.PI/4*d*d, I:Math.PI/64*d**4, J:Math.PI/32*d**4, c:d/2 }; }
+    case 'rtube':{ const D = v.od, d = Math.max(0, D - 2*t); return { A:Math.PI/4*(D*D - d*d), I:Math.PI/64*(D**4 - d**4), J:Math.PI/32*(D**4 - d**4), c:D/2 }; }
+    case 'rect': { const b = v.width, h = v.height, L = Math.max(b,h), S = Math.min(b,h);
+      return { A:b*h, I:b*h**3/12, J:L*S**3*(1/3 - 0.21*S/L*(1 - S**4/(12*L**4))), c:h/2 }; }   // J: Roark's formula
+    case 'box':  { const b = v.width, h = v.height, bi = Math.max(0, b - 2*t), hi = Math.max(0, h - 2*t);
+      return { A:b*h - bi*hi, I:(b*h**3 - bi*hi**3)/12, J:2*t*(b-t)**2*(h-t)**2/(b + h - 2*t), c:h/2 }; }  // J: thin-wall (Bredt)
+    default:     return { A:v.cA, I:v.cI, J:v.cJ, c:NaN };
+  }
+}
+const BEAM = {
+  id:'beam', group:'Fabrication', title:'Beam Bending', num:'13',
+  lede:'How far does a tube, shaft or bar bend under a load — held at both ends or sticking out — or twist under a torque? Plus its weight and the bending stress.',
+  inputs:[
+    {key:'mode', label:'Loading', type:'select', def:'btwn', options:[{value:'btwn', label:'Between two fixed ends'}, {value:'cant', label:'Cantilever (one fixed end)'}, {value:'twist', label:'Twist (torque)'}]},
+    {section:'Material'},
+    {key:'mat', label:'Material', type:'select', def:'al6061', options:Object.entries(BEAM_MATS).map(([value,m]) => ({ value, label:m.label }))},
+    {key:'E', label:"Young's modulus", kind:'gpa', def:68.9, showIf:v => v.mat === 'custom'},
+    {key:'G', label:'Shear modulus', kind:'gpa', def:26, showIf:v => v.mat === 'custom'},
+    {key:'dens', label:'Density', kind:'dens', def:2.7, showIf:v => v.mat === 'custom'},
+    {section:'Cross section'},
+    {key:'sect', label:'Shape', type:'select', def:'box', options:[{value:'hex', label:'Hex shaft'}, {value:'round', label:'Round bar'}, {value:'rtube', label:'Round tube'},
+      {value:'rect', label:'Rectangle bar'}, {value:'box', label:'Rectangular tube'}, {value:'custom', label:'Custom (type A, I, J)'}]},
+    {key:'hex', label:'Hex size (across flats)', kind:'lenS', def:12.7, showIf:v => v.sect === 'hex'},
+    {key:'od', label:'Outside diameter', kind:'lenS', def:25.4, showIf:v => v.sect === 'round' || v.sect === 'rtube'},
+    {key:'width', label:'Width', kind:'lenS', def:25.4, showIf:v => v.sect === 'rect' || v.sect === 'box'},
+    {key:'height', label:'Height (load direction)', kind:'lenS', def:50.8, showIf:v => v.sect === 'rect' || v.sect === 'box'},
+    {key:'thick', label:'Wall thickness', kind:'lenS', def:1.5875, showIf:v => v.sect === 'rtube' || v.sect === 'box'},
+    {key:'cA', label:'Area A', kind:'area', def:300, showIf:v => v.sect === 'custom'},
+    {key:'cI', label:'Area moment I', kind:'inertia', def:100000, showIf:v => v.sect === 'custom'},
+    {key:'cJ', label:'Torsion constant J', kind:'inertia', def:150000, showIf:v => v.sect === 'custom'},
+    {section:'Load'},
+    {key:'l', label:'Length ℓ', kind:'lenS', def:762},
+    {key:'a', label:'Load position a', kind:'lenS', def:381, showIf:v => v.mode !== 'twist', help:'Distance from the (left) fixed end to the load.'},
+    {key:'F', label:'Force F', kind:'force', def:222.41108, showIf:v => v.mode !== 'twist'},
+    {key:'T', label:'Torque T', kind:'torque', def:11.298483, showIf:v => v.mode === 'twist'},
+  ],
+  onChange(key, v){
+    if (key !== 'mat' || v.mat === 'custom') return false;
+    const m = BEAM_MATS[v.mat]; v.E = m.E; v.G = m.G; v.dens = m.d; return true;
+  },
+  compute(v){
+    const s = section(v), m = v.mat === 'custom' ? { E:v.E, G:v.G, d:v.dens } : BEAM_MATS[v.mat];
+    if (!(s.A > 0 && s.I > 0 && v.l > 0)) return { bad:true, warnings:['Check the dimensions — area, I and length must all be bigger than zero (is the wall thicker than half the tube?).'] };
+    const E = m.E*1e3, G = m.G*1e3, l = v.l, warnings = [];                  // N/mm² (MPa), mm
+    const weight = l*s.A*m.d/1e6;                                            // mm³ · g/cm³ → kg
+    let defl = NaN, angle = NaN, M = NaN, shape = [];
+    if (v.mode === 'twist') angle = v.T*1e3*l/(G*s.J) * 180/Math.PI;          // N·mm
+    else {
+      const F = v.F;
+      if (!(v.a >= 0 && v.a <= l)) return { bad:true, warnings:['Load position must be between 0 and the length.'] };
+      if (v.mode === 'btwn'){
+        const A = Math.max(v.a, l - v.a), B = l - A;                         // A = longer side
+        defl = 2*F*A**3*B**2/(3*E*s.I*(3*A + B)**2);
+        M = Math.max(F*A*B*B/(l*l), F*A*A*B/(l*l), 2*F*A*A*B*B/l**3);      // end moments and moment under the load
+        // deflected shape (fixed–fixed, point load): superpose for drawing
+        const a = v.a, b = l - a;
+        for (let i = 0; i <= 100; i++){ const x = l*i/100;
+          const y = x <= a ? F*b*b*x*x*(3*a*l - (3*a + b)*x)/(6*E*s.I*l**3) : F*a*a*(l-x)**2*(3*b*l - (3*b + a)*(l-x))/(6*E*s.I*l**3);
+          shape.push([x, y]); }
+      } else {
+        defl = F*v.a**2*(3*l - v.a)/(6*E*s.I);
+        M = F*v.a;
+        for (let i = 0; i <= 100; i++){ const x = l*i/100;
+          shape.push([x, x <= v.a ? F*x*x*(3*v.a - x)/(6*E*s.I) : F*v.a*v.a*(3*x - v.a)/(6*E*s.I)]); }
+      }
+    }
+    const stress = M * s.c / s.I;                                             // MPa
+    if (v.mode !== 'twist' && defl > l/100) warnings.push('That is a lot of bending (over 1% of the length) — the simple beam formulas start to lose accuracy, and it may yield.');
+    return { s, m, weight, defl, angle, stress, shape, warnings };
+  },
+  renderOut(el, v, r){
+    if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
+    const s = r.s, mpa = x => Number.isFinite(x) ? (state.units === 'imperial' ? fmtNum(x*145.0377,0)+' psi' : fmtNum(x,1)+' MPa') : '—';
+    el.innerHTML = `
+      <div class="tiles">
+        ${v.mode === 'twist' ? tile('Twist angle', fmtNum(r.angle,3)+'°', 'primary') : tile('Max deflection', fmtK(r.defl,'lenS',1), 'primary')}
+        ${v.mode !== 'twist' ? tile('Max bending stress', mpa(r.stress), 'primary') : ''}
+        ${tile('Weight', fmtK(r.weight,'mass'))}
+        ${tile('Area A', fmtK(s.A,'area'))}
+        ${tile('Area moment I', fmtK(s.I,'inertia'))}
+        ${tile('Torsion constant J', fmtK(s.J,'inertia'))}
+      </div>
+      ${warnBox(r.warnings)}
+      ${v.mode !== 'twist' ? `<figure class="panel"><figcaption>DEFLECTED SHAPE · exaggerated</figcaption><canvas id="beamPlot" style="height:220px"></canvas>
+        ${legend([['beam',COL.blue],['load',COL.orange]])}</figure>` : ''}`;
+    const cv = document.getElementById('beamPlot'); if (!cv) return;
+    const dm = Math.max(...r.shape.map(p => p[1])) || 1;
+    const f = frame(cv, [0, v.l], [-dm*1.6, dm*0.6], 'lenS', null, `position along beam (${U('lenS')[0]})`, 'deflection (scaled)');
+    drawSeries(f, [{ pts:[[0,0],[v.l,0]], col:COL.grid, w:1 }, { pts:r.shape.map(p => [p[0], -p[1]]), col:COL.blue, w:3 }]);
+    f.c.fillStyle = COL.white; f.c.fillRect(f.X(0) - 4, f.Y(dm*0.5), 6, f.Y(-dm*1.5) - f.Y(dm*0.5));
+    if (v.mode === 'btwn') f.c.fillRect(f.X(v.l) - 2, f.Y(dm*0.5), 6, f.Y(-dm*1.5) - f.Y(dm*0.5));
+    const ya = -r.shape[Math.round(v.a/v.l*100)][1];
+    f.c.strokeStyle = COL.orange; f.c.lineWidth = 2.5; f.c.beginPath(); f.c.moveTo(f.X(v.a), f.Y(ya + dm*0.55)); f.c.lineTo(f.X(v.a), f.Y(ya + 0.05*dm)); f.c.stroke();
+    f.c.fillStyle = COL.orange; f.c.beginPath(); f.c.moveTo(f.X(v.a), f.Y(ya)); f.c.lineTo(f.X(v.a) - 5, f.Y(ya) - 9); f.c.lineTo(f.X(v.a) + 5, f.Y(ya) - 9); f.c.fill();
+  },
+  validation(){
+    const base = { mat:'steel', sect:'round', od:20, l:1000, F:1000, T:100 };
+    const I = Math.PI/64*20**4, E = 206e3, Gs = 70e3, J = Math.PI/32*20**4;
+    const mid = this.compute({ ...base, mode:'btwn', a:500 }), cant = this.compute({ ...base, mode:'cant', a:1000 }), tw = this.compute({ ...base, mode:'twist' });
+    const sq = section({ sect:'box', width:50, height:50, thick:3 });
+    return [
+      { name:'Fixed–fixed, center load: F·ℓ³/(192·E·I)', expected:1000*1e9/(192*E*I), got:mid.defl, unit:'mm', tol:1e-9 },
+      { name:'Cantilever, tip load: F·ℓ³/(3·E·I)', expected:1000*1e9/(3*E*I), got:cant.defl, unit:'mm', tol:1e-9 },
+      { name:'Twist: T·ℓ/(G·J)', expected:100e3*1000/(Gs*J)*180/Math.PI, got:tw.angle, unit:'°', tol:1e-9 },
+      { name:'Drawn shape peak = formula (fixed–fixed)', expected:mid.defl, got:Math.max(...mid.shape.map(p => p[1])), unit:'mm', tol:1e-9 },
+      { name:'50×50×3 tube: I = (50⁴ − 44⁴)/12', expected:(50**4 - 44**4)/12, got:sq.I, unit:'mm⁴', tol:1e-6 },
+      ...AMB_CHECKS.beam(this),
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <div class="eq">fixed both ends, load at a (A = longer side, B = shorter):
+  δ = 2·F·A³·B² / (3·E·I·(3A + B)²)
+cantilever, load at a:   δ = F·a²·(3ℓ − a) / (6·E·I)
+twist:                   θ = T·ℓ / (G·J)
+bending stress:          σ = M·c / I
+rectangular tube:  I = (b·h³ − (b−2t)(h−2t)³) / 12</div>
+      <p><b>Differences from ambcalc:</b> this page uses exact section formulas. ambcalc's hex area is 25% low (it uses the corner-to-corner formula), its round-tube I uses a thin-wall shortcut, and its rectangular-tube I is roughly half the true value for a square tube (so its deflections there are about 2× too big). Its rectangular-tube J also has a typo (b − 2 instead of b − t). Deflections for hex, round bar and rectangle bar match.</p>
+    </div>
+    <div><h3>Validation</h3>${validationTable(this)}</div>`; }
+};
+
+/* ---------- 4o. Lead screw ---------- */
+// Thread friction μ by [nut][screw] = [dry, lubricated] — same table as ambcalc.com
+const SCREW_MU = {
+  steel:{ steel:[0.2,0.14], bronze:[0.1,0.1] }, bronze:{ steel:[0.19,0.13], bronze:[0.05,0.05] },
+  brass:{ steel:[0.17,0.12], bronze:[NaN,NaN] }, castiron:{ steel:[0.2,0.14], bronze:[0.07,0.07] },
+};
+function screwAt(v){
+  const p = v.pitch, l = p*Math.max(1, Math.round(v.starts)), dm = v.od - p/2;            // lead and mean diameter (mm)
+  const a = v.angle/2*Math.PI/180, mu = SCREW_MU[v.nut][v.screw][v.lube ? 1 : 0], c = Math.cos(a);
+  const F = v.F, d = dm/1000, L = l/1000;
+  const Traise = F*d/2 * (L*c + Math.PI*mu*d)/(Math.PI*d*c - mu*L);                      // Shigley, with thread angle
+  const Tlower = F*d/2 * (Math.PI*mu*d - L*c)/(Math.PI*d*c + mu*L);
+  return { l, dm, mu, Traise, Tlower, eff:F*L/(2*Math.PI*Traise), rEq:l/(2*Math.PI), back:L*c > Math.PI*mu*d, lin:v.rpm/60*L };
+}
+const SCREW = {
+  id:'screw', group:'Mechanisms', title:'Lead Screw', num:'14',
+  lede:'Torque to raise and lower a load on an Acme or trapezoidal lead screw, its efficiency, whether it back-drives, and the "equivalent radius" to use in the Mechanism Ratio calculator.',
+  inputs:[
+    {section:'Screw'},
+    {key:'od', label:'Outside diameter', kind:'lenS', def:12.7},
+    {key:'pitch', label:'Pitch', kind:'lenS', def:2.54, help:'Distance between threads. ½"-10 Acme → 0.1 in.'},
+    {key:'starts', label:'Number of starts', kind:'count', def:1},
+    {key:'angle', label:'Thread angle', kind:'deg', def:29, help:'29° Acme, 30° metric trapezoidal.'},
+    {section:'Materials'},
+    {key:'screw', label:'Screw', type:'select', def:'steel', options:[{value:'steel', label:'Steel'}, {value:'bronze', label:'Bronze'}]},
+    {key:'nut', label:'Nut', type:'select', def:'bronze', options:[{value:'steel', label:'Steel'}, {value:'bronze', label:'Bronze'}, {value:'brass', label:'Brass'}, {value:'castiron', label:'Cast iron'}]},
+    {key:'lube', label:'Lubricated', type:'check', def:true},
+    {section:'Load'},
+    {key:'F', label:'Axial load', kind:'force', def:222.41108},
+    {key:'rpm', label:'Screw speed', kind:'rpm', def:1000},
+  ],
+  compute(v){
+    if (!(v.od > 0 && v.pitch > 0 && v.pitch < 2*v.od && v.angle > 0)) return { bad:true, warnings:['Diameter, pitch and thread angle must be positive (and the pitch smaller than the diameter).'] };
+    const r = screwAt(v);
+    if (!Number.isFinite(r.mu)) return { bad:true, warnings:['No friction data for a brass nut on a bronze screw.'] };
+    return { ...r, warnings: r.back ? ['This screw back-drives: the load can spin it, so something (a brake, the motor) must hold it.'] : [] };
+  },
+  renderOut(el, v, r){
+    if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
+    el.innerHTML = `
+      <div class="tiles">
+        ${tile('Efficiency', fmtNum(r.eff*100,1)+' %', 'primary')}
+        ${tile('Back-drives?', r.back ? 'Yes' : 'No', 'primary')}
+        ${tile('Torque to raise', fmtK(r.Traise,'torque'))}
+        ${tile(r.Tlower < 0 ? 'Torque to hold (lowering)' : 'Torque to lower', fmtK(Math.abs(r.Tlower),'torque'))}
+        ${tile('Equivalent radius', fmtK(r.rEq,'lenS',1))}
+        ${tile('Linear speed', fmtK(r.lin,'speed'))}
+      </div>
+      ${warnBox(r.warnings)}
+      <p>${gotoBtn('mech', { radius:+r.rEq.toFixed(4), eff:+(r.eff*100).toFixed(1) }, 'Use in Mechanism Ratio →')}
+        <span style="color:var(--muted);font-size:13px;margin-left:8px">sets its radius to ${fmtK(r.rEq,'lenS',1)} and efficiency to ${fmtNum(r.eff*100,1)} %</span></p>
+      <details class="adv card"><summary>Advanced details</summary>
+        <table><tr><th>Quantity</th><th>Formula</th><th>Value</th></tr>
+          <tr><td>Lead</td><td class="mono">pitch × starts</td><td class="mono">${fmtK(r.l,'lenS')}</td></tr>
+          <tr><td>Mean diameter</td><td class="mono">OD − pitch/2</td><td class="mono">${fmtK(r.dm,'lenS')}</td></tr>
+          <tr><td>Friction μ</td><td class="mono">table</td><td class="mono">${r.mu}</td></tr>
+        </table></details>`;
+  },
+  validation(){
+    const v = { od:12.7, pitch:2.54, starts:1, angle:29, screw:'steel', nut:'bronze', lube:true, F:222.41108, rpm:600 };
+    const s = screwAt(v);
+    return [
+      { name:'Efficiency = F·lead / (2π·T_raise)', expected:s.eff, got:222.41108*0.00254/(2*Math.PI*s.Traise), unit:'', tol:1e-12 },
+      { name:'Equivalent radius = lead / 2π', expected:2.54/(2*Math.PI), got:s.rEq, unit:'mm', tol:1e-12 },
+      { name:'600 rpm × 2.54 mm lead = 0.0254 m/s', expected:0.0254, got:s.lin, unit:'m/s', tol:1e-12 },
+      { name:'Raise > lower torque (friction both ways)', expected:1, got:s.Traise > s.Tlower ? 1 : 0, unit:'', tol:0 },
+      ...AMB_CHECKS.screw(this),
+    ];
+  },
+  docs(){ return `
+    <div><h3>How it works</h3>
+      <div class="eq">lead l = pitch × starts      d_m = OD − pitch/2      α = thread angle / 2
+T_raise = F·d_m/2 · (l·cos α + π·μ·d_m) / (π·d_m·cos α − μ·l)
+T_lower = F·d_m/2 · (π·μ·d_m − l·cos α) / (π·d_m·cos α + μ·l)
+efficiency = F·l / (2π·T_raise)
+back-drives if l·cos α > π·μ·d_m   (T_lower &lt; 0)</div>
+      <p>These are the power-screw equations from Shigley's <i>Mechanical Engineering Design</i>. A lead screw acts like a winch drum of radius l/2π, which is why "equivalent radius" plugs straight into Mechanism Ratio.</p>
+    </div>
+    <div><h3>Validation</h3>${validationTable(this)}</div>`; }
+};
+
+const CALCS = [BEND, BEAM, SHOT, PROJ, GEAR, BELT, GBOX, SWAP, PLANET, MCURVE, MECH, STARTUP, SCREW, DRIVE];
+const COMING = [
+  ['Mechanisms','Arm Torque'], ['Mechanisms','Elevator'], ['Shooter','Flywheel Energy'],
+];
+
+function validationTable(calc){
+  const rows = calc.validation();
+  return `<table><tr><th>Case</th><th>Expected</th><th>Calculator</th><th></th></tr>
+    ${rows.map(x => { const ok = Math.abs(x.got - x.expected) <= x.tol;
+      return `<tr><td>${x.name}</td><td class="mono">${x.expected.toFixed(4)} ${x.unit}</td><td class="mono">${x.got.toFixed(4)} ${x.unit}</td>
+        <td class="${ok?'pass':'fail'}">${ok?'✓ pass':'✗ off by '+Math.abs(x.got-x.expected).toExponential(1)}</td></tr>`; }).join('')}</table>`;
+}
+
+/* =================================================================
+   5. PAGE
+   ================================================================= */
+const current = () => CALCS.find(c => c.id === state.calc);
+
+function renderSidebar(){
+  const groups = [...new Set([...CALCS.map(c => c.group), ...COMING.map(x => x[0])])];
+  document.getElementById('sidebar').innerHTML = groups.map(g => `<h4>${g}</h4>` +
+    CALCS.filter(c => c.group === g).map(c => `<button class="navitem ${c.id===state.calc?'on':''}" data-calc="${c.id}">${c.title}</button>`).join('') +
+    COMING.filter(x => x[0] === g).map(x => `<button class="navitem" disabled>${x[1]}<span class="soon">soon</span></button>`).join('')
+  ).join('');
+}
+function renderForm(){
+  const calc = current(), v = state.values[calc.id];
+  document.getElementById('form').innerHTML = calc.inputs.map(i => {
+    if (i.section) return `<div class="sec">${i.section}</div>`;
+    if (i.showIf && !i.showIf(v)) return '';
+    const help = i.help ? `<div class="help">${i.help}</div>` : '';
+    if (i.type === 'check') return `<div class="field check"><input type="checkbox" id="in_${i.key}" data-key="${i.key}" ${v[i.key]?'checked':''}><label for="in_${i.key}">${i.label}</label></div>`;
+    if (i.type === 'select') return `<div class="field"><label for="in_${i.key}">${i.label}</label><div class="inbox"><select id="in_${i.key}" data-key="${i.key}">
+      ${i.options.map(o => `<option value="${o.value}" ${o.value===v[i.key]?'selected':''}>${o.label}</option>`).join('')}</select></div>${help}</div>`;
+    const shown = round(toDisp(v[i.key], i.kind), U(i.kind)[2] + 1);
+    return `<div class="field"><label for="in_${i.key}">${i.label}</label><div class="inbox">
+      <input id="in_${i.key}" data-key="${i.key}" type="number" step="any" inputmode="decimal" value="${shown}">
+      <span class="unit">${U(i.kind)[0]}</span></div>${help}</div>`;
+  }).join('');
+}
+function renderPage(){
+  const calc = current();
+  document.title = `${calc.title} — Calc Workshop`;
+  document.getElementById('main').innerHTML = `
+    <div class="eyebrow">${calc.group} · ${calc.num}</div>
+    <h1>${calc.title}.</h1>
+    <p class="lede">${calc.lede}</p>
+    <div class="calc">
+      <div class="card form" id="form"></div>
+      <div id="out"></div>
+    </div>
+    <section class="docs card">${calc.docs()}</section>
+    <footer>Prototype v4 · every formula is shown so you can check it by hand · values are starting points, not shop data.</footer>`;
+  renderSidebar(); renderForm(); update();
+  document.querySelectorAll('#unitSeg button').forEach(b => b.classList.toggle('on', b.dataset.u === state.units));
+}
+let pending = 0;
+function update(){
+  // Small delay so typing feels smooth on the heavier shot calculator.
+  clearTimeout(pending);
+  pending = setTimeout(() => {
+    const calc = current(), v = state.values[calc.id];
+    calc.renderOut(document.getElementById('out'), v, calc.compute(v));
+    writeHash();
+  }, 25);
+}
+
+// ---- events ----
+document.getElementById('sidebar').addEventListener('click', e => {
+  const b = e.target.closest('[data-calc]'); if (!b) return;
+  state.calc = b.dataset.calc; renderPage(); window.scrollTo({ top:0 });
+});
+document.getElementById('main').addEventListener('input', e => {
+  const key = e.target.dataset.key; if (!key) return;
+  const calc = current(), v = state.values[calc.id], def = calc.inputs.find(i => i.key === key);
+  if (def.type === 'check') v[key] = e.target.checked;
+  else if (def.type === 'select') v[key] = e.target.value;
+  else { const n = parseFloat(e.target.value); if (!Number.isFinite(n)) return; v[key] = toBase(n, def.kind); }
+  const redraw = calc.onChange ? calc.onChange(key, v) : false;
+  if (redraw || def.type === 'check' || def.type === 'select') renderForm();   // some fields appear/disappear or change
+  update();
+});
+// Buttons in the results: data-set='{"key":value}' fills inputs here (base units);
+// data-goto="calcId" + data-vals='{...}' opens another calculator with those inputs filled in.
+document.getElementById('main').addEventListener('click', e => {
+  const set = e.target.closest('[data-set]'), go = e.target.closest('[data-goto]');
+  if (set){ Object.assign(state.values[state.calc], JSON.parse(set.dataset.set)); renderForm(); update(); }
+  if (go){
+    state.calc = go.dataset.goto;
+    Object.assign(state.values[state.calc], JSON.parse(go.dataset.vals));
+    renderPage(); window.scrollTo({ top:0 }); toast('Opened with these inputs filled in');
+  }
+});
+document.getElementById('unitSeg').addEventListener('click', e => {
+  const u = e.target.dataset.u; if (!u || u === state.units) return;
+  state.units = u; renderPage();
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  state.values[state.calc] = defaultsFor(current()); renderPage(); toast('Reset to defaults');
+});
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  writeHash();
+  try { await navigator.clipboard.writeText(location.href); }
+  catch { const t = document.createElement('textarea'); t.value = location.href; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+  toast('Link copied — it reopens with these exact inputs');
+});
+let toastTimer;
+function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 1800); }
+window.addEventListener('resize', () => update());   // canvases are drawn at their on-screen size
+
+// ---- start ----
+CALCS.forEach(c => state.values[c.id] = defaultsFor(c));
+readHash();
+renderPage();
+</script>
+</body>
+</html>
