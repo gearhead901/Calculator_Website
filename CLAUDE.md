@@ -6,6 +6,8 @@ Prototype calculator website. The prototypes are single, self-contained HTML fil
 
 The owner works on this repo from two computers: a Mac and a Windows laptop. GitHub (`gearhead901/Calculator_Website`, private) keeps them in sync.
 
+- Commits use the GitHub no-reply email `304733394+gearhead901@users.noreply.github.com` so the owner's real email isn't exposed. Don't commit with a personal email address.
+
 - Mac repo: `~/Developer/Calculator_Website`
 - Windows repo: `C:\dev\Calculator_Website`
 
