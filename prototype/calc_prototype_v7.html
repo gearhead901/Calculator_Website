@@ -2639,6 +2639,16 @@ const ENGAGE_RULE = { steel:{ D:1.0, label:'steel into steel' }, castiron:{ D:1.
 const PSI = 145.0377;          // MPa → psi
 const boltThread = v => v.thread === 'custom' ? { sys:v.tsys, d:v.dC, p:v.pC } : BOLT_THREADS[v.thread];
 const MPSI = BJ.MPSI_GPA;     // 1 Mpsi in GPa
+// Bolt material → Young's modulus (Mpsi). Heat treatment changes a steel's strength, not its stiffness,
+// so every steel grade uses the same E; only non-steel bolts need a different one.
+const BOLT_MATS = {
+  steel:    { label:'Steel (any grade or class)',       Empsi:30.0 },
+  stainless:{ label:'Stainless steel (304, 316, 18-8)', Empsi:28.0 },
+  titanium: { label:'Titanium (Ti-6Al-4V)',             Empsi:16.5 },
+  aluminum: { label:'Aluminum (7075)',                  Empsi:10.4 },
+  custom:   { label:'Custom E' },
+};
+const boltE = v => v.bmat === 'custom' ? v.Eb : BOLT_MATS[v.bmat].Empsi*MPSI;   // GPa
 const BOLT = {
   id:'bolt', group:'Fasteners', title:'Bolted Joint',
   lede:'A preloaded bolt in tension: how stiff the bolt and the clamped parts are, how the load splits between them, the preload and tightening torque, and the safety factors for yield, separation and fatigue. Opens on Shigley Example 8-5.',
@@ -2655,7 +2665,9 @@ const BOLT = {
     {key:'Sut', label:'Tensile strength S_ut', kind:'mpa', def:120*BJ.KPSI},
     {key:'Se', label:'Endurance strength S_e', kind:'mpa', def:18.6*BJ.KPSI, help:'Rolled threads, fully corrected (Shigley Table 8-17). 0 = unknown (no fatigue check).'},
     {key:'rolled', label:'Rolled threads', type:'check', def:true},
-    {key:'Eb', label:'Bolt modulus E', kind:'emod', def:30*MPSI},
+    {key:'bmat', label:'Bolt material', type:'select', def:'steel', options:Object.entries(BOLT_MATS).map(([value,m]) => ({ value, label:m.label })),
+      help:'Sets the bolt’s stiffness (modulus E). It is the same for every steel grade — only change it for stainless, titanium or aluminum bolts.'},
+    {key:'Eb', label:'Bolt modulus E', kind:'emod', def:30*MPSI, showIf:v => v.bmat === 'custom'},
     {section:'Joint'},
     {key:'joint', label:'Type', type:'select', def:'cap', options:[{value:'nut', label:'Bolt and nut (through)'}, {value:'cap', label:'Cap screw into a tapped part'}]},
     {key:'nl', label:'Layers', type:'select', def:'3', options:BOLT_LAYERS.map(i => ({ value:String(i), label:String(i) })),
@@ -2706,6 +2718,7 @@ const BOLT = {
     }
     BOLT_LAYERS.forEach(i => { if (key === `m${i}` && v[key] !== 'custom'){ v[`E${i}`] = BJ.MATS[v[key]].Empsi*MPSI; redraw = true; } });
     if (key === 'nmat' && STRIP_MATS[v.nmat].Sut){ v.nSut = STRIP_MATS[v.nmat].Sut*BJ.KPSI; redraw = true; }
+    if (key === 'bmat' && v.bmat !== 'custom'){ v.Eb = BOLT_MATS[v.bmat].Empsi*MPSI; redraw = true; }   // Custom starts from the last pick
     return redraw;
   },
   compute(v){
@@ -2717,11 +2730,12 @@ const BOLT = {
     if (!(v.Sp > 0 && v.Sut >= v.Sp)) return { bad:true, warnings:['Proof strength must be positive and no bigger than the tensile strength.'] };
     const mats = [...new Set(BOLT_LAYERS.slice(0, nl).map(i => v[`m${i}`]))];
     const K = BJ.K_TABLE[v.Kc].K;
-    const r = BJ.solve({ joint:v.joint, sys:th.sys, d:th.d, p:th.p, layers, Eb:v.Eb*1000, dw:v.dw, alpha:v.alpha, L:v.L, fullThread:v.full,
+    const r = BJ.solve({ joint:v.joint, sys:th.sys, d:th.d, p:th.p, layers, Eb:boltE(v)*1000, dw:v.dw, alpha:v.alpha, L:v.L, fullThread:v.full,
       km:v.km, feMat:mats.length === 1 ? mats[0] : 'custom', Sp:v.Sp, Sut:v.Sut, Se:v.rolled && v.Se > 0 ? v.Se : NaN,
       preload:v.pre, Fi:v.FiC, T:v.Ti*1000, K, N:v.N, Pmax:v.Pmax, Pmin:v.Pmin });
     warnings.push(...r.warnings);
     if (v.grade !== 'custom'){ const g = BJ.grade(v.grade, th.d); if (!g.inRange) warnings.push(`${BJ.GRADES[v.grade].label} strengths are listed for ${g.range}; this bolt is outside that range, so the nearest row is used.`); }
+    if (v.bmat !== 'steel' && v.grade !== 'custom') warnings.push(`${BJ.GRADES[v.grade].label} strengths are for steel bolts. For a ${v.bmat === 'custom' ? 'non-steel' : BOLT_MATS[v.bmat].label.split(' (')[0].toLowerCase()} bolt, set Grade to "Custom strengths" and enter its proof, tensile and endurance strengths from the supplier.`);
     if (!v.rolled) warnings.push('Cut threads: the endurance strengths here are for rolled threads only. Use the general fatigue method (Shigley ch. 6) with K_f = 2.8 (SAE 0–2) or 3.8 (SAE 4–8) — fatigue factors are not shown.');
     else if (!(v.Se > 0)) warnings.push('No endurance strength for this grade in Shigley Table 8-17 — type one to get fatigue factors.');
     if (v.km === 'fe' && mats.includes('custom') && r.single) warnings.push('Eq. 8-23 with a custom material uses the "general" A and B constants.');
@@ -2815,6 +2829,8 @@ const BOLT = {
       rel('One material: frusta k_m ≈ eq. 8-22 (book rounds tan 30°)', BJ.km822(207000, 12, 40), one.km, 'N/mm'),
       rel('Thread table: M10 × 1.5 A_t', 58.0, at(10, 1.5), 'mm²'),
       rel('Thread table: M12 × 1.75 A_t', 84.3, at(12, 1.75), 'mm²'),
+      { name:'Bolt material: titanium k_b ÷ steel k_b = 16.5 / 30 (k_b ∝ E)', expected:16.5/30,
+        got:this.compute({ ...defaultsFor(this), bmat:'titanium' }).kb / d.kb, unit:'', tol:1e-12 },
       ...(() => { const t = BJ.threadLimits('1/2-13 UNC'), a = BJ.stripping({ thread:t, cls:'2', SutExt:120000, SutInt:45000, L:0.5, tau:0.5 });
         const q = BJ.stripping({ thread:t, cls:'2', SutExt:120000, SutInt:120000 });
         return [
