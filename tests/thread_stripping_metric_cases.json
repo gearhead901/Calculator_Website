@@ -1,0 +1,249 @@
+{
+ "description": "Known-answer test cases for the thread stripping check on ISO metric threads. Machinery's Handbook formulas (1)-(6) (31st ed., book pp. 1668-1669) are 60-degree thread geometry, used here with n = 1/P per mm and the ISO 898-1 tensile-stress area A_t = pi/4 (d - 0.9382 P)^2. Thread limits from data/metric_thread_limits.json. Expected values computed independently in Python. Units: mm, mm^2, MPa, N.",
+ "tolerance_relative": 0.002,
+ "cases": [
+  {
+   "id": "m6_equal",
+   "title": "M6x1 6g/6H, equal-strength materials",
+   "inputs": {
+    "thread": "M6x1",
+    "external_class": "6g",
+    "internal_class": "6H"
+   },
+   "thread_data_used": {
+    "Es_min": 5.212,
+    "Ds_min": 5.794,
+    "Kn_max": 5.153,
+    "En_max": 5.5,
+    "pitch": 1.0,
+    "d": 6.0
+   },
+   "expected": {
+    "At_mm2": 20.1233,
+    "Le_formula1_mm": 4.6551,
+    "Le_over_d": 0.7758,
+    "As_at_Le_mm2": 40.2467,
+    "An_at_Le_mm2": 56.7495,
+    "As_per_mm_engagement": 8.64576,
+    "An_per_mm_engagement": 12.19088
+   },
+   "notes": "Check: As at Le equals 2*At exactly (definition of formula 1)."
+  },
+  {
+   "id": "m10_equal",
+   "title": "M10x1.5 6g/6H, equal-strength materials",
+   "inputs": {
+    "thread": "M10x1.5",
+    "external_class": "6g",
+    "internal_class": "6H"
+   },
+   "thread_data_used": {
+    "Es_min": 8.862,
+    "Ds_min": 9.732,
+    "Kn_max": 8.676,
+    "En_max": 9.206,
+    "pitch": 1.5,
+    "d": 10.0
+   },
+   "expected": {
+    "At_mm2": 57.9895,
+    "Le_formula1_mm": 7.4443,
+    "Le_over_d": 0.7444,
+    "As_at_Le_mm2": 115.979,
+    "An_at_Le_mm2": 159.8807,
+    "As_per_mm_engagement": 15.57956,
+    "An_per_mm_engagement": 21.47692
+   },
+   "notes": "6g pitch diameter 8.994/8.862 and 6H minor max 8.676 match ISO 965-2."
+  },
+  {
+   "id": "m10_6h",
+   "title": "M10x1.5 6h/6H: no allowance, so slightly more overlap",
+   "inputs": {
+    "thread": "M10x1.5",
+    "external_class": "6h",
+    "internal_class": "6H"
+   },
+   "thread_data_used": {
+    "Es_min": 8.894,
+    "Ds_min": 9.764,
+    "Kn_max": 8.676,
+    "En_max": 9.206,
+    "pitch": 1.5,
+    "d": 10.0
+   },
+   "expected": {
+    "At_mm2": 57.9895,
+    "Le_formula1_mm": 7.2873,
+    "Le_over_d": 0.7287,
+    "As_at_Le_mm2": 115.979,
+    "An_at_Le_mm2": 159.7761,
+    "As_per_mm_engagement": 15.91527,
+    "An_per_mm_engagement": 21.92535
+   }
+  },
+  {
+   "id": "m10_fine",
+   "title": "M10x1.25 fine pitch 6g/6H",
+   "inputs": {
+    "thread": "M10x1.25",
+    "external_class": "6g",
+    "internal_class": "6H"
+   },
+   "thread_data_used": {
+    "Es_min": 9.042,
+    "Ds_min": 9.76,
+    "Kn_max": 8.912,
+    "En_max": 9.348,
+    "pitch": 1.25,
+    "d": 10.0
+   },
+   "expected": {
+    "At_mm2": 61.1985,
+    "Le_formula1_mm": 7.8059,
+    "Le_over_d": 0.7806,
+    "As_at_Le_mm2": 122.397,
+    "An_at_Le_mm2": 165.218,
+    "As_per_mm_engagement": 15.68005,
+    "An_per_mm_engagement": 21.16577
+   }
+  },
+  {
+   "id": "m12_equal",
+   "title": "M12x1.75 6g/6H, equal-strength materials",
+   "inputs": {
+    "thread": "M12x1.75",
+    "external_class": "6g",
+    "internal_class": "6H"
+   },
+   "thread_data_used": {
+    "Es_min": 10.679,
+    "Ds_min": 11.701,
+    "Kn_max": 10.441,
+    "En_max": 11.063,
+    "pitch": 1.75,
+    "d": 12.0
+   },
+   "expected": {
+    "At_mm2": 84.2664,
+    "Le_formula1_mm": 8.8813,
+    "Le_over_d": 0.7401,
+    "As_at_Le_mm2": 168.5327,
+    "An_at_Le_mm2": 231.9542,
+    "As_per_mm_engagement": 18.97623,
+    "An_per_mm_engagement": 26.11728
+   }
+  },
+  {
+   "id": "m10_88_in_aluminum",
+   "title": "Class 8.8 screw (830 MPa) into aluminum 6061-T6 (310 MPa)",
+   "inputs": {
+    "thread": "M10x1.5",
+    "external_class": "6g",
+    "internal_class": "6H",
+    "Sut_external_MPa": 830,
+    "Sut_internal_MPa": 310
+   },
+   "thread_data_used": {
+    "Es_min": 8.862,
+    "Ds_min": 9.732,
+    "Kn_max": 8.676,
+    "En_max": 9.206,
+    "pitch": 1.5,
+    "d": 10.0
+   },
+   "expected": {
+    "At_mm2": 57.9895,
+    "Le_formula1_mm": 7.4443,
+    "Le_over_d": 0.7444,
+    "As_at_Le_mm2": 115.979,
+    "An_at_Le_mm2": 159.8807,
+    "As_per_mm_engagement": 15.57956,
+    "An_per_mm_engagement": 21.47692,
+    "J": 1.9422,
+    "required_engagement_mm": 14.4585,
+    "internal_strips_first_at_Le": true
+   },
+   "notes": "J > 1: the aluminum thread is the weak link; required engagement = J * Le."
+  },
+  {
+   "id": "m8_109_in_mild_steel",
+   "title": "Class 10.9 screw (1040 MPa) into mild steel (440 MPa) with 8 mm engagement",
+   "inputs": {
+    "thread": "M8x1.25",
+    "external_class": "6g",
+    "internal_class": "6H",
+    "Sut_external_MPa": 1040,
+    "Sut_internal_MPa": 440,
+    "engagement_mm": 8.0
+   },
+   "thread_data_used": {
+    "Es_min": 7.042,
+    "Ds_min": 7.76,
+    "Kn_max": 6.912,
+    "En_max": 7.348,
+    "pitch": 1.25,
+    "d": 8.0
+   },
+   "expected": {
+    "At_mm2": 36.6085,
+    "Le_formula1_mm": 6.0205,
+    "Le_over_d": 0.7526,
+    "As_at_Le_mm2": 73.2169,
+    "An_at_Le_mm2": 101.3168,
+    "As_per_mm_engagement": 12.16119,
+    "An_per_mm_engagement": 16.82852,
+    "J": 1.7081,
+    "required_engagement_mm": 10.2836,
+    "internal_strips_first_at_Le": true,
+    "at_engagement_mm": 8.0,
+    "failure_loads_N_tau_0.5Sut": {
+     "screw_break": 38072.8,
+     "external_strip": 50590.5,
+     "internal_strip": 29618.2
+    },
+    "governing_failure": "internal_strip"
+   },
+   "notes": "Calculator-extension case, shear strength 0.5*Sut."
+  },
+  {
+   "id": "m8_109_in_mild_steel_long",
+   "title": "Same with 16 mm engagement",
+   "inputs": {
+    "thread": "M8x1.25",
+    "external_class": "6g",
+    "internal_class": "6H",
+    "Sut_external_MPa": 1040,
+    "Sut_internal_MPa": 440,
+    "engagement_mm": 16.0
+   },
+   "thread_data_used": {
+    "Es_min": 7.042,
+    "Ds_min": 7.76,
+    "Kn_max": 6.912,
+    "En_max": 7.348,
+    "pitch": 1.25,
+    "d": 8.0
+   },
+   "expected": {
+    "At_mm2": 36.6085,
+    "Le_formula1_mm": 6.0205,
+    "Le_over_d": 0.7526,
+    "As_at_Le_mm2": 73.2169,
+    "An_at_Le_mm2": 101.3168,
+    "As_per_mm_engagement": 12.16119,
+    "An_per_mm_engagement": 16.82852,
+    "J": 1.7081,
+    "required_engagement_mm": 10.2836,
+    "internal_strips_first_at_Le": true,
+    "at_engagement_mm": 16.0,
+    "failure_loads_N_tau_0.5Sut": {
+     "screw_break": 38072.8,
+     "external_strip": 101181.1,
+     "internal_strip": 59236.4
+    },
+    "governing_failure": "screw_break"
+   }
+  }
+ ]
+}

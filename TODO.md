@@ -76,5 +76,4 @@ Ideas and open work, roughly in priority order. Nothing here is being worked on 
 - Could be combined with item 8 as one drawing with a "show cones" toggle.
 
 ## Other open items
-- **Metric thread stripping:** the Machinery's Handbook section used for thread stripping is inch only. Metric threads need another source.
 - **Friend as collaborator:** add the software-engineer friend to the GitHub repo for code review (see CLAUDE.md).

@@ -10,7 +10,8 @@ what the website runs), adds the cases from bolted_joint_cases.json and thread_s
 in bolted_joint_harness.js, and runs the result with a JavaScript engine:
   - Node.js, if it is installed (Windows or Mac), otherwise
   - macOS's built-in JavaScript (osascript), so nothing needs installing on the Mac.
-It also checks that the thread data embedded in the page still matches data/unified_thread_limits.json.
+It also checks that the thread data embedded in the page still matches data/unified_thread_limits.json and
+data/metric_thread_limits.json.
 Exit code 0 = every check passed, 1 = something failed.
 """
 import json, re, shutil, subprocess, sys, tempfile
@@ -19,9 +20,10 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 START, END = "/* === BOLTED JOINT CORE START ===", "/* === BOLTED JOINT CORE END === */"
-CASE_FILES = ["bolted_joint_cases.json", "thread_stripping_cases.json"]
-DATA_FILE = ROOT / "data" / "unified_thread_limits.json"
-EMBED = "const UNIFIED_THREAD_LIMITS = "
+CASE_FILES = ["bolted_joint_cases.json", "thread_stripping_cases.json", "thread_stripping_metric_cases.json"]
+# Thread data the page embeds, and the data file each copy must match
+EMBEDS = [("const UNIFIED_THREAD_LIMITS = ", ROOT / "data" / "unified_thread_limits.json"),
+          ("const METRIC_THREAD_LIMITS = ", ROOT / "data" / "metric_thread_limits.json")]
 
 
 def newest_page():
@@ -57,13 +59,16 @@ def main():
     harness = (HERE / "bolted_joint_harness.js").read_text(encoding="utf-8")
     results = run_js(f"{core}\nconst SUITES = [{suites}];\n{harness}")
 
-    # The page embeds the thread data; make sure it is still the same as the data file.
-    if EMBED in core:
-        start = core.index(EMBED) + len(EMBED)
+    # The page embeds the thread data; make sure each copy is still the same as its data file.
+    for embed, data_file in EMBEDS:
+        if embed not in core:
+            continue
+        start = core.index(embed) + len(embed)
         embedded, _ = json.JSONDecoder().raw_decode(core[start:])
-        same = embedded == json.loads(DATA_FILE.read_text(encoding="utf-8"))
-        results.append({"file": "data/unified_thread_limits.json", "id": "embedded_thread_data",
-                        "title": "Thread data embedded in the page matches the data file",
+        same = embedded == json.loads(data_file.read_text(encoding="utf-8"))
+        name = data_file.relative_to(ROOT).as_posix()
+        results.append({"file": name, "id": "embedded_thread_data",
+                        "title": f"Thread data embedded in the page matches {name}",
                         "checks": [{"path": "identical", "expected": True, "actual": same, "ok": same}]})
 
     shown = page.resolve().relative_to(ROOT) if page.resolve().is_relative_to(ROOT) else page

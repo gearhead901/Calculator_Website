@@ -1,7 +1,8 @@
 /* Test harness for the bolted joint calculator (including its thread stripping check).
    tests/run_bolted_joint_tests.py glues three things together and runs them in a JavaScript engine:
      1. the "BOLTED JOINT CORE" block cut straight out of the newest prototype page (the code the site runs),
-     2. const SUITES = [{ file, data }] — tests/bolted_joint_cases.json and tests/thread_stripping_cases.json,
+     2. const SUITES = [{ file, data }] — tests/bolted_joint_cases.json, tests/thread_stripping_cases.json and
+        tests/thread_stripping_metric_cases.json,
      3. this file.
    Each case is run through an adapter that converts its inputs into the calculator's units, runs it, and builds an
    "actual" object shaped like the case's "expected" object. Every number in "expected" is compared with the matching
@@ -92,6 +93,22 @@ function strippingAdapter(c){
   return act;
 }
 
+// Metric thread stripping cases (same formulas, mm / MPa / N, internal class always 6H).
+function metricStrippingAdapter(c){
+  const i = c.inputs, t = BJ.metricLimits(i.thread);
+  if (!t) throw new Error(`Thread ${i.thread} is not in the embedded metric thread data`);
+  const SutExt = i.Sut_external_MPa ?? 830, SutInt = i.Sut_internal_MPa ?? SutExt;
+  const r = BJ.stripping({ mthread:t, mcls:i.external_class, SutExt, SutInt, L:i.engagement_mm, tau:0.5 });
+  const act = {
+    thread_data_used:{ Es_min:r.Es, Ds_min:r.Ds, Kn_max:r.Kn, En_max:r.En, pitch:t.pitch, d:r.D },
+    At_mm2:r.At, Le_formula1_mm:r.Le, Le_over_d:r.Le/r.D, As_at_Le_mm2:r.AsLe, An_at_Le_mm2:r.AnLe,
+    As_per_mm_engagement:r.aS, An_per_mm_engagement:r.aN,
+    J:r.J, required_engagement_mm:r.required, internal_strips_first_at_Le:r.internalFirst,
+  };
+  if (r.loads){ act.at_engagement_mm = r.L; act['failure_loads_N_tau_0.5Sut'] = r.loads; act.governing_failure = r.governing; }
+  return act;
+}
+
 // Compare every number in `exp` with the same path in `act`.
 function compare(exp, act, tol, path, out){
   if (typeof exp === 'boolean' || (typeof exp === 'string' && typeof act === 'string')){
@@ -111,7 +128,8 @@ function compare(exp, act, tol, path, out){
 function runAll(){
   return SUITES.flatMap(s => s.data.cases.map(c => {
     const tol = s.data.tolerance_relative;
-    const adapt = ADAPTERS[c.id] || (s.file === 'thread_stripping_cases.json' ? strippingAdapter : null);
+    const adapt = ADAPTERS[c.id] || (s.file === 'thread_stripping_cases.json' ? strippingAdapter
+      : s.file === 'thread_stripping_metric_cases.json' ? metricStrippingAdapter : null);
     const base = { file:s.file, id:c.id, title:c.title, checks:[] };
     if (!adapt) return { ...base, error:'No adapter for this case in tests/bolted_joint_harness.js' };
     // also check the thread data the case says it used, when it lists it

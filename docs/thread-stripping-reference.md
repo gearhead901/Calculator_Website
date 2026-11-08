@@ -6,10 +6,11 @@ How to tell whether a threaded connection will fail by the **screw breaking**, t
 
 This file is a paraphrase plus equations. Formula numbers (1)–(6) match the handbook.
 
-- Thread data: [`data/unified_thread_limits.json`](../data/unified_thread_limits.json) (UNC and UNF, #4 through 1-1/2 in, classes 2A/2B and 3A/3B)
-- Test cases: [`tests/thread_stripping_cases.json`](../tests/thread_stripping_cases.json)
+- Thread data, inch: [`data/unified_thread_limits.json`](../data/unified_thread_limits.json) (UNC and UNF, #4 through 1-1/2 in, classes 2A/2B and 3A/3B)
+- Thread data, metric: [`data/metric_thread_limits.json`](../data/metric_thread_limits.json) (ISO M-profile, M1.6 through M100, coarse and fine pitches, internal 6H, external 6g / 6h / 4g6g)
+- Test cases: [`tests/thread_stripping_cases.json`](../tests/thread_stripping_cases.json) (inch), [`tests/thread_stripping_metric_cases.json`](../tests/thread_stripping_metric_cases.json) (metric)
 
-Inch Unified threads only. The handbook section doesn't give a metric version.
+The handbook states the formulas in inches, but they work for metric threads too. See section 7.
 
 ---
 
@@ -141,3 +142,41 @@ These are computed from the formulas and the data file, and they are in the test
 | 5/8-11 UNC | 0.2260 | 0.453 | 0.73 |
 
 So with matched materials, about 0.7–0.8 D of full thread engagement is enough. That explains why a standard nut, about 0.875 D thick, develops the full bolt strength. In weaker hole materials J pushes this up: a 120 ksi steel screw in 45 ksi aluminum needs about 1.85× as much.
+
+---
+
+## 7. Metric (ISO M-profile) threads
+
+**Why the same formulas work:** formulas (1), (3), (4), (5) and (6) are pure geometry of a 60° thread (0.57735 = tan 30°). ISO metric and Unified inch threads share the same 60° basic profile. So the formulas work in any consistent units if **n = threads per unit length**:
+- inch: n = threads per inch, lengths in inches, strengths in psi, loads in lbf;
+- metric: **n = 1/P** per mm (P = pitch in mm), lengths in mm, strengths in MPa, loads in N (MPa × mm² = N).
+
+**Tensile-stress area:** metric threads use the ISO 898-1 area, which differs slightly from the Unified formula (2a) because ISO defines the root differently:
+
+  A_t = (π/4) · (d − 0.9382 · P)²
+
+It gives the standard values: M6 20.1 mm², M10 58.0 mm², M12 84.3 mm². Formula (2b), for screws over 180 ksi (1241 MPa), is also plain 60° geometry and applies to both. No standard ISO property class reaches that strength; class 12.9 is 1220 MPa.
+
+**Thread limits:** from *Machinery's Handbook* 31st ed., Table 12 "Internal Metric Thread – M Profile Limiting Dimensions" and Table 13 "External Metric Thread – M Profile Limiting Dimensions", ANSI/ASME B1.13M-2005, which matches ISO 965. These are on book pages 2027–2032 (PDF pages 2038–2043).
+
+| Formula symbol | Metric data field |
+|---|---|
+| E_s min (external pitch dia., min) | `6g.pitch_min` (or `6h`, `4g6g`) |
+| D_s min (external major dia., min) | `6g.major_min` |
+| K_n max (internal minor dia., max) | `6H.minor_max` |
+| E_n max (internal pitch dia., max) | `6H.pitch_max` |
+
+**Classes:** 6g/6H is the normal commercial fit, like 2A/2B. 6h has no allowance, so it overlaps the hole slightly more and needs a little less engagement. 4g6g has a tighter pitch-diameter tolerance. The handbook lists internal threads in class 6H only.
+
+**Spot check:** for M10 × 1.5, the 6g pitch diameter is 8.994/8.862 mm and the 6H minor diameter max is 8.676 mm. Both match ISO 965-2.
+
+**Typical results (6g/6H, equal strengths):**
+
+| Thread | A_t (mm²) | L_e by formula (1) (mm) | L_e / d |
+|---|---|---|---|
+| M6 × 1 | 20.1 | 4.66 | 0.78 |
+| M10 × 1.5 | 58.0 | 7.44 | 0.74 |
+| M10 × 1.25 | 61.2 | 7.81 | 0.78 |
+| M12 × 1.75 | 84.3 | 8.88 | 0.74 |
+
+These are in line with the inch results (about 0.7–0.8 d). For example, M12 needs 8.9 mm (0.35 in) and the similar-size 1/2-13 UNC needs 0.364 in.

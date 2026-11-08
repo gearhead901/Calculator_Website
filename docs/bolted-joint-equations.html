@@ -338,7 +338,7 @@ const n0 = P &gt; 0 ? Fi/(P*(1 - C)) : Infinity;      // (8-30)</pre>
     <p class="say">Round up, then recheck all three factors with the new N.</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">boltsFor()</span><span>v7 line 2620</span></div>
+    <div class="codehead"><span class="fn">boltsFor()</span><span>v7 line 2635</span></div>
 <pre>const boltsFor = (C, nL, Ptotal, Fp, Fi) =&gt;
   C*nL*Ptotal/(Fp - Fi);</pre>
   </div>
@@ -421,7 +421,7 @@ if (Fi &gt; FiMax) warnings.push('Preload is above (1 − C)·S_ut·A_t (eq. 8-5
 
 <!-- ================= STRIPPING ================= -->
 <h2 id="stripping">6 · Thread stripping</h2>
-<p class="h2note">Not from Shigley. This part is from <b>Machinery's Handbook, 31st ed.</b>, book pages 1668–1669. It uses its formula numbers (1)–(6) and inch units: in, psi, lbf.</p>
+<p class="h2note">Not from Shigley. This part is from <b>Machinery's Handbook, 31st ed.</b>, book pages 1668–1669. It uses its formula numbers (1)–(6). The formulas are 60° thread geometry, so the same code handles Unified inch threads (in, psi, lbf, n = threads per inch) and ISO metric threads (mm, MPa, N, n = 1/P per mm).</p>
 
 <section class="step">
   <div class="book">
@@ -433,7 +433,7 @@ if (Fi &gt; FiMax) warnings.push('Preload is above (1 − C)·S_ut·A_t (eq. 8-5
     <ul class="vars"><li><b>A<sub>s</sub></b> external (screw) thread shear area · <b>A<sub>n</sub></b> internal (nut or hole) thread shear area</li><li>The four diameters come from the thread class table, in the data file</li></ul>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">stripping()</span><span>v7 lines 2602–2607</span></div>
+    <div class="codehead"><span class="fn">stripping()</span><span>v7 lines 2616–2622</span></div>
 <pre>const Es = ext.pitch_min, Ds = ext.major_min,
       Kn = int.minor_max, En = int.pitch_max;
 // per inch of engagement (multiply by L to get the area)
@@ -448,12 +448,13 @@ const Le = 2*At / (Math.PI*Kn*(0.5 + 0.57735*n*(Es - Kn))); // (1)</pre>
     <h3>Weaker nut or hole material</h3>
     <p class="ref"><span class="eq">MH formulas (3), (4), (2a), (2b)</span></p>
     <math display="block"><mi>J</mi><mo>=</mo><mfrac><mrow><msub><mi>A</mi><mi>s</mi></msub><mo>×</mo><msub><mi>S</mi><mtext>ut, screw</mtext></msub></mrow><mrow><msub><mi>A</mi><mi>n</mi></msub><mo>×</mo><msub><mi>S</mi><mtext>ut, nut/hole</mtext></msub></mrow></mfrac><mspace width="2em"/><mi>Q</mi><mo>=</mo><mi>J</mi><msub><mi>L</mi><mi>e</mi></msub></math>
-    <p class="say">J &gt; 1 means the internal thread strips first, so engage Q instead of L<sub>e</sub>. For screws over 180 ksi, A<sub>t</sub> uses (2b): π(E<sub>s min</sub>/2 − 0.16238/n)².</p>
+    <p class="say">J &gt; 1 means the internal thread strips first, so engage Q instead of L<sub>e</sub>. For screws over 180 ksi, A<sub>t</sub> uses (2b): π(E<sub>s min</sub>/2 − 0.16238/n)². Metric threads use the ISO 898-1 area π/4 (d − 0.9382P)².</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">stripping()</span><span>v7 lines 2603–2604, 2608–2616</span></div>
-<pre>const At = s.SutExt &gt; 180000
+    <div class="codehead"><span class="fn">stripping()</span><span>v7 lines 2617–2619, 2623–2630</span></div>
+<pre>const At = highStrength                       // S_ut &gt; 180 ksi (1241 MPa)
   ? Math.PI*(Es/2 - 0.16238/n)**2              // (2b)
+  : metric ? Math.PI/4*(D - 0.9382*t.pitch)**2 // ISO 898-1
   : 0.7854*(D - 0.9743/n)**2;                  // (2a)
 const J = (aS*Le*s.SutExt) / (aN*Le*s.SutInt);  // (3)
 const Q = J*Le;                                 // (4)
