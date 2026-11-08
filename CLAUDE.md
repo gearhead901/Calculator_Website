@@ -29,9 +29,10 @@ Paths use `~` and `%USERPROFILE%` (the user's home folder) so usernames don't ap
 
 ## Calculator design notes
 
-Engineering method summaries for each calculator live in `docs/`, and known-answer test cases live in `tests/`. Read these instead of the big reference PDFs; open a PDF only for a specific page the notes don't cover. Write new notes in your own words with equations and data (the repo is public, so don't copy book text).
+Engineering method summaries for each calculator live in `docs/`, known-answer test cases live in `tests/`, and shared engineering data (thread tables etc.) lives in `data/`. Read these instead of the big reference PDFs; open a PDF only for a specific page the notes don't cover. Write new notes in your own words with equations and data (the repo is public, so don't copy book text).
 
 - Bolted joint: `docs/bolted-joint-reference.md`, `tests/bolted_joint_cases.json`
+- Thread stripping (screw break vs. external or internal thread strip, length of engagement): `docs/thread-stripping-reference.md`, `tests/thread_stripping_cases.json`, thread data in `data/unified_thread_limits.json`
 
 ## Public repo: keep personal info out
 

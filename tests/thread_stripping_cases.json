@@ -1,0 +1,273 @@
+{
+ "description": "Known-answer test cases for the thread stripping calculator. There is no worked example in the Machinery's Handbook section, so the expected values are computed from its formulas (1)-(6) (31st ed., book pp. 1668-1669) using data/unified_thread_limits.json. Method: docs/thread-stripping-reference.md. Units: in, in^2, psi, lbf.",
+ "tolerance_relative": 0.002,
+ "cases": [
+  {
+   "id": "mh_quarter20_equal",
+   "title": "1/4-20 UNC 2A/2B, equal-strength materials",
+   "inputs": {
+    "thread": "1/4-20 UNC",
+    "external_class": "2A",
+    "internal_class": "2B"
+   },
+   "thread_data_used": {
+    "Es_min": 0.2127,
+    "Ds_min": 0.2408,
+    "Kn_max": 0.207,
+    "En_max": 0.2224,
+    "n": 20,
+    "D": 0.25
+   },
+   "expected": {
+    "At_in2": 0.03182,
+    "Le_formula1_in": 0.173,
+    "As_at_Le_in2": 0.06364,
+    "An_at_Le_in2": 0.09322,
+    "As_per_in_engagement": 0.36796,
+    "An_per_in_engagement": 0.53898
+   },
+   "notes": "Check: As at Le should equal 2*At exactly (definition of formula 1)."
+  },
+  {
+   "id": "mh_half13_equal",
+   "title": "1/2-13 UNC 2A/2B, equal-strength materials",
+   "inputs": {
+    "thread": "1/2-13 UNC",
+    "external_class": "2A",
+    "internal_class": "2B"
+   },
+   "thread_data_used": {
+    "Es_min": 0.4435,
+    "Ds_min": 0.4876,
+    "Kn_max": 0.434,
+    "En_max": 0.4565,
+    "n": 13,
+    "D": 0.5
+   },
+   "expected": {
+    "At_in2": 0.1419,
+    "Le_formula1_in": 0.3643,
+    "As_at_Le_in2": 0.2838,
+    "An_at_Le_in2": 0.40933,
+    "As_per_in_engagement": 0.77894,
+    "An_per_in_engagement": 1.12349
+   },
+   "notes": "Es_min 0.4435 matches the independent EngineersEdge example."
+  },
+  {
+   "id": "mh_half13_class3",
+   "title": "1/2-13 UNC 3A/3B: tighter class needs less engagement",
+   "inputs": {
+    "thread": "1/2-13 UNC",
+    "external_class": "3A",
+    "internal_class": "3B"
+   },
+   "thread_data_used": {
+    "Es_min": 0.4463,
+    "Ds_min": 0.4891,
+    "Kn_max": 0.4284,
+    "En_max": 0.4548,
+    "n": 13,
+    "D": 0.5
+   },
+   "expected": {
+    "At_in2": 0.1419,
+    "Le_formula1_in": 0.3324,
+    "As_at_Le_in2": 0.2838,
+    "An_at_Le_in2": 0.38688,
+    "As_per_in_engagement": 0.85374,
+    "An_per_in_engagement": 1.16385
+   }
+  },
+  {
+   "id": "mh_fiveeighths11_equal",
+   "title": "5/8-11 UNC 2A/2B, equal-strength materials",
+   "inputs": {
+    "thread": "5/8-11 UNC",
+    "external_class": "2A",
+    "internal_class": "2B"
+   },
+   "thread_data_used": {
+    "Es_min": 0.5588,
+    "Ds_min": 0.6112,
+    "Kn_max": 0.546,
+    "En_max": 0.5732,
+    "n": 11,
+    "D": 0.625
+   },
+   "expected": {
+    "At_in2": 0.226,
+    "Le_formula1_in": 0.4533,
+    "As_at_Le_in2": 0.452,
+    "An_at_Le_in2": 0.64529,
+    "As_per_in_engagement": 0.99709,
+    "An_per_in_engagement": 1.42346
+   }
+  },
+  {
+   "id": "mh_threeeighths24_unf",
+   "title": "3/8-24 UNF 2A/2B, fine thread",
+   "inputs": {
+    "thread": "3/8-24 UNF",
+    "external_class": "2A",
+    "internal_class": "2B"
+   },
+   "thread_data_used": {
+    "Es_min": 0.343,
+    "Ds_min": 0.3667,
+    "Kn_max": 0.34,
+    "En_max": 0.3528,
+    "n": 24,
+    "D": 0.375
+   },
+   "expected": {
+    "At_in2": 0.08783,
+    "Le_formula1_in": 0.3037,
+    "As_at_Le_in2": 0.17566,
+    "An_at_Le_in2": 0.24229,
+    "As_per_in_engagement": 0.57847,
+    "An_per_in_engagement": 0.7979
+   }
+  },
+  {
+   "id": "mh_half13_steel_in_aluminum",
+   "title": "Grade 5 steel screw (120 ksi) into aluminum (45 ksi tensile)",
+   "inputs": {
+    "thread": "1/2-13 UNC",
+    "external_class": "2A",
+    "internal_class": "2B",
+    "Sut_external_psi": 120000,
+    "Sut_internal_psi": 45000
+   },
+   "thread_data_used": {
+    "Es_min": 0.4435,
+    "Ds_min": 0.4876,
+    "Kn_max": 0.434,
+    "En_max": 0.4565,
+    "n": 13,
+    "D": 0.5
+   },
+   "expected": {
+    "At_in2": 0.1419,
+    "Le_formula1_in": 0.3643,
+    "As_at_Le_in2": 0.2838,
+    "An_at_Le_in2": 0.40933,
+    "As_per_in_engagement": 0.77894,
+    "An_per_in_engagement": 1.12349,
+    "J": 1.8489,
+    "required_engagement_in": 0.6736,
+    "internal_strips_first_at_Le": true
+   },
+   "notes": "J > 1 so the internal (aluminum) thread is the weak link; required engagement = J * Le."
+  },
+  {
+   "id": "mh_quarter20_grade8_in_grade5_nut",
+   "title": "Grade 8 screw (150 ksi) in grade 5 nut (120 ksi)",
+   "inputs": {
+    "thread": "1/4-20 UNC",
+    "external_class": "2A",
+    "internal_class": "2B",
+    "Sut_external_psi": 150000,
+    "Sut_internal_psi": 120000
+   },
+   "thread_data_used": {
+    "Es_min": 0.2127,
+    "Ds_min": 0.2408,
+    "Kn_max": 0.207,
+    "En_max": 0.2224,
+    "n": 20,
+    "D": 0.25
+   },
+   "expected": {
+    "At_in2": 0.03182,
+    "Le_formula1_in": 0.173,
+    "As_at_Le_in2": 0.06364,
+    "An_at_Le_in2": 0.09322,
+    "As_per_in_engagement": 0.36796,
+    "An_per_in_engagement": 0.53898,
+    "J": 0.8534,
+    "required_engagement_in": 0.173,
+    "internal_strips_first_at_Le": false
+   },
+   "notes": "J < 1: formula (1) length is enough even though the nut is weaker, because internal shear area is larger than external."
+  },
+  {
+   "id": "strip_check_half13_aluminum_short",
+   "title": "1/2-13 steel screw in aluminum with only 0.5 in of engagement",
+   "inputs": {
+    "thread": "1/2-13 UNC",
+    "external_class": "2A",
+    "internal_class": "2B",
+    "Sut_external_psi": 120000,
+    "Sut_internal_psi": 45000,
+    "engagement_in": 0.5
+   },
+   "thread_data_used": {
+    "Es_min": 0.4435,
+    "Ds_min": 0.4876,
+    "Kn_max": 0.434,
+    "En_max": 0.4565,
+    "n": 13,
+    "D": 0.5
+   },
+   "expected": {
+    "At_in2": 0.1419,
+    "Le_formula1_in": 0.3643,
+    "As_at_Le_in2": 0.2838,
+    "An_at_Le_in2": 0.40933,
+    "As_per_in_engagement": 0.77894,
+    "An_per_in_engagement": 1.12349,
+    "J": 1.8489,
+    "required_engagement_in": 0.6736,
+    "internal_strips_first_at_Le": true,
+    "at_engagement_in": 0.5,
+    "failure_loads_lbf_tau_0.5Sut": {
+     "screw_break": 17027.9,
+     "external_strip": 23368.3,
+     "internal_strip": 12639.2
+    },
+    "governing_failure": "internal_strip"
+   },
+   "notes": "Calculator-extension case (section 4 of the doc), shear strength taken as 0.5*Sut. Internal thread strips before the screw breaks."
+  },
+  {
+   "id": "strip_check_half13_aluminum_long",
+   "title": "Same, with 0.75 in of engagement (beyond Q)",
+   "inputs": {
+    "thread": "1/2-13 UNC",
+    "external_class": "2A",
+    "internal_class": "2B",
+    "Sut_external_psi": 120000,
+    "Sut_internal_psi": 45000,
+    "engagement_in": 0.75
+   },
+   "thread_data_used": {
+    "Es_min": 0.4435,
+    "Ds_min": 0.4876,
+    "Kn_max": 0.434,
+    "En_max": 0.4565,
+    "n": 13,
+    "D": 0.5
+   },
+   "expected": {
+    "At_in2": 0.1419,
+    "Le_formula1_in": 0.3643,
+    "As_at_Le_in2": 0.2838,
+    "An_at_Le_in2": 0.40933,
+    "As_per_in_engagement": 0.77894,
+    "An_per_in_engagement": 1.12349,
+    "J": 1.8489,
+    "required_engagement_in": 0.6736,
+    "internal_strips_first_at_Le": true,
+    "at_engagement_in": 0.75,
+    "failure_loads_lbf_tau_0.5Sut": {
+     "screw_break": 17027.9,
+     "external_strip": 35052.5,
+     "internal_strip": 18958.8
+    },
+    "governing_failure": "screw_break"
+   },
+   "notes": "Engagement exceeds Q, so the screw breaks first."
+  }
+ ]
+}

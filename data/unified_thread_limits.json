@@ -1,0 +1,1406 @@
+{
+ "description": "Unified inch screw thread limits (ASME B1.1), classes 2A/2B and 3A/3B, UNC and UNF, #4 through 1-1/2 in. Dimensions in inches. Transcribed from Machinery's Handbook 31st ed., Table 3 'Standard Series and Selected Combinations - Unified Screw Threads' (book pages 1951-1974, PDF pages 1962-1985). External (A) fields are the screw; internal (B) fields are the nut or tapped hole. Used by the thread stripping calculator; see docs/thread-stripping-reference.md.",
+ "units": "in",
+ "threads": [
+  {
+   "designation": "#4-40 UNC",
+   "basic_major_d": 0.112,
+   "tpi": 40,
+   "2A": {
+    "allowance": 0.0008,
+    "major_max": 0.1112,
+    "major_min": 0.1061,
+    "pitch_max": 0.095,
+    "pitch_min": 0.0925,
+    "unr_minor_max": 0.0814
+   },
+   "2B": {
+    "minor_min": 0.0849,
+    "minor_max": 0.0939,
+    "pitch_min": 0.0958,
+    "pitch_max": 0.0991,
+    "major_min": 0.112
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.112,
+    "major_min": 0.1069,
+    "pitch_max": 0.0958,
+    "pitch_min": 0.0939,
+    "unr_minor_max": 0.0822
+   },
+   "3B": {
+    "minor_min": 0.0849,
+    "minor_max": 0.0939,
+    "pitch_min": 0.0958,
+    "pitch_max": 0.0982,
+    "major_min": 0.112
+   }
+  },
+  {
+   "designation": "#4-48 UNF",
+   "basic_major_d": 0.112,
+   "tpi": 48,
+   "2A": {
+    "allowance": 0.0007,
+    "major_max": 0.1113,
+    "major_min": 0.1068,
+    "pitch_max": 0.0978,
+    "pitch_min": 0.0954,
+    "unr_minor_max": 0.0865
+   },
+   "2B": {
+    "minor_min": 0.0894,
+    "minor_max": 0.0968,
+    "pitch_min": 0.0985,
+    "pitch_max": 0.1016,
+    "major_min": 0.112
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.112,
+    "major_min": 0.1075,
+    "pitch_max": 0.0985,
+    "pitch_min": 0.0967,
+    "unr_minor_max": 0.0872
+   },
+   "3B": {
+    "minor_min": 0.0894,
+    "minor_max": 0.0968,
+    "pitch_min": 0.0985,
+    "pitch_max": 0.1008,
+    "major_min": 0.112
+   }
+  },
+  {
+   "designation": "#5-40 UNC",
+   "basic_major_d": 0.125,
+   "tpi": 40,
+   "2A": {
+    "allowance": 0.0008,
+    "major_max": 0.1242,
+    "major_min": 0.1191,
+    "pitch_max": 0.108,
+    "pitch_min": 0.1054,
+    "unr_minor_max": 0.0944
+   },
+   "2B": {
+    "minor_min": 0.0979,
+    "minor_max": 0.1062,
+    "pitch_min": 0.1088,
+    "pitch_max": 0.1121,
+    "major_min": 0.125
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.125,
+    "major_min": 0.1199,
+    "pitch_max": 0.1088,
+    "pitch_min": 0.1069,
+    "unr_minor_max": 0.0952
+   },
+   "3B": {
+    "minor_min": 0.0979,
+    "minor_max": 0.1062,
+    "pitch_min": 0.1088,
+    "pitch_max": 0.1113,
+    "major_min": 0.125
+   }
+  },
+  {
+   "designation": "#5-44 UNF",
+   "basic_major_d": 0.125,
+   "tpi": 44,
+   "2A": {
+    "allowance": 0.0007,
+    "major_max": 0.1243,
+    "major_min": 0.1195,
+    "pitch_max": 0.1095,
+    "pitch_min": 0.107,
+    "unr_minor_max": 0.0972
+   },
+   "2B": {
+    "minor_min": 0.1004,
+    "minor_max": 0.1079,
+    "pitch_min": 0.1102,
+    "pitch_max": 0.1134,
+    "major_min": 0.125
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.125,
+    "major_min": 0.1202,
+    "pitch_max": 0.1102,
+    "pitch_min": 0.1083,
+    "unr_minor_max": 0.0979
+   },
+   "3B": {
+    "minor_min": 0.1004,
+    "minor_max": 0.1079,
+    "pitch_min": 0.1102,
+    "pitch_max": 0.1126,
+    "major_min": 0.125
+   }
+  },
+  {
+   "designation": "#6-32 UNC",
+   "basic_major_d": 0.138,
+   "tpi": 32,
+   "2A": {
+    "allowance": 0.0008,
+    "major_max": 0.1372,
+    "major_min": 0.1312,
+    "pitch_max": 0.1169,
+    "pitch_min": 0.1141,
+    "unr_minor_max": 0.1
+   },
+   "2B": {
+    "minor_min": 0.104,
+    "minor_max": 0.114,
+    "pitch_min": 0.1177,
+    "pitch_max": 0.1214,
+    "major_min": 0.138
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.138,
+    "major_min": 0.132,
+    "pitch_max": 0.1177,
+    "pitch_min": 0.1156,
+    "unr_minor_max": 0.1008
+   },
+   "3B": {
+    "minor_min": 0.104,
+    "minor_max": 0.1139,
+    "pitch_min": 0.1177,
+    "pitch_max": 0.1204,
+    "major_min": 0.138
+   }
+  },
+  {
+   "designation": "#6-40 UNF",
+   "basic_major_d": 0.138,
+   "tpi": 40,
+   "2A": {
+    "allowance": 0.0008,
+    "major_max": 0.1372,
+    "major_min": 0.1321,
+    "pitch_max": 0.121,
+    "pitch_min": 0.1184,
+    "unr_minor_max": 0.1074
+   },
+   "2B": {
+    "minor_min": 0.111,
+    "minor_max": 0.119,
+    "pitch_min": 0.1218,
+    "pitch_max": 0.1252,
+    "major_min": 0.138
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.138,
+    "major_min": 0.1329,
+    "pitch_max": 0.1218,
+    "pitch_min": 0.1198,
+    "unr_minor_max": 0.1082
+   },
+   "3B": {
+    "minor_min": 0.111,
+    "minor_max": 0.1186,
+    "pitch_min": 0.1218,
+    "pitch_max": 0.1243,
+    "major_min": 0.138
+   }
+  },
+  {
+   "designation": "#8-32 UNC",
+   "basic_major_d": 0.164,
+   "tpi": 32,
+   "2A": {
+    "allowance": 0.0009,
+    "major_max": 0.1631,
+    "major_min": 0.1571,
+    "pitch_max": 0.1428,
+    "pitch_min": 0.1399,
+    "unr_minor_max": 0.1259
+   },
+   "2B": {
+    "minor_min": 0.13,
+    "minor_max": 0.139,
+    "pitch_min": 0.1437,
+    "pitch_max": 0.1475,
+    "major_min": 0.164
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.164,
+    "major_min": 0.158,
+    "pitch_max": 0.1437,
+    "pitch_min": 0.1415,
+    "unr_minor_max": 0.1268
+   },
+   "3B": {
+    "minor_min": 0.13,
+    "minor_max": 0.1388,
+    "pitch_min": 0.1437,
+    "pitch_max": 0.1465,
+    "major_min": 0.164
+   }
+  },
+  {
+   "designation": "#8-36 UNF",
+   "basic_major_d": 0.164,
+   "tpi": 36,
+   "2A": {
+    "allowance": 0.0008,
+    "major_max": 0.1632,
+    "major_min": 0.1577,
+    "pitch_max": 0.1452,
+    "pitch_min": 0.1424,
+    "unr_minor_max": 0.1301
+   },
+   "2B": {
+    "minor_min": 0.134,
+    "minor_max": 0.142,
+    "pitch_min": 0.146,
+    "pitch_max": 0.1496,
+    "major_min": 0.164
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.164,
+    "major_min": 0.1585,
+    "pitch_max": 0.146,
+    "pitch_min": 0.1439,
+    "unr_minor_max": 0.1309
+   },
+   "3B": {
+    "minor_min": 0.134,
+    "minor_max": 0.1416,
+    "pitch_min": 0.146,
+    "pitch_max": 0.1487,
+    "major_min": 0.164
+   }
+  },
+  {
+   "designation": "#10-24 UNC",
+   "basic_major_d": 0.19,
+   "tpi": 24,
+   "2A": {
+    "allowance": 0.001,
+    "major_max": 0.189,
+    "major_min": 0.1818,
+    "pitch_max": 0.1619,
+    "pitch_min": 0.1586,
+    "unr_minor_max": 0.1394
+   },
+   "2B": {
+    "minor_min": 0.145,
+    "minor_max": 0.155,
+    "pitch_min": 0.1629,
+    "pitch_max": 0.1672,
+    "major_min": 0.19
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.19,
+    "major_min": 0.1828,
+    "pitch_max": 0.1629,
+    "pitch_min": 0.1604,
+    "unr_minor_max": 0.1404
+   },
+   "3B": {
+    "minor_min": 0.145,
+    "minor_max": 0.1555,
+    "pitch_min": 0.1629,
+    "pitch_max": 0.1661,
+    "major_min": 0.19
+   }
+  },
+  {
+   "designation": "#10-32 UNF",
+   "basic_major_d": 0.19,
+   "tpi": 32,
+   "2A": {
+    "allowance": 0.0009,
+    "major_max": 0.1891,
+    "major_min": 0.1831,
+    "pitch_max": 0.1688,
+    "pitch_min": 0.1658,
+    "unr_minor_max": 0.1519
+   },
+   "2B": {
+    "minor_min": 0.156,
+    "minor_max": 0.164,
+    "pitch_min": 0.1697,
+    "pitch_max": 0.1736,
+    "major_min": 0.19
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.19,
+    "major_min": 0.184,
+    "pitch_max": 0.1697,
+    "pitch_min": 0.1674,
+    "unr_minor_max": 0.1528
+   },
+   "3B": {
+    "minor_min": 0.156,
+    "minor_max": 0.1641,
+    "pitch_min": 0.1697,
+    "pitch_max": 0.1726,
+    "major_min": 0.19
+   }
+  },
+  {
+   "designation": "#12-24 UNC",
+   "basic_major_d": 0.216,
+   "tpi": 24,
+   "2A": {
+    "allowance": 0.001,
+    "major_max": 0.215,
+    "major_min": 0.2078,
+    "pitch_max": 0.1879,
+    "pitch_min": 0.1845,
+    "unr_minor_max": 0.1654
+   },
+   "2B": {
+    "minor_min": 0.171,
+    "minor_max": 0.181,
+    "pitch_min": 0.1889,
+    "pitch_max": 0.1933,
+    "major_min": 0.216
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.216,
+    "major_min": 0.2088,
+    "pitch_max": 0.1889,
+    "pitch_min": 0.1863,
+    "unr_minor_max": 0.1664
+   },
+   "3B": {
+    "minor_min": 0.171,
+    "minor_max": 0.1807,
+    "pitch_min": 0.1889,
+    "pitch_max": 0.1922,
+    "major_min": 0.216
+   }
+  },
+  {
+   "designation": "#12-28 UNF",
+   "basic_major_d": 0.216,
+   "tpi": 28,
+   "2A": {
+    "allowance": 0.001,
+    "major_max": 0.215,
+    "major_min": 0.2085,
+    "pitch_max": 0.1918,
+    "pitch_min": 0.1886,
+    "unr_minor_max": 0.1725
+   },
+   "2B": {
+    "minor_min": 0.177,
+    "minor_max": 0.186,
+    "pitch_min": 0.1928,
+    "pitch_max": 0.197,
+    "major_min": 0.216
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.216,
+    "major_min": 0.2095,
+    "pitch_max": 0.1928,
+    "pitch_min": 0.1904,
+    "unr_minor_max": 0.1735
+   },
+   "3B": {
+    "minor_min": 0.177,
+    "minor_max": 0.1857,
+    "pitch_min": 0.1928,
+    "pitch_max": 0.1959,
+    "major_min": 0.216
+   }
+  },
+  {
+   "designation": "1/4-20 UNC",
+   "basic_major_d": 0.25,
+   "tpi": 20,
+   "2A": {
+    "allowance": 0.0011,
+    "major_max": 0.2489,
+    "major_min": 0.2408,
+    "pitch_max": 0.2164,
+    "pitch_min": 0.2127,
+    "unr_minor_max": 0.1894
+   },
+   "2B": {
+    "minor_min": 0.196,
+    "minor_max": 0.207,
+    "pitch_min": 0.2175,
+    "pitch_max": 0.2224,
+    "major_min": 0.25
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.25,
+    "major_min": 0.2419,
+    "pitch_max": 0.2175,
+    "pitch_min": 0.2147,
+    "unr_minor_max": 0.1905
+   },
+   "3B": {
+    "minor_min": 0.196,
+    "minor_max": 0.2067,
+    "pitch_min": 0.2175,
+    "pitch_max": 0.2211,
+    "major_min": 0.25
+   }
+  },
+  {
+   "designation": "1/4-28 UNF",
+   "basic_major_d": 0.25,
+   "tpi": 28,
+   "2A": {
+    "allowance": 0.001,
+    "major_max": 0.249,
+    "major_min": 0.2425,
+    "pitch_max": 0.2258,
+    "pitch_min": 0.2225,
+    "unr_minor_max": 0.2065
+   },
+   "2B": {
+    "minor_min": 0.211,
+    "minor_max": 0.22,
+    "pitch_min": 0.2268,
+    "pitch_max": 0.2311,
+    "major_min": 0.25
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.25,
+    "major_min": 0.2435,
+    "pitch_max": 0.2268,
+    "pitch_min": 0.2243,
+    "unr_minor_max": 0.2075
+   },
+   "3B": {
+    "minor_min": 0.211,
+    "minor_max": 0.219,
+    "pitch_min": 0.2268,
+    "pitch_max": 0.23,
+    "major_min": 0.25
+   }
+  },
+  {
+   "designation": "5/16-18 UNC",
+   "basic_major_d": 0.3125,
+   "tpi": 18,
+   "2A": {
+    "allowance": 0.0012,
+    "major_max": 0.3113,
+    "major_min": 0.3026,
+    "pitch_max": 0.2752,
+    "pitch_min": 0.2712,
+    "unr_minor_max": 0.2451
+   },
+   "2B": {
+    "minor_min": 0.252,
+    "minor_max": 0.265,
+    "pitch_min": 0.2764,
+    "pitch_max": 0.2817,
+    "major_min": 0.3125
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.3125,
+    "major_min": 0.3038,
+    "pitch_max": 0.2764,
+    "pitch_min": 0.2734,
+    "unr_minor_max": 0.2463
+   },
+   "3B": {
+    "minor_min": 0.252,
+    "minor_max": 0.263,
+    "pitch_min": 0.2764,
+    "pitch_max": 0.2803,
+    "major_min": 0.3125
+   }
+  },
+  {
+   "designation": "5/16-24 UNF",
+   "basic_major_d": 0.3125,
+   "tpi": 24,
+   "2A": {
+    "allowance": 0.0011,
+    "major_max": 0.3114,
+    "major_min": 0.3042,
+    "pitch_max": 0.2843,
+    "pitch_min": 0.2806,
+    "unr_minor_max": 0.2618
+   },
+   "2B": {
+    "minor_min": 0.267,
+    "minor_max": 0.277,
+    "pitch_min": 0.2854,
+    "pitch_max": 0.2902,
+    "major_min": 0.3125
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.3125,
+    "major_min": 0.3053,
+    "pitch_max": 0.2854,
+    "pitch_min": 0.2827,
+    "unr_minor_max": 0.2629
+   },
+   "3B": {
+    "minor_min": 0.267,
+    "minor_max": 0.2754,
+    "pitch_min": 0.2854,
+    "pitch_max": 0.289,
+    "major_min": 0.3125
+   }
+  },
+  {
+   "designation": "3/8-16 UNC",
+   "basic_major_d": 0.375,
+   "tpi": 16,
+   "2A": {
+    "allowance": 0.0013,
+    "major_max": 0.3737,
+    "major_min": 0.3643,
+    "pitch_max": 0.3331,
+    "pitch_min": 0.3287,
+    "unr_minor_max": 0.2993
+   },
+   "2B": {
+    "minor_min": 0.307,
+    "minor_max": 0.321,
+    "pitch_min": 0.3344,
+    "pitch_max": 0.3401,
+    "major_min": 0.375
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.375,
+    "major_min": 0.3656,
+    "pitch_max": 0.3344,
+    "pitch_min": 0.3311,
+    "unr_minor_max": 0.3006
+   },
+   "3B": {
+    "minor_min": 0.307,
+    "minor_max": 0.3182,
+    "pitch_min": 0.3344,
+    "pitch_max": 0.3387,
+    "major_min": 0.375
+   }
+  },
+  {
+   "designation": "3/8-24 UNF",
+   "basic_major_d": 0.375,
+   "tpi": 24,
+   "2A": {
+    "allowance": 0.0011,
+    "major_max": 0.3739,
+    "major_min": 0.3667,
+    "pitch_max": 0.3468,
+    "pitch_min": 0.343,
+    "unr_minor_max": 0.3243
+   },
+   "2B": {
+    "minor_min": 0.33,
+    "minor_max": 0.34,
+    "pitch_min": 0.3479,
+    "pitch_max": 0.3528,
+    "major_min": 0.375
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.375,
+    "major_min": 0.3678,
+    "pitch_max": 0.3479,
+    "pitch_min": 0.345,
+    "unr_minor_max": 0.3254
+   },
+   "3B": {
+    "minor_min": 0.33,
+    "minor_max": 0.3372,
+    "pitch_min": 0.3479,
+    "pitch_max": 0.3516,
+    "major_min": 0.375
+   }
+  },
+  {
+   "designation": "7/16-14 UNC",
+   "basic_major_d": 0.4375,
+   "tpi": 14,
+   "2A": {
+    "allowance": 0.0014,
+    "major_max": 0.4361,
+    "major_min": 0.4258,
+    "pitch_max": 0.3897,
+    "pitch_min": 0.385,
+    "unr_minor_max": 0.351
+   },
+   "2B": {
+    "minor_min": 0.36,
+    "minor_max": 0.376,
+    "pitch_min": 0.3911,
+    "pitch_max": 0.3972,
+    "major_min": 0.4375
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.4375,
+    "major_min": 0.4272,
+    "pitch_max": 0.3911,
+    "pitch_min": 0.3876,
+    "unr_minor_max": 0.3524
+   },
+   "3B": {
+    "minor_min": 0.36,
+    "minor_max": 0.3717,
+    "pitch_min": 0.3911,
+    "pitch_max": 0.3957,
+    "major_min": 0.4375
+   }
+  },
+  {
+   "designation": "7/16-20 UNF",
+   "basic_major_d": 0.4375,
+   "tpi": 20,
+   "2A": {
+    "allowance": 0.0013,
+    "major_max": 0.4362,
+    "major_min": 0.4281,
+    "pitch_max": 0.4037,
+    "pitch_min": 0.3995,
+    "unr_minor_max": 0.3767
+   },
+   "2B": {
+    "minor_min": 0.383,
+    "minor_max": 0.395,
+    "pitch_min": 0.405,
+    "pitch_max": 0.4104,
+    "major_min": 0.4375
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.4375,
+    "major_min": 0.4294,
+    "pitch_max": 0.405,
+    "pitch_min": 0.4019,
+    "unr_minor_max": 0.378
+   },
+   "3B": {
+    "minor_min": 0.383,
+    "minor_max": 0.3916,
+    "pitch_min": 0.405,
+    "pitch_max": 0.4091,
+    "major_min": 0.4375
+   }
+  },
+  {
+   "designation": "1/2-13 UNC",
+   "basic_major_d": 0.5,
+   "tpi": 13,
+   "2A": {
+    "allowance": 0.0015,
+    "major_max": 0.4985,
+    "major_min": 0.4876,
+    "pitch_max": 0.4485,
+    "pitch_min": 0.4435,
+    "unr_minor_max": 0.4069
+   },
+   "2B": {
+    "minor_min": 0.417,
+    "minor_max": 0.434,
+    "pitch_min": 0.45,
+    "pitch_max": 0.4565,
+    "major_min": 0.5
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.5,
+    "major_min": 0.4891,
+    "pitch_max": 0.45,
+    "pitch_min": 0.4463,
+    "unr_minor_max": 0.4084
+   },
+   "3B": {
+    "minor_min": 0.417,
+    "minor_max": 0.4284,
+    "pitch_min": 0.45,
+    "pitch_max": 0.4548,
+    "major_min": 0.5
+   }
+  },
+  {
+   "designation": "1/2-20 UNF",
+   "basic_major_d": 0.5,
+   "tpi": 20,
+   "2A": {
+    "allowance": 0.0013,
+    "major_max": 0.4987,
+    "major_min": 0.4906,
+    "pitch_max": 0.4662,
+    "pitch_min": 0.4619,
+    "unr_minor_max": 0.4392
+   },
+   "2B": {
+    "minor_min": 0.446,
+    "minor_max": 0.457,
+    "pitch_min": 0.4675,
+    "pitch_max": 0.4731,
+    "major_min": 0.5
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.5,
+    "major_min": 0.4919,
+    "pitch_max": 0.4675,
+    "pitch_min": 0.4643,
+    "unr_minor_max": 0.4405
+   },
+   "3B": {
+    "minor_min": 0.446,
+    "minor_max": 0.4537,
+    "pitch_min": 0.4675,
+    "pitch_max": 0.4717,
+    "major_min": 0.5
+   }
+  },
+  {
+   "designation": "9/16-12 UNC",
+   "basic_major_d": 0.5625,
+   "tpi": 12,
+   "2A": {
+    "allowance": 0.0016,
+    "major_max": 0.5609,
+    "major_min": 0.5495,
+    "pitch_max": 0.5068,
+    "pitch_min": 0.5016,
+    "unr_minor_max": 0.4617
+   },
+   "2B": {
+    "minor_min": 0.472,
+    "minor_max": 0.49,
+    "pitch_min": 0.5084,
+    "pitch_max": 0.5152,
+    "major_min": 0.5625
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.5625,
+    "major_min": 0.5511,
+    "pitch_max": 0.5084,
+    "pitch_min": 0.5045,
+    "unr_minor_max": 0.4633
+   },
+   "3B": {
+    "minor_min": 0.472,
+    "minor_max": 0.4843,
+    "pitch_min": 0.5084,
+    "pitch_max": 0.5135,
+    "major_min": 0.5625
+   }
+  },
+  {
+   "designation": "9/16-18 UNF",
+   "basic_major_d": 0.5625,
+   "tpi": 18,
+   "2A": {
+    "allowance": 0.0014,
+    "major_max": 0.5611,
+    "major_min": 0.5524,
+    "pitch_max": 0.525,
+    "pitch_min": 0.5205,
+    "unr_minor_max": 0.4949
+   },
+   "2B": {
+    "minor_min": 0.502,
+    "minor_max": 0.515,
+    "pitch_min": 0.5264,
+    "pitch_max": 0.5323,
+    "major_min": 0.5625
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.5625,
+    "major_min": 0.5538,
+    "pitch_max": 0.5264,
+    "pitch_min": 0.523,
+    "unr_minor_max": 0.4963
+   },
+   "3B": {
+    "minor_min": 0.502,
+    "minor_max": 0.5106,
+    "pitch_min": 0.5264,
+    "pitch_max": 0.5308,
+    "major_min": 0.5625
+   }
+  },
+  {
+   "designation": "5/8-11 UNC",
+   "basic_major_d": 0.625,
+   "tpi": 11,
+   "2A": {
+    "allowance": 0.0017,
+    "major_max": 0.6233,
+    "major_min": 0.6112,
+    "pitch_max": 0.5643,
+    "pitch_min": 0.5588,
+    "unr_minor_max": 0.515
+   },
+   "2B": {
+    "minor_min": 0.527,
+    "minor_max": 0.546,
+    "pitch_min": 0.566,
+    "pitch_max": 0.5732,
+    "major_min": 0.625
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.625,
+    "major_min": 0.6129,
+    "pitch_max": 0.566,
+    "pitch_min": 0.5619,
+    "unr_minor_max": 0.5167
+   },
+   "3B": {
+    "minor_min": 0.527,
+    "minor_max": 0.5391,
+    "pitch_min": 0.566,
+    "pitch_max": 0.5714,
+    "major_min": 0.625
+   }
+  },
+  {
+   "designation": "5/8-18 UNF",
+   "basic_major_d": 0.625,
+   "tpi": 18,
+   "2A": {
+    "allowance": 0.0014,
+    "major_max": 0.6236,
+    "major_min": 0.6149,
+    "pitch_max": 0.5875,
+    "pitch_min": 0.5828,
+    "unr_minor_max": 0.5574
+   },
+   "2B": {
+    "minor_min": 0.565,
+    "minor_max": 0.578,
+    "pitch_min": 0.5889,
+    "pitch_max": 0.5949,
+    "major_min": 0.625
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.625,
+    "major_min": 0.6163,
+    "pitch_max": 0.5889,
+    "pitch_min": 0.5854,
+    "unr_minor_max": 0.5588
+   },
+   "3B": {
+    "minor_min": 0.565,
+    "minor_max": 0.573,
+    "pitch_min": 0.5889,
+    "pitch_max": 0.5934,
+    "major_min": 0.625
+   }
+  },
+  {
+   "designation": "3/4-10 UNC",
+   "basic_major_d": 0.75,
+   "tpi": 10,
+   "2A": {
+    "allowance": 0.0018,
+    "major_max": 0.7482,
+    "major_min": 0.7353,
+    "pitch_max": 0.6832,
+    "pitch_min": 0.6773,
+    "unr_minor_max": 0.6291
+   },
+   "2B": {
+    "minor_min": 0.642,
+    "minor_max": 0.663,
+    "pitch_min": 0.685,
+    "pitch_max": 0.6927,
+    "major_min": 0.75
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.75,
+    "major_min": 0.7371,
+    "pitch_max": 0.685,
+    "pitch_min": 0.6806,
+    "unr_minor_max": 0.6309
+   },
+   "3B": {
+    "minor_min": 0.642,
+    "minor_max": 0.6545,
+    "pitch_min": 0.685,
+    "pitch_max": 0.6907,
+    "major_min": 0.75
+   }
+  },
+  {
+   "designation": "3/4-16 UNF",
+   "basic_major_d": 0.75,
+   "tpi": 16,
+   "2A": {
+    "allowance": 0.0015,
+    "major_max": 0.7485,
+    "major_min": 0.7391,
+    "pitch_max": 0.7079,
+    "pitch_min": 0.7029,
+    "unr_minor_max": 0.6741
+   },
+   "2B": {
+    "minor_min": 0.682,
+    "minor_max": 0.696,
+    "pitch_min": 0.7094,
+    "pitch_max": 0.7159,
+    "major_min": 0.75
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.75,
+    "major_min": 0.7406,
+    "pitch_max": 0.7094,
+    "pitch_min": 0.7056,
+    "unr_minor_max": 0.6756
+   },
+   "3B": {
+    "minor_min": 0.682,
+    "minor_max": 0.6909,
+    "pitch_min": 0.7094,
+    "pitch_max": 0.7143,
+    "major_min": 0.75
+   }
+  },
+  {
+   "designation": "7/8-9 UNC",
+   "basic_major_d": 0.875,
+   "tpi": 9,
+   "2A": {
+    "allowance": 0.0019,
+    "major_max": 0.8731,
+    "major_min": 0.8592,
+    "pitch_max": 0.8009,
+    "pitch_min": 0.7946,
+    "unr_minor_max": 0.7408
+   },
+   "2B": {
+    "minor_min": 0.755,
+    "minor_max": 0.778,
+    "pitch_min": 0.8028,
+    "pitch_max": 0.811,
+    "major_min": 0.875
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.875,
+    "major_min": 0.8611,
+    "pitch_max": 0.8028,
+    "pitch_min": 0.7981,
+    "unr_minor_max": 0.7427
+   },
+   "3B": {
+    "minor_min": 0.755,
+    "minor_max": 0.7681,
+    "pitch_min": 0.8028,
+    "pitch_max": 0.8089,
+    "major_min": 0.875
+   }
+  },
+  {
+   "designation": "7/8-14 UNF",
+   "basic_major_d": 0.875,
+   "tpi": 14,
+   "2A": {
+    "allowance": 0.0016,
+    "major_max": 0.8734,
+    "major_min": 0.8631,
+    "pitch_max": 0.827,
+    "pitch_min": 0.8216,
+    "unr_minor_max": 0.7883
+   },
+   "2B": {
+    "minor_min": 0.798,
+    "minor_max": 0.813,
+    "pitch_min": 0.8286,
+    "pitch_max": 0.8356,
+    "major_min": 0.875
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 0.875,
+    "major_min": 0.8647,
+    "pitch_max": 0.8286,
+    "pitch_min": 0.8245,
+    "unr_minor_max": 0.7899
+   },
+   "3B": {
+    "minor_min": 0.798,
+    "minor_max": 0.8067,
+    "pitch_min": 0.8286,
+    "pitch_max": 0.8339,
+    "major_min": 0.875
+   }
+  },
+  {
+   "designation": "1-8 UNC",
+   "basic_major_d": 1.0,
+   "tpi": 8,
+   "2A": {
+    "allowance": 0.002,
+    "major_max": 0.998,
+    "major_min": 0.983,
+    "pitch_max": 0.9168,
+    "pitch_min": 0.9101,
+    "unr_minor_max": 0.8492
+   },
+   "2B": {
+    "minor_min": 0.865,
+    "minor_max": 0.89,
+    "pitch_min": 0.9188,
+    "pitch_max": 0.9276,
+    "major_min": 1.0
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 1.0,
+    "major_min": 0.985,
+    "pitch_max": 0.9188,
+    "pitch_min": 0.9137,
+    "unr_minor_max": 0.8512
+   },
+   "3B": {
+    "minor_min": 0.865,
+    "minor_max": 0.8797,
+    "pitch_min": 0.9188,
+    "pitch_max": 0.9254,
+    "major_min": 1.0
+   }
+  },
+  {
+   "designation": "1-12 UNF",
+   "basic_major_d": 1.0,
+   "tpi": 12,
+   "2A": {
+    "allowance": 0.0018,
+    "major_max": 0.9982,
+    "major_min": 0.9868,
+    "pitch_max": 0.9441,
+    "pitch_min": 0.9382,
+    "unr_minor_max": 0.899
+   },
+   "2B": {
+    "minor_min": 0.91,
+    "minor_max": 0.928,
+    "pitch_min": 0.9459,
+    "pitch_max": 0.9535,
+    "major_min": 1.0
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 1.0,
+    "major_min": 0.9886,
+    "pitch_max": 0.9459,
+    "pitch_min": 0.9415,
+    "unr_minor_max": 0.9008
+   },
+   "3B": {
+    "minor_min": 0.91,
+    "minor_max": 0.9198,
+    "pitch_min": 0.9459,
+    "pitch_max": 0.9516,
+    "major_min": 1.0
+   }
+  },
+  {
+   "designation": "1-1/8-7 UNC",
+   "basic_major_d": 1.125,
+   "tpi": 7,
+   "2A": {
+    "allowance": 0.0022,
+    "major_max": 1.1228,
+    "major_min": 1.1064,
+    "pitch_max": 1.03,
+    "pitch_min": 1.0228,
+    "unr_minor_max": 0.9527
+   },
+   "2B": {
+    "minor_min": 0.97,
+    "minor_max": 0.998,
+    "pitch_min": 1.0322,
+    "pitch_max": 1.0416,
+    "major_min": 1.125
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 1.125,
+    "major_min": 1.1086,
+    "pitch_max": 1.0322,
+    "pitch_min": 1.0268,
+    "unr_minor_max": 0.9549
+   },
+   "3B": {
+    "minor_min": 0.97,
+    "minor_max": 0.9875,
+    "pitch_min": 1.0322,
+    "pitch_max": 1.0393,
+    "major_min": 1.125
+   }
+  },
+  {
+   "designation": "1-1/8-12 UNF",
+   "basic_major_d": 1.125,
+   "tpi": 12,
+   "2A": {
+    "allowance": 0.0018,
+    "major_max": 1.1232,
+    "major_min": 1.1118,
+    "pitch_max": 1.0691,
+    "pitch_min": 1.0631,
+    "unr_minor_max": 1.024
+   },
+   "2B": {
+    "minor_min": 1.035,
+    "minor_max": 1.053,
+    "pitch_min": 1.0709,
+    "pitch_max": 1.0787,
+    "major_min": 1.125
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 1.125,
+    "major_min": 1.1136,
+    "pitch_max": 1.0709,
+    "pitch_min": 1.0664,
+    "unr_minor_max": 1.0258
+   },
+   "3B": {
+    "minor_min": 1.035,
+    "minor_max": 1.0448,
+    "pitch_min": 1.0709,
+    "pitch_max": 1.0768,
+    "major_min": 1.125
+   }
+  },
+  {
+   "designation": "1-1/4-7 UNC",
+   "basic_major_d": 1.25,
+   "tpi": 7,
+   "2A": {
+    "allowance": 0.0022,
+    "major_max": 1.2478,
+    "major_min": 1.2314,
+    "pitch_max": 1.155,
+    "pitch_min": 1.1476,
+    "unr_minor_max": 1.0777
+   },
+   "2B": {
+    "minor_min": 1.095,
+    "minor_max": 1.123,
+    "pitch_min": 1.1572,
+    "pitch_max": 1.1668,
+    "major_min": 1.25
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 1.25,
+    "major_min": 1.2336,
+    "pitch_max": 1.1572,
+    "pitch_min": 1.1517,
+    "unr_minor_max": 1.0799
+   },
+   "3B": {
+    "minor_min": 1.095,
+    "minor_max": 1.1125,
+    "pitch_min": 1.1572,
+    "pitch_max": 1.1644,
+    "major_min": 1.25
+   }
+  },
+  {
+   "designation": "1-1/4-12 UNF",
+   "basic_major_d": 1.25,
+   "tpi": 12,
+   "2A": {
+    "allowance": 0.0018,
+    "major_max": 1.2482,
+    "major_min": 1.2368,
+    "pitch_max": 1.1941,
+    "pitch_min": 1.1879,
+    "unr_minor_max": 1.149
+   },
+   "2B": {
+    "minor_min": 1.16,
+    "minor_max": 1.178,
+    "pitch_min": 1.1959,
+    "pitch_max": 1.2039,
+    "major_min": 1.25
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 1.25,
+    "major_min": 1.2386,
+    "pitch_max": 1.1959,
+    "pitch_min": 1.1913,
+    "unr_minor_max": 1.1508
+   },
+   "3B": {
+    "minor_min": 1.16,
+    "minor_max": 1.1698,
+    "pitch_min": 1.1959,
+    "pitch_max": 1.2019,
+    "major_min": 1.25
+   }
+  },
+  {
+   "designation": "1-3/8-6 UNC",
+   "basic_major_d": 1.375,
+   "tpi": 6,
+   "2A": {
+    "allowance": 0.0024,
+    "major_max": 1.3726,
+    "major_min": 1.3544,
+    "pitch_max": 1.2643,
+    "pitch_min": 1.2563,
+    "unr_minor_max": 1.1741
+   },
+   "2B": {
+    "minor_min": 1.195,
+    "minor_max": 1.225,
+    "pitch_min": 1.2667,
+    "pitch_max": 1.2771,
+    "major_min": 1.375
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 1.375,
+    "major_min": 1.3568,
+    "pitch_max": 1.2667,
+    "pitch_min": 1.2607,
+    "unr_minor_max": 1.1765
+   },
+   "3B": {
+    "minor_min": 1.195,
+    "minor_max": 1.2146,
+    "pitch_min": 1.2667,
+    "pitch_max": 1.2745,
+    "major_min": 1.375
+   }
+  },
+  {
+   "designation": "1-3/8-12 UNF",
+   "basic_major_d": 1.375,
+   "tpi": 12,
+   "2A": {
+    "allowance": 0.0019,
+    "major_max": 1.3731,
+    "major_min": 1.3617,
+    "pitch_max": 1.319,
+    "pitch_min": 1.3127,
+    "unr_minor_max": 1.2739
+   },
+   "2B": {
+    "minor_min": 1.285,
+    "minor_max": 1.303,
+    "pitch_min": 1.3209,
+    "pitch_max": 1.3291,
+    "major_min": 1.375
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 1.375,
+    "major_min": 1.3636,
+    "pitch_max": 1.3209,
+    "pitch_min": 1.3162,
+    "unr_minor_max": 1.2758
+   },
+   "3B": {
+    "minor_min": 1.285,
+    "minor_max": 1.2948,
+    "pitch_min": 1.3209,
+    "pitch_max": 1.327,
+    "major_min": 1.375
+   }
+  },
+  {
+   "designation": "1-1/2-6 UNC",
+   "basic_major_d": 1.5,
+   "tpi": 6,
+   "2A": {
+    "allowance": 0.0024,
+    "major_max": 1.4976,
+    "major_min": 1.4794,
+    "pitch_max": 1.3893,
+    "pitch_min": 1.3812,
+    "unr_minor_max": 1.2991
+   },
+   "2B": {
+    "minor_min": 1.32,
+    "minor_max": 1.35,
+    "pitch_min": 1.3917,
+    "pitch_max": 1.4022,
+    "major_min": 1.5
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 1.5,
+    "major_min": 1.4818,
+    "pitch_max": 1.3917,
+    "pitch_min": 1.3856,
+    "unr_minor_max": 1.3015
+   },
+   "3B": {
+    "minor_min": 1.32,
+    "minor_max": 1.3396,
+    "pitch_min": 1.3917,
+    "pitch_max": 1.3996,
+    "major_min": 1.5
+   }
+  },
+  {
+   "designation": "1-1/2-12 UNF",
+   "basic_major_d": 1.5,
+   "tpi": 12,
+   "2A": {
+    "allowance": 0.0019,
+    "major_max": 1.4981,
+    "major_min": 1.4867,
+    "pitch_max": 1.444,
+    "pitch_min": 1.4376,
+    "unr_minor_max": 1.3989
+   },
+   "2B": {
+    "minor_min": 1.41,
+    "minor_max": 1.428,
+    "pitch_min": 1.4459,
+    "pitch_max": 1.4542,
+    "major_min": 1.5
+   },
+   "3A": {
+    "allowance": 0.0,
+    "major_max": 1.5,
+    "major_min": 1.4886,
+    "pitch_max": 1.4459,
+    "pitch_min": 1.4411,
+    "unr_minor_max": 1.4008
+   },
+   "3B": {
+    "minor_min": 1.41,
+    "minor_max": 1.4198,
+    "pitch_min": 1.4459,
+    "pitch_max": 1.4522,
+    "major_min": 1.5
+   }
+  }
+ ]
+}
