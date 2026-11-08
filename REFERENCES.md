@@ -16,3 +16,10 @@ Contents:
 - `4414_software_page_shot_calc.png` — screenshot of Team 4414's shot calculator page
 - `4414_tool_suite_overview.png` — overview of Team 4414's tool suite
 - `phase4_parking_lot_v1.md` — parking-lot notes for later phases
+
+Engineering references:
+
+- `19.Machinery's handbook.pdf`, `29.Machinerys-Handbook.pdf`, `31.MachinerysHandbook.pdf` — Machinery's Handbook (19th, 29th, 31st editions)
+- `shigley's.pdf` — Shigley's Mechanical Engineering Design
+- `ASME Y14.5-2009-03.pdf` — ASME Y14.5-2009 dimensioning and tolerancing (GD&T) standard
+- `nasa fastner guide.pdf` — NASA fastener design guide
