@@ -67,7 +67,7 @@ html{scroll-behavior:smooth}
 <header>
   <div class="eyebrow">Bolted Joint calculator · prototype v7</div>
   <h1>Shigley equations, side by side with the code</h1>
-  <p class="lede">Each card is one step of the calculator, in the order it runs. On the left is the equation from <b>Shigley's Mechanical Engineering Design, 10th ed., Chapter 8</b>; on the right is the line of JavaScript that does it, from <code class="inl">prototype/calc_prototype_v7.html</code>. Book page + 23 = PDF page. Code line numbers are as of commit 1952d17.</p>
+  <p class="lede">Each card is one step of the calculator, in the order it runs. On the left is the equation from <b>Shigley's Mechanical Engineering Design, 10th ed., Chapter 8</b>; on the right is the line of JavaScript that does it, from <code class="inl">prototype/calc_prototype_v7.html</code>. Book page + 23 = PDF page. Code line numbers match the current v7 file.</p>
 </header>
 
 <nav aria-label="Sections">
@@ -88,7 +88,7 @@ html{scroll-behavior:smooth}
     <p class="say">The book lists A<sub>t</sub> in its thread tables; these are the standard formulas those tables come from.</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">threadAreas()</span><span>v7 line 2440</span></div>
+    <div class="codehead"><span class="fn">threadAreas()</span><span>v7 line 2455</span></div>
 <pre>function threadAreas(sys, d, p){
   const At = sys === 'inch'
     ? Math.PI/4 * ((d/IN) - 0.9743*(p/IN))**2 * IN*IN
@@ -107,7 +107,7 @@ html{scroll-behavior:smooth}
     <math display="block"><msub><mi>L</mi><mi>T</mi></msub><mo>=</mo><mrow><mo>{</mo><mtable columnalign="left"><mtr><mtd><mn>2</mn><mi>d</mi><mo>+</mo><mn>6</mn></mtd><mtd><mi>L</mi><mo>≤</mo><mn>125</mn></mtd></mtr><mtr><mtd><mn>2</mn><mi>d</mi><mo>+</mo><mn>12</mn></mtd><mtd><mn>125</mn><mo>&lt;</mo><mi>L</mi><mo>≤</mo><mn>200</mn></mtd></mtr><mtr><mtd><mn>2</mn><mi>d</mi><mo>+</mo><mn>25</mn></mtd><mtd><mi>L</mi><mo>&gt;</mo><mn>200</mn></mtd></mtr></mtable></mrow><mspace width="1em"/><mtext>mm</mtext></math>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">threadLength()</span><span>v7 line 2445</span></div>
+    <div class="codehead"><span class="fn">threadLength()</span><span>v7 line 2460</span></div>
 <pre>function threadLength(sys, d, L){
   if (sys === 'inch')
     return (2*d/IN + (L/IN &lt;= 6 ? 0.25 : 0.5)) * IN;
@@ -127,7 +127,7 @@ html{scroll-behavior:smooth}
     <p class="say">Only part of the tapped member is clamped, so only part of it counts.</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">grip()</span><span>v7 line 2458</span></div>
+    <div class="codehead"><span class="fn">grip()</span><span>v7 line 2473</span></div>
 <pre>function grip(joint, layers, d){
   if (joint !== 'cap')
     return { l:layers.reduce((s, x) =&gt; s + x.t, 0), ... };
@@ -148,7 +148,7 @@ html{scroll-behavior:smooth}
     <p class="say">Minimum fastener length: L &gt; l + H for a bolt and nut, L &gt; h + 1.5d for a cap screw. Then round up to a stocked length.</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2530–2533</span></div>
+    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2545–2548</span></div>
 <pre>const H = (sys === 'inch' ? 0.875 : 0.8) * d;  // approx. hex nut height
 const Lmin = inp.joint === 'cap' ? g.h + 1.5*d : l + H + 2*inp.p;
 const L  = inp.L &gt; 0 ? inp.L : standardLength(sys, Lmin),
@@ -171,7 +171,7 @@ const ld = inp.fullThread ? 0 : Math.max(0, Math.min(l, L - LT)),
     <p class="say">The smooth shank and the threaded part are two springs in series (eq. 8-15, 8-16 combined).</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">boltStiffness()</span><span>v7 line 2465</span></div>
+    <div class="codehead"><span class="fn">boltStiffness()</span><span>v7 line 2480</span></div>
 <pre>const boltStiffness = (Ad, At, E, l, ld) =&gt;
   Ad*At*E / (Ad*(l - ld) + At*ld);   // l − ld is lt</pre>
   </div>
@@ -185,7 +185,7 @@ const ld = inp.fullThread ? 0 : Math.max(0, Math.min(l, L - LT)),
     <ul class="vars"><li><b>t</b> thickness of this piece · <b>D</b> its small-end diameter · <b>α</b> cone half-angle (30°)</li></ul>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">frustum()</span><span>v7 line 2468</span></div>
+    <div class="codehead"><span class="fn">frustum()</span><span>v7 line 2483</span></div>
 <pre>function frustum(E, t, D, d, alphaDeg){
   const ta = Math.tan(alphaDeg*Math.PI/180);
   return Math.PI*E*d*ta / Math.log(
@@ -203,7 +203,7 @@ const ld = inp.fullThread ? 0 : Math.max(0, Math.min(l, L - LT)),
     <math display="block"><msub><mi>D</mi><mtext>piece</mtext></msub><mo>=</mo><msub><mi>d</mi><mi>w</mi></msub><mo>+</mo><mn>2</mn><mo>·</mo><mtext>depth</mtext><mo>·</mo><mi>tan</mi><mi>α</mi><mo>,</mo><mspace width="1em"/><msub><mi>d</mi><mi>w</mi></msub><mo>≈</mo><mn>1.5</mn><mi>d</mi></math>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">memberStiffness()</span><span>v7 line 2474</span></div>
+    <div class="codehead"><span class="fn">memberStiffness()</span><span>v7 line 2489</span></div>
 <pre>const mid = l/2;  // cones meet at the middle of the grip
 // one cone from the top face down, one from the bottom face up
 [[0, mid, +1], [l, mid, -1]].forEach(([z0, z1, dir]) =&gt; {
@@ -229,7 +229,7 @@ return { km: 1 / frusta.reduce((s, f) =&gt; s + 1/f.k, 0), frusta, l };</pre>
     <p class="say">A and B come from Table 8-8 (steel, aluminum, copper, cast iron). Eq. 8-23 is a finite-element curve fit, valid only for one material.</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">km822(), km823()</span><span>v7 lines 2498–2499, 2543</span></div>
+    <div class="codehead"><span class="fn">km822(), km823()</span><span>v7 lines 2513–2514, 2558</span></div>
 <pre>const km822 = (E, d, l) =&gt; 0.5774*Math.PI*E*d /
   (2*Math.log(5*(0.5774*l + 0.5*d)/(0.5774*l + 2.5*d)));
 const km823 = (E, d, l, A, B) =&gt; E*d*A*Math.exp(B*d/l);
@@ -250,7 +250,7 @@ if (inp.km === 'fe'){
     <p class="say">C is the fraction of the outside load the bolt picks up. It's usually 0.15–0.35: the clamped parts take most of the load.</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">solve()</span><span>v7 line 2544</span></div>
+    <div class="codehead"><span class="fn">solve()</span><span>v7 line 2559</span></div>
 <pre>const C = kb/(kb + km);</pre>
   </div>
 </section>
@@ -268,7 +268,7 @@ if (inp.km === 'fe'){
     <ul class="vars"><li><b>S<sub>p</sub></b> proof strength from Table 8-9 (SAE) or 8-11 (metric)</li></ul>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2546–2548</span></div>
+    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2561–2563</span></div>
 <pre>const Fp = At*inp.Sp;                             // (8-32)
 const Fi = inp.preload === 'p90'    ? 0.90*Fp
          : inp.preload === 'custom' ? inp.Fi
@@ -285,7 +285,7 @@ const Fi = inp.preload === 'p90'    ? 0.90*Fp
     <p class="say">K depends on the bolt finish: 0.30 black, 0.20 zinc-plated or not stated, 0.18 lubricated, 0.16 cadmium-plated, 0.12 anti-seize, 0.09 Bowman-Grip nuts.</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2547, 2549</span></div>
+    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2562, 2564</span></div>
 <pre>const K = inp.K &gt; 0 ? inp.K : 0.2;    // book's default when not stated
 const T = K*Fi*d;                     // (8-27), N·mm</pre>
     <p class="diff"><b>What the code adds:</b> it also runs eq. 8-27 backwards (F<sub>i</sub> = T / Kd) when you choose "From a tightening torque".</p>
@@ -304,12 +304,12 @@ const T = K*Fi*d;                     // (8-27), N·mm</pre>
     <p class="say">Valid only while the parts stay clamped (F<sub>m</sub> &lt; 0). P is the load <em>per bolt</em>: P<sub>total</sub> / N.</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2551–2553</span></div>
+    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2566–2568</span></div>
 <pre>const N = Math.max(1, Math.round(inp.N)), P = inp.Pmax/N;
 const separated = P*(1 - C) &gt; Fi;
 const Fb = separated ? P : C*P + Fi,   // (8-24)
       Fm = (1 - C)*P - Fi;             // (8-25)</pre>
-    <p class="diff"><b>What the code adds:</b> once the joint separates, the book's formula no longer applies. The code then assumes the bolt carries the whole load (F<sub>b</sub> = P) and shows a warning.</p>
+    <p class="diff"><b>Design rule:</b> once the joint separates, the book's formula no longer applies, and the bolt carries the whole load (F<sub>b</sub> = P). Any safety factor below 1 counts as a failure, so the exact number past that point doesn't matter: the joint is no longer predicted to survive. The calculator marks every factor below 1 in red.</p>
   </div>
 </section>
 
@@ -322,7 +322,7 @@ const Fb = separated ? P : C*P + Fi,   // (8-24)
     <math display="block"><msub><mi>n</mi><mn>0</mn></msub><mo>=</mo><mfrac><msub><mi>F</mi><mi>i</mi></msub><mrow><mi>P</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>C</mi><mo>)</mo></mrow></mfrac><mspace width="1em"/><mtext>separation</mtext></math>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2554–2556</span></div>
+    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2569–2571</span></div>
 <pre>const np = Fp/Fb;                                  // (8-28)
 const nL = P &gt; 0 ? (Fp - Fi)/(C*P) : Infinity;     // (8-29)
 const n0 = P &gt; 0 ? Fi/(P*(1 - C)) : Infinity;      // (8-30)</pre>
@@ -338,7 +338,7 @@ const n0 = P &gt; 0 ? Fi/(P*(1 - C)) : Infinity;      // (8-30)</pre>
     <p class="say">Round up, then recheck all three factors with the new N.</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">boltsFor()</span><span>v7 line 2605</span></div>
+    <div class="codehead"><span class="fn">boltsFor()</span><span>v7 line 2620</span></div>
 <pre>const boltsFor = (C, nL, Ptotal, Fp, Fi) =&gt;
   C*nL*Ptotal/(Fp - Fi);</pre>
   </div>
@@ -356,7 +356,7 @@ const n0 = P &gt; 0 ? Fi/(P*(1 - C)) : Infinity;      // (8-30)</pre>
     <math display="block"><msub><mi>σ</mi><mi>m</mi></msub><mo>=</mo><mfrac><mrow><mi>C</mi><mo>(</mo><msub><mi>P</mi><mtext>max</mtext></msub><mo>+</mo><msub><mi>P</mi><mtext>min</mtext></msub><mo>)</mo></mrow><mrow><mn>2</mn><msub><mi>A</mi><mi>t</mi></msub></mrow></mfrac><mo>+</mo><mfrac><msub><mi>F</mi><mi>i</mi></msub><msub><mi>A</mi><mi>t</mi></msub></mfrac><mspace width="2em"/><msub><mi>σ</mi><mi>i</mi></msub><mo>=</mo><mfrac><msub><mi>F</mi><mi>i</mi></msub><msub><mi>A</mi><mi>t</mi></msub></mfrac></math>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">solve()</span><span>v7 line 2558</span></div>
+    <div class="codehead"><span class="fn">solve()</span><span>v7 line 2573</span></div>
 <pre>const si = Fi/At,
       sa = C*(P - Pmin)/(2*At),               // (8-35)
       sm = C*(P + Pmin)/(2*At) + si;          // (8-36)</pre>
@@ -371,7 +371,7 @@ const n0 = P &gt; 0 ? Fi/(P*(1 - C)) : Infinity;      // (8-30)</pre>
     <p class="say">The general load-line form. For a load from 0 to P it reduces to eq. 8-45.</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">fatigueFactor()</span><span>v7 line 2508</span></div>
+    <div class="codehead"><span class="fn">fatigueFactor()</span><span>v7 line 2523</span></div>
 <pre>if (crit === 'goodman')
   return Se*(Sut - si) / (Sut*sa + Se*(sm - si));</pre>
   </div>
@@ -386,7 +386,7 @@ const n0 = P &gt; 0 ? Fi/(P*(1 - C)) : Infinity;      // (8-30)</pre>
     <p class="say">Walk along the load line from (σ<sub>i</sub>, 0) through (σ<sub>m</sub>, σ<sub>a</sub>) until it hits the curve. Then n<sub>f</sub> = S<sub>a</sub> / σ<sub>a</sub> (eq. 8-37).</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">fatigueFactor()</span><span>v7 lines 2509–2514</span></div>
+    <div class="codehead"><span class="fn">fatigueFactor()</span><span>v7 lines 2524–2529</span></div>
 <pre>const f = crit === 'gerber'
   ? (m, a) =&gt; a/Se + (m/Sut)**2         // (8-43)
   : (m, a) =&gt; (a/Se)**2 + (m/Sp)**2;    // (8-44)
@@ -410,7 +410,7 @@ return (lo + hi)/2;                      // = Sa / σa = n_f</pre>
     <math display="block"><msub><mi>F</mi><mi>i</mi></msub><mo>≤</mo><mo>(</mo><mn>1</mn><mo>−</mo><mi>C</mi><mo>)</mo><msub><mi>S</mi><mi>ut</mi></msub><msub><mi>A</mi><mi>t</mi></msub><mspace width="1em"/><mtext>preload still helps fatigue</mtext></math>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2563–2564, 2568</span></div>
+    <div class="codehead"><span class="fn">solve()</span><span>v7 lines 2578–2579, 2583</span></div>
 <pre>const proofSa = (inp.Sp - si)/2,
       nProof  = sa &gt; 0 ? proofSa/sa : Infinity;
 const FiMax = (1 - C)*inp.Sut*At;          // (8-50)
@@ -433,7 +433,7 @@ if (Fi &gt; FiMax) warnings.push('Preload is above (1 − C)·S_ut·A_t (eq. 8-5
     <ul class="vars"><li><b>A<sub>s</sub></b> external (screw) thread shear area · <b>A<sub>n</sub></b> internal (nut or hole) thread shear area</li><li>The four diameters come from the thread class table, in the data file</li></ul>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">stripping()</span><span>v7 lines 2587–2592</span></div>
+    <div class="codehead"><span class="fn">stripping()</span><span>v7 lines 2602–2607</span></div>
 <pre>const Es = ext.pitch_min, Ds = ext.major_min,
       Kn = int.minor_max, En = int.pitch_max;
 // per inch of engagement (multiply by L to get the area)
@@ -451,7 +451,7 @@ const Le = 2*At / (Math.PI*Kn*(0.5 + 0.57735*n*(Es - Kn))); // (1)</pre>
     <p class="say">J &gt; 1 means the internal thread strips first, so engage Q instead of L<sub>e</sub>. For screws over 180 ksi, A<sub>t</sub> uses (2b): π(E<sub>s min</sub>/2 − 0.16238/n)².</p>
   </div>
   <div class="code">
-    <div class="codehead"><span class="fn">stripping()</span><span>v7 lines 2588–2589, 2593–2601</span></div>
+    <div class="codehead"><span class="fn">stripping()</span><span>v7 lines 2603–2604, 2608–2616</span></div>
 <pre>const At = s.SutExt &gt; 180000
   ? Math.PI*(Es/2 - 0.16238/n)**2              // (2b)
   : 0.7854*(D - 0.9743/n)**2;                  // (2a)

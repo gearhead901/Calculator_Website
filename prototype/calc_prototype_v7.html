@@ -89,6 +89,21 @@
   .tile.primary .k{color:#b8bcc4}
   figure.panel .tile:not(.primary){color:var(--ink)}   /* light tiles inside a dark panel keep dark text */
   .warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:8px 12px;margin:0 0 12px;font-size:14px}
+  /* safety-factor rows (bolted joint): three tiles side by side, each marked pass / fail */
+  .fhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin:4px 0 6px}
+  .fhead b{font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+  .fhead span{font-size:12px;color:var(--muted)}
+  .factors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+  .tile .st{font-size:12px;font-weight:600;margin-top:2px}
+  .tile.ok .st{color:#23845a}
+  .tile.fail{border:2px solid var(--red);background:#fdecea;padding:11px 13px}
+  .tile.fail .v,.tile.fail .st{color:#c4322a}
+  .tile.na .st{color:var(--muted)}
+  .tile.sel{box-shadow:inset 0 0 0 2px var(--accent)}
+  .tile.fail.sel{box-shadow:none}
+  .verdict{border-radius:10px;padding:8px 12px;margin:0 0 12px;font-size:14px;font-weight:600}
+  .verdict.fail{background:#fdecea;color:#c4322a;border:1px solid var(--red)}
+  .verdict.ok{background:#e6f5ee;color:#1f7a52}
 
   .panels{display:grid;gap:12px}
   .panels.two{grid-template-columns:1fr 1fr}
@@ -2754,19 +2769,38 @@ const BOLT = {
   renderOut(el, v, r){
     if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
     const f2 = x => !Number.isFinite(x) ? (x === Infinity ? '∞' : '—') : fmtNum(x, 2);
-    const low = x => Number.isFinite(x) && x < 1 ? ' style="color:#e5534b"' : '';
+    // A safety factor below 1 is a failure: the joint is no longer predicted to survive, so the exact
+    // number past that point doesn't matter. Each factor tile says pass / fail in words as well as colour.
+    const fails = x => Number.isFinite(x) && x < 1;
+    const ftile = (k, x, sel = false) => {
+      const state = !Number.isFinite(x) && x !== Infinity ? 'na' : fails(x) ? 'fail' : 'ok';
+      const st = state === 'na' ? 'Not available' : state === 'fail' ? '✕ Fails (below 1)' : '✓ OK';
+      return `<div class="tile ${state}${sel ? ' sel' : ''}"><div class="k">${k}${sel ? ' · selected' : ''}</div><div class="v">${f2(x)}</div><div class="st">${st}</div></div>`;
+    };
+    const staticFail = [r.np, r.nL, r.n0].some(fails);
+    const fatigueFail = fails(r.nf[v.crit]);
+    const verdict = staticFail || fatigueFail
+      ? `<div class="verdict fail">✕ Joint fails: ${staticFail && fatigueFail ? 'static and fatigue safety factors are' : staticFail ? 'a static safety factor is' : 'the fatigue safety factor is'} below 1, so it is not predicted to survive this load.</div>`
+      : `<div class="verdict ok">✓ All safety factors are 1 or more.</div>`;
     el.innerHTML = `
       <div class="tiles">
         ${tile('Governs', `${r.gov[0]} · n = ${f2(r.gov[1])}`, 'primary')}
         ${tile('Preload F_i', fmtK(r.Fi,'kforce'), 'primary')}
         ${tile('Tightening torque', fmtK(r.T/1000,'torque'))}
-        ${tile('Yield factor n_p', f2(r.np))}
-        ${tile('Load factor n_L', f2(r.nL))}
-        ${tile('Separation factor n₀', f2(r.n0))}
-        ${tile('Fatigue: Goodman', f2(r.nf.goodman))}
-        ${tile('Fatigue: Gerber', f2(r.nf.gerber))}
-        ${tile('Fatigue: ASME-elliptic', f2(r.nf.asme))}
         ${tile('Bolt share of load C', fmtNum(r.C,3))}
+      </div>
+      ${verdict}
+      <div class="fhead"><b>Static safety factors</b><span>Below 1 = failure</span></div>
+      <div class="factors">
+        ${ftile('Yield (proof) n_p', r.np)}
+        ${ftile('Overload n_L', r.nL)}
+        ${ftile('Separation n₀', r.n0)}
+      </div>
+      <div class="fhead"><b>Fatigue safety factors</b><span>Below 1 = failure · the selected criterion is outlined</span></div>
+      <div class="factors">
+        ${ftile('Goodman', r.nf.goodman, v.crit === 'goodman')}
+        ${ftile('Gerber', r.nf.gerber, v.crit === 'gerber')}
+        ${ftile('ASME-elliptic', r.nf.asme, v.crit === 'asme')}
       </div>
       ${warnBox(r.warnings)}
       ${r.conflict ? `<div class="warn">ℹ Goodman and Gerber disagree on which failure comes first (Goodman ${f2(r.nf.goodman)} vs proof line ${f2(r.nProof)} vs Gerber ${f2(r.nf.gerber)}). Shigley notes the same conflict in Example 8-5 — Goodman is the conservative answer.</div>` : ''}
