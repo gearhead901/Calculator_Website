@@ -27,6 +27,10 @@ Paths use `~` and `%USERPROFILE%` (the user's home folder) so usernames don't ap
 
 `Dropbox/Claude/<project>/` is the owner's dedicated folder for Claude reference files. Claude may have access only to that subfolder, not the whole Dropbox, so use the full path instead of listing the Dropbox root. If access is denied, ask the owner to grant it in the OS privacy settings rather than retrying. See `REFERENCES.md` for what's there.
 
+## To do list
+
+`TODO.md` holds open work and ideas, in rough priority order. Check it when the owner asks "what's next", and add to it when the owner mentions something to do later. When an item is finished, remove it.
+
 ## Calculator design notes
 
 Engineering method summaries for each calculator live in `docs/`, known-answer test cases live in `tests/`, and shared engineering data (thread tables etc.) lives in `data/`. Read these instead of the big reference PDFs; open a PDF only for a specific page the notes don't cover. Write new notes in your own words with equations and data (the repo is public, so don't copy book text).

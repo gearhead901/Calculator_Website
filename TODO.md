@@ -1,0 +1,80 @@
+# To do
+
+Ideas and open work, roughly in priority order. Nothing here is being worked on yet. When an item is started, move the details into a `docs/` note and link it here.
+
+## Bolted joint: the real-world bolt ecosystem
+
+**Goal:** the calculator currently handles textbook bolts: graded steel, rolled threads, standard hex nuts. The goal is to feed in the bolts and nuts we actually use and get trustworthy safety factors for them.
+
+### 1. Fatigue safety factors for in-house shoulder bolts (and any cut thread)
+- **Why:** shoulder bolts made in house have cut threads and are made from our own bar stock. Shigley's endurance table (Table 8-17) only covers rolled threads on graded steel bolts, so the calculator shows **no fatigue safety factor** for these today.
+- **Method:** Shigley §8-11 says to use the general fatigue method of **Chapter 6** for cut threads:
+  - start from the material's endurance limit (steel: about 0.5 × S_ut);
+  - correct it with the Marin factors (surface, size, axial loading, temperature, reliability);
+  - apply the cut-thread K_f from Table 8-16: **2.8** (SAE 0–2) or **3.8** (SAE 4–8). The fillet under a head or shoulder is K_f ≈ 2.1–2.3.
+
+  It's all in the Shigley PDF we already have, with no new source needed.
+- **Shoulder-bolt questions to settle:**
+  - Material and heat treatment are ours, so the user enters S_ut, S_y, and maybe S_e.
+  - Stress concentration at the step from shoulder to thread: thread relief groove or undercut, fillet radius.
+  - Bolt stiffness: the shoulder diameter is bigger than the thread, so eq. 8-17's shank and thread lengths need the real geometry.
+  - Joint model: what does a shoulder bolt actually clamp? Usually the shoulder face seats against the tapped part, and the pivoting part is not clamped at all. Check before reusing the standard frustum model.
+- **Also covers:** non-steel bolts (aluminum, titanium, stainless). They have the same gap, because Table 8-17 is steel grades only.
+- **First step:** extract the Chapter 6 fatigue section from the Shigley PDF into `docs/fatigue-reference.md`, with test cases from its worked examples, the same way Chapter 8 was done.
+
+### 2. Ungraded bolts
+- Some sources don't give a grade: no head markings, or listed as "unspecified" or "commercial". Without a grade there's no proof, tensile or endurance strength to look up.
+- Shigley §8-6 and Machinery's Handbook both note that unmarked or imported bolts have no obligation to meet any spec.
+- **Decide:** add an "Ungraded / unknown" option that assumes a low grade (for example SAE 1–2 or ISO 4.6) and shows a warning, or require the supplier's strength data. Maybe both: a low default with an override.
+
+### 3. Nuts of different thicknesses
+- Thin nuts and jam nuts engage less thread, so they may strip before the bolt reaches full strength. The thread stripping check should use the **real nut thickness** as the engagement length.
+- The bolt-length auto-pick currently **estimates** nut height as 0.875d (inch) or 0.8d (metric). It should use the actual nut.
+- Nut grade or strength matters too, for the J factor in the stripping check.
+- **Needs:** nut dimension data (Machinery's Handbook has hex and jam nut tables) and the nuts we actually stock.
+
+### 4. PEM (self-clinching) nuts
+- These fail differently from a regular nut. Besides thread stripping they can push out or spin (torque-out) in the sheet, and their thread length is short.
+- **Needs:** manufacturer performance data (push-out, torque-out, pull-through) by size and by sheet material and thickness, from the PennEngineering catalog.
+
+### 5. Parts catalog feed (ties 1–4 together)
+- Let the calculator pick from our **real inventory** instead of typing values:
+  - bolts: source, grade or material, rolled or cut threads, lengths, shoulder dimensions;
+  - nuts: type, thickness, grade;
+  - PEM nuts, thread inserts.
+- **Decide:** the data format. Probably a `data/*.json` file the calculator reads, like `data/unified_thread_limits.json`, and where the data comes from (supplier pages, our own measurements).
+
+## Bolted joint: materials, explanation and drawings
+
+### 6. Exact alloys for each layer, with citations
+- Layers can only be generic materials today (steel, aluminum, copper, gray cast iron, custom E), and only the modulus E is used.
+- **Want:** a list of the exact alloys we use (for example 6061-T6, 7075-T6, 1018, 4140, 304 stainless, the gray cast iron classes), each with E, Poisson's ratio, yield and tensile strength, and **a citation for every number** (book, table and page).
+- **Sources we have:** Shigley appendix tables (Table A-5 elastic constants, the A-20 to A-24 strength tables) and Machinery's Handbook's material tables. Use the newest edition and record the page numbers like the other docs do.
+- Ties into item 1: in-house shoulder bolts need the same alloy data for the bolt itself.
+- Store it as a data file (for example `data/materials.json`) that the calculator and future calculators can share.
+
+### 7. Support document that explains the calculations
+- A reader-friendly explanation of each step: what it means physically, the equation, and a **Shigley citation** (equation number, section, page). It's for users of the site and for the friend reviewing the code.
+- **Already exists:** `docs/bolted-joint-reference.md` (working notes), `docs/bolted-joint-equations.html` (equation beside the code), and the calculator's own short docs section and Advanced details table.
+- **When:** after the calculator's main architecture is finished, so the explainer documents the final design and doesn't need rewriting.
+- **Plan** (aims for lots of illustrations and examples while staying fast):
+  1. **Keep the calculator page lean:** results, warnings and a short "how this works" with a link to the explainer.
+  2. **Give each calculator its own explainer page** (for example `docs/bolted-joint.html`). It loads only when opened, so it never slows the calculator. This is the mechanicalc.com pattern: every calculator links to its docs and validation cases.
+  3. **Draw illustrations with code** (SVG or canvas), not images. They're a few KB each, sharp at any zoom, and can share code with items 8 and 9 so the same drawing appears in the calculator and the explainer.
+  4. **Make worked examples live links.** The calculator's "Copy link" stores every input in the web address, so each Shigley example can be an "open in calculator" link plus the book's expected answers, at almost no page weight.
+  5. **Photos only where they earn it,** compressed (WebP, about 100–200 KB each) and lazy-loaded. Photos are the one thing that makes pages slow.
+- **Size reference** (compressed, as sent to a browser): the whole v7 site is 74 KB, the equations page 9 KB and the thread data 3 KB. One phone photo is 2,000–4,000 KB.
+- **Avoid:** putting the explainer content into the single calculator file.
+
+### 8. Illustration of the layers
+- A to-scale drawing of the joint as entered: bolt or cap screw, washer, each layer with its material, grip length l, threaded and unthreaded lengths in the grip, and for a cap screw the effective grip into the tapped part. It updates as inputs change.
+- This lets a user see at a glance whether the stack they typed matches their part.
+
+### 9. Illustration of the frustum cones
+- Draw the pressure cones over the layer drawing: the 30° cones from each bearing face meeting at mid-grip, cut at each material change, labelled with each piece's thickness, diameter and stiffness, matching the rows of the member-stiffness table.
+- This is what Shigley's Figs. 8-15 and 8-21 show, and it makes the member stiffness numbers make sense.
+- Could be combined with item 8 as one drawing with a "show cones" toggle.
+
+## Other open items
+- **Metric thread stripping:** the Machinery's Handbook section used for thread stripping is inch only. Metric threads need another source.
+- **Friend as collaborator:** add the software-engineer friend to the GitHub repo for code review (see CLAUDE.md).
