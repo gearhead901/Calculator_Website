@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calc Workshop</title>
+<!--
+  Calc Workshop — landing page
+  Lists every prototype version. The newest one is at the top.
+  To add a version: copy one <a class="card"> block, change the link, title and notes.
+-->
+<style>
+  :root{
+    --bg:#f6f5f0; --card:#ffffff; --ink:#1c1e22; --muted:#6b6f76; --line:#e4e2da;
+    --accent:#2f9c90; --accent-soft:#e3f2ef;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#171b22; --card:#222a38; --ink:#e6eaf0; --muted:#9aa3b2; --line:#344055; --accent-soft:#1e3a37; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif}
+  main{max-width:720px;margin:0 auto;padding:48px 16px 64px}
+  .brand{font-weight:800;letter-spacing:-.02em;font-size:28px;display:flex;align-items:center;gap:10px;margin:0}
+  .brand .dot{width:16px;height:16px;border-radius:4px;background:var(--accent)}
+  .lede{color:var(--muted);margin:8px 0 32px}
+  .card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:18px 20px;margin-bottom:12px;transition:border-color .15s, transform .15s}
+  .card:hover,.card:focus-visible{border-color:var(--accent);transform:translateY(-1px);outline:none}
+  .row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .card h2{font-size:17px;margin:0}
+  .tag{font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:999px}
+  .count{margin-left:auto;font-size:13px;color:var(--muted)}
+  .card p{margin:6px 0 0;color:var(--muted);font-size:14px}
+  footer{margin-top:32px;font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <h1 class="brand"><span class="dot"></span>Calc Workshop</h1>
+  <p class="lede">Engineering calculators for robotics builds. These are prototypes, and the newest version is first.</p>
+
+  <a class="card" href="prototype/calc_prototype_v4.html">
+    <div class="row"><h2>Prototype v4</h2><span class="tag">Latest</span><span class="count">14 calculators</span></div>
+    <p>Adds Beam Bending, Projectile, Gearbox Options, Reduction Swap, Planetary Gearbox, Motor Curves, Mechanism Startup, Lead Screw and Drivetrain Simulator.</p>
+  </a>
+
+  <a class="card" href="prototype/calc_prototype_v3.html">
+    <div class="row"><h2>Prototype v3</h2><span class="count">5 calculators</span></div>
+    <p>Adds Mechanism Ratio.</p>
+  </a>
+
+  <a class="card" href="prototype/calc_prototype_v2.html">
+    <div class="row"><h2>Prototype v2</h2><span class="count">4 calculators</span></div>
+    <p>Adds Chain &amp; Belt C-C.</p>
+  </a>
+
+  <a class="card" href="prototype/calc_prototype_v1.html">
+    <div class="row"><h2>Prototype v1</h2><span class="count">3 calculators</span></div>
+    <p>First version: Sheet Metal Bend, Shot Trajectory and Gear Ratio.</p>
+  </a>
+
+  <footer>Each prototype is a single HTML file and runs entirely in your browser.</footer>
+</main>
+</body>
+</html>

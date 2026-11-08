@@ -4,7 +4,7 @@ Prototype calculator website. The prototypes are single, self-contained HTML fil
 
 ## Working across computers
 
-The owner works on this repo from two computers: a Mac and a Windows laptop. GitHub (`gearhead901/Calculator_Website`, private) keeps them in sync.
+The owner works on this repo from two computers: a Mac and a Windows laptop. GitHub (`gearhead901/Calculator_Website`, **public**) keeps them in sync.
 
 - Commits use the GitHub no-reply email `304733394+gearhead901@users.noreply.github.com` so the owner's real email isn't exposed. Don't commit with a personal email address.
 
@@ -23,8 +23,18 @@ Inspiration and reference material is kept in Dropbox, not in this repo. Some fi
 - Mac: `~/Library/CloudStorage/Dropbox/Claude/Calculator_Website/Inspiration/`
 - Windows: `%USERPROFILE%\Dropbox\Claude\Calculator_Website\Inspiration\`
 
+Paths use `~` and `%USERPROFILE%` (the user's home folder) so usernames don't appear in this public repo. Expand them to the real home folder when a tool needs an absolute path.
+
 `Dropbox/Claude/<project>/` is the owner's dedicated folder for Claude reference files. Claude may have access only to that subfolder, not the whole Dropbox, so use the full path instead of listing the Dropbox root. If access is denied, ask the owner to grant it in the OS privacy settings rather than retrying. See `REFERENCES.md` for what's there.
 
-## Hosting (not set up yet)
+## Public repo: keep personal info out
 
-The plan is GitHub Pages, with an `index.html` at the repo root linking to each prototype version. Still undecided: make the repo public (free) or keep it private with GitHub Pro. A friend who is a software engineer will review the code and give pointers. They'll likely be added as a collaborator.
+The repo is public, so everything in it, including the full commit history, is visible to anyone. Never commit the owner's real name, personal email, computer usernames, or absolute paths that contain a username. Before each commit, check the diff for these.
+
+## Hosting
+
+The site is hosted on GitHub Pages from the `main` branch, repo root: https://gearhead901.github.io/Calculator_Website/
+
+`index.html` at the repo root is the landing page and links to each prototype version, newest first. When a new prototype version is added, add a card for it to `index.html` (copy an existing `<a class="card">` block) and move the "Latest" tag to it.
+
+A friend who is a software engineer will review the code and give pointers. They'll likely be added as a collaborator.
