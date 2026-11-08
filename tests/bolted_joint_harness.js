@@ -1,11 +1,12 @@
-/* Test harness for the bolted joint calculator.
+/* Test harness for the bolted joint calculator (including its thread stripping check).
    tests/run_bolted_joint_tests.py glues three things together and runs them in a JavaScript engine:
      1. the "BOLTED JOINT CORE" block cut straight out of the newest prototype page (the code the site runs),
-     2. const CASES = <tests/bolted_joint_cases.json>,
+     2. const SUITES = [{ file, data }] — tests/bolted_joint_cases.json and tests/thread_stripping_cases.json,
      3. this file.
-   Each case below turns the book's inch inputs into the calculator's units (mm, N, MPa), runs it, and builds an
-   "actual" object shaped exactly like the case's "expected" object. Every number in "expected" is then compared
-   with the matching number in "actual" using the file's relative tolerance. */
+   Each case is run through an adapter that converts its inputs into the calculator's units, runs it, and builds an
+   "actual" object shaped like the case's "expected" object. Every number in "expected" is compared with the matching
+   number in "actual" using that file's relative tolerance; true/false answers and text answers (like which part
+   fails first) must match exactly. */
 
 // Unit conversions (book → calculator, and back)
 const inch = x => x*25.4, Mpsi = x => x*6894.757, kip = x => x*4448.2216, kpsi = x => x*6.894757;
@@ -73,9 +74,29 @@ const ADAPTERS = {
   },
 };
 
+// Thread stripping cases (Machinery's Handbook formulas, inch / psi / lbf). Every case has the same shape, so one
+// adapter serves them all. Cases without strengths are "equal-strength materials": any equal pair works.
+function strippingAdapter(c){
+  const i = c.inputs, t = BJ.threadLimits(i.thread);
+  if (!t) throw new Error(`Thread ${i.thread} is not in the embedded thread data`);
+  if (i.external_class[0] !== i.internal_class[0]) throw new Error('Mixed classes are not supported by the calculator');
+  const SutExt = i.Sut_external_psi ?? 120000, SutInt = i.Sut_internal_psi ?? SutExt;
+  const r = BJ.stripping({ thread:t, cls:i.external_class[0], SutExt, SutInt, L:i.engagement_in, tau:0.5 });
+  const act = {
+    thread_data_used:{ Es_min:r.Es, Ds_min:r.Ds, Kn_max:r.Kn, En_max:r.En, n:r.n, D:r.D },
+    At_in2:r.At, Le_formula1_in:r.Le, As_at_Le_in2:r.AsLe, An_at_Le_in2:r.AnLe,
+    As_per_in_engagement:r.aS, An_per_in_engagement:r.aN,
+    J:r.J, required_engagement_in:r.required, internal_strips_first_at_Le:r.internalFirst,
+  };
+  if (r.loads){ act.at_engagement_in = r.L; act['failure_loads_lbf_tau_0.5Sut'] = r.loads; act.governing_failure = r.governing; }
+  return act;
+}
+
 // Compare every number in `exp` with the same path in `act`.
 function compare(exp, act, tol, path, out){
-  if (typeof exp === 'number'){
+  if (typeof exp === 'boolean' || (typeof exp === 'string' && typeof act === 'string')){
+    out.push({ path, expected:exp, actual:act ?? null, ok:act === exp });
+  } else if (typeof exp === 'number'){
     const ok = typeof act === 'number' && Number.isFinite(act) && Math.abs(act - exp) <= tol*Math.abs(exp) + 1e-12;
     out.push({ path, expected:exp, actual:typeof act === 'number' ? act : null, ok });
   } else if (Array.isArray(exp)){
@@ -84,17 +105,20 @@ function compare(exp, act, tol, path, out){
   } else if (exp && typeof exp === 'object'){
     Object.keys(exp).forEach(k => compare(exp[k], act ? act[k] : undefined, tol, path ? `${path}.${k}` : k, out));
   }
-  // strings (names, notes) are labels, not answers — skipped
+  // other strings (names, notes) are labels, not answers — skipped
 }
 
 function runAll(){
-  const tol = CASES.tolerance_relative;
-  return CASES.cases.map(c => {
-    const adapt = ADAPTERS[c.id];
-    if (!adapt) return { id:c.id, title:c.title, error:'No adapter for this case in tests/bolted_joint_harness.js', checks:[] };
-    try { const checks = []; compare(c.expected, adapt(c), tol, '', checks); return { id:c.id, title:c.title, checks }; }
-    catch (e){ return { id:c.id, title:c.title, error:String(e && e.stack || e), checks:[] }; }
-  });
+  return SUITES.flatMap(s => s.data.cases.map(c => {
+    const tol = s.data.tolerance_relative;
+    const adapt = ADAPTERS[c.id] || (s.file === 'thread_stripping_cases.json' ? strippingAdapter : null);
+    const base = { file:s.file, id:c.id, title:c.title, checks:[] };
+    if (!adapt) return { ...base, error:'No adapter for this case in tests/bolted_joint_harness.js' };
+    // also check the thread data the case says it used, when it lists it
+    const expected = c.thread_data_used ? { thread_data_used:c.thread_data_used, ...c.expected } : c.expected;
+    try { compare(expected, adapt(c), tol, '', base.checks); return base; }
+    catch (e){ return { ...base, error:String(e && e.stack || e) }; }
+  }));
 }
 
 const __out = JSON.stringify(runAll());

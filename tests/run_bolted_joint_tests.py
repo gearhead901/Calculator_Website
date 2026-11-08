@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Run the bolted joint test cases against the calculator code in the newest prototype page.
+"""Run the bolted joint and thread stripping test cases against the calculator code in the newest prototype page.
 
     python3 tests/run_bolted_joint_tests.py               # newest prototype/calc_prototype_vN.html
     python3 tests/run_bolted_joint_tests.py path/to.html  # a specific page
 
 How it works: the math lives in one block of the page, between the lines
 "BOLTED JOINT CORE START" and "BOLTED JOINT CORE END". This script cuts that block out (so it tests exactly
-what the website runs), adds the cases from bolted_joint_cases.json and the checks in bolted_joint_harness.js,
-and runs the result with a JavaScript engine:
+what the website runs), adds the cases from bolted_joint_cases.json and thread_stripping_cases.json and the checks
+in bolted_joint_harness.js, and runs the result with a JavaScript engine:
   - Node.js, if it is installed (Windows or Mac), otherwise
   - macOS's built-in JavaScript (osascript), so nothing needs installing on the Mac.
+It also checks that the thread data embedded in the page still matches data/unified_thread_limits.json.
 Exit code 0 = every check passed, 1 = something failed.
 """
 import json, re, shutil, subprocess, sys, tempfile
@@ -18,6 +19,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 START, END = "/* === BOLTED JOINT CORE START ===", "/* === BOLTED JOINT CORE END === */"
+CASE_FILES = ["bolted_joint_cases.json", "thread_stripping_cases.json"]
+DATA_FILE = ROOT / "data" / "unified_thread_limits.json"
+EMBED = "const UNIFIED_THREAD_LIMITS = "
 
 
 def newest_page():
@@ -49,14 +53,27 @@ def main():
     if START not in html or END not in html:
         sys.exit(f"{page.name} has no BOLTED JOINT CORE block.")
     core = html[html.index(START): html.index(END) + len(END)]
-    cases = (HERE / "bolted_joint_cases.json").read_text(encoding="utf-8")
+    suites = ",".join(f'{{"file":"{f}","data":{(HERE / f).read_text(encoding="utf-8")}}}' for f in CASE_FILES)
     harness = (HERE / "bolted_joint_harness.js").read_text(encoding="utf-8")
-    results = run_js(f"{core}\nconst CASES = {cases};\n{harness}")
+    results = run_js(f"{core}\nconst SUITES = [{suites}];\n{harness}")
+
+    # The page embeds the thread data; make sure it is still the same as the data file.
+    if EMBED in core:
+        start = core.index(EMBED) + len(EMBED)
+        embedded, _ = json.JSONDecoder().raw_decode(core[start:])
+        same = embedded == json.loads(DATA_FILE.read_text(encoding="utf-8"))
+        results.append({"file": "data/unified_thread_limits.json", "id": "embedded_thread_data",
+                        "title": "Thread data embedded in the page matches the data file",
+                        "checks": [{"path": "identical", "expected": True, "actual": same, "ok": same}]})
 
     shown = page.resolve().relative_to(ROOT) if page.resolve().is_relative_to(ROOT) else page
     print(f"Bolted joint tests against {shown}\n")
     total = failed = 0
+    last_file = None
     for case in results:
+        if case.get("file") != last_file:
+            last_file = case.get("file")
+            print(f"=== {last_file} ===")
         print(f"{case['id']} — {case['title']}")
         if case.get("error"):
             failed += 1
@@ -64,9 +81,12 @@ def main():
         for c in case["checks"]:
             total += 1
             failed += not c["ok"]
-            act = "missing" if c["actual"] is None else f"{c['actual']:.5g}"
-            off = "" if c["actual"] is None or c["expected"] == 0 else f"  ({(c['actual'] - c['expected']) / abs(c['expected']) * 100:+.2f}%)"
-            print(f"  {'PASS' if c['ok'] else 'FAIL'}  {c['path']:<44} expected {c['expected']:<10g} got {act}{off}")
+            exp, a = c["expected"], c["actual"]
+            numeric = isinstance(exp, (int, float)) and not isinstance(exp, bool)
+            act = "missing" if a is None else f"{a:.5g}" if numeric else str(a)
+            off = f"  ({(a - exp) / abs(exp) * 100:+.2f}%)" if numeric and a is not None and exp != 0 else ""
+            shown = f"{exp:<10g}" if numeric else f"{str(exp):<10}"
+            print(f"  {'PASS' if c['ok'] else 'FAIL'}  {c['path']:<44} expected {shown} got {act}{off}")
         print()
     print(f"{total - failed} of {total} checks passed." if not failed else f"{failed} FAILED (of {total} checks).")
     sys.exit(1 if failed else 0)

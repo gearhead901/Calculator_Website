@@ -87,6 +87,7 @@
   .tile .v{font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
   .tile.primary{background:var(--ink);border-color:var(--ink);color:#fff}
   .tile.primary .k{color:#b8bcc4}
+  figure.panel .tile:not(.primary){color:var(--ink)}   /* light tiles inside a dark panel keep dark text */
   .warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:8px 12px;margin:0 0 12px;font-size:14px}
 
   .panels{display:grid;gap:12px}
@@ -2385,7 +2386,8 @@ back-drives if l·cos α > π·μ·d_m   (T_lower &lt; 0)</div>
    Pure math for a preloaded bolted joint in tension — no page code in here, so tests/run_bolted_joint_tests.py
    can pull this block out and run it on its own. Method: Shigley's Mechanical Engineering Design, 10th ed.,
    ch. 8 (summarized in docs/bolted-joint-reference.md); equation numbers like (8-17) match the book.
-   Units everywhere in here: mm, N, MPa (= N/mm²). Stiffness comes out in N/mm. */
+   Units in the bolted-joint part: mm, N, MPa (= N/mm²); stiffness in N/mm. The thread-stripping part (inch-only
+   method) works in inches, psi and lbf. */
 const BJ = (() => {
   const IN = 25.4, KPSI = 6.894757, MPSI_GPA = 6.894757;   // in → mm; kpsi → MPa; Mpsi → GPa
 
@@ -2568,11 +2570,43 @@ const BJ = (() => {
     return { At, Ad, l, h:g.h, inGrip:g.inGrip, L, Lmin, LT, ld, lt, dw, kb, km, kmFrusta:ms.km, frusta:ms.frusta, single, cross, C,
       Fp, Fi, K, T, P, Pmin, N, Fb, Fm, separated, np, nL, n0, si, sa, sm, nf, proofSa, nProof, FiMax, warnings };
   }
+  /* ---- Thread stripping (Machinery's Handbook 31st ed., pp. 1668–1669, formulas (1)–(6);
+     summarized in docs/thread-stripping-reference.md). Unified inch threads only, so this part works in
+     the handbook's own units: inches, psi, lbf. The thread limits below are data/unified_thread_limits.json,
+     embedded so the page stays one file (the test runner checks the two copies still match). */
+  const UNIFIED_THREAD_LIMITS = {"description":"Unified inch screw thread limits (ASME B1.1), classes 2A/2B and 3A/3B, UNC and UNF, #4 through 1-1/2 in. Dimensions in inches. Transcribed from Machinery's Handbook 31st ed., Table 3 'Standard Series and Selected Combinations - Unified Screw Threads' (book pages 1951-1974, PDF pages 1962-1985). External (A) fields are the screw; internal (B) fields are the nut or tapped hole. Used by the thread stripping calculator; see docs/thread-stripping-reference.md.","units":"in","threads":[{"designation":"#4-40 UNC","basic_major_d":0.112,"tpi":40,"2A":{"allowance":0.0008,"major_max":0.1112,"major_min":0.1061,"pitch_max":0.095,"pitch_min":0.0925,"unr_minor_max":0.0814},"2B":{"minor_min":0.0849,"minor_max":0.0939,"pitch_min":0.0958,"pitch_max":0.0991,"major_min":0.112},"3A":{"allowance":0.0,"major_max":0.112,"major_min":0.1069,"pitch_max":0.0958,"pitch_min":0.0939,"unr_minor_max":0.0822},"3B":{"minor_min":0.0849,"minor_max":0.0939,"pitch_min":0.0958,"pitch_max":0.0982,"major_min":0.112}},{"designation":"#4-48 UNF","basic_major_d":0.112,"tpi":48,"2A":{"allowance":0.0007,"major_max":0.1113,"major_min":0.1068,"pitch_max":0.0978,"pitch_min":0.0954,"unr_minor_max":0.0865},"2B":{"minor_min":0.0894,"minor_max":0.0968,"pitch_min":0.0985,"pitch_max":0.1016,"major_min":0.112},"3A":{"allowance":0.0,"major_max":0.112,"major_min":0.1075,"pitch_max":0.0985,"pitch_min":0.0967,"unr_minor_max":0.0872},"3B":{"minor_min":0.0894,"minor_max":0.0968,"pitch_min":0.0985,"pitch_max":0.1008,"major_min":0.112}},{"designation":"#5-40 UNC","basic_major_d":0.125,"tpi":40,"2A":{"allowance":0.0008,"major_max":0.1242,"major_min":0.1191,"pitch_max":0.108,"pitch_min":0.1054,"unr_minor_max":0.0944},"2B":{"minor_min":0.0979,"minor_max":0.1062,"pitch_min":0.1088,"pitch_max":0.1121,"major_min":0.125},"3A":{"allowance":0.0,"major_max":0.125,"major_min":0.1199,"pitch_max":0.1088,"pitch_min":0.1069,"unr_minor_max":0.0952},"3B":{"minor_min":0.0979,"minor_max":0.1062,"pitch_min":0.1088,"pitch_max":0.1113,"major_min":0.125}},{"designation":"#5-44 UNF","basic_major_d":0.125,"tpi":44,"2A":{"allowance":0.0007,"major_max":0.1243,"major_min":0.1195,"pitch_max":0.1095,"pitch_min":0.107,"unr_minor_max":0.0972},"2B":{"minor_min":0.1004,"minor_max":0.1079,"pitch_min":0.1102,"pitch_max":0.1134,"major_min":0.125},"3A":{"allowance":0.0,"major_max":0.125,"major_min":0.1202,"pitch_max":0.1102,"pitch_min":0.1083,"unr_minor_max":0.0979},"3B":{"minor_min":0.1004,"minor_max":0.1079,"pitch_min":0.1102,"pitch_max":0.1126,"major_min":0.125}},{"designation":"#6-32 UNC","basic_major_d":0.138,"tpi":32,"2A":{"allowance":0.0008,"major_max":0.1372,"major_min":0.1312,"pitch_max":0.1169,"pitch_min":0.1141,"unr_minor_max":0.1},"2B":{"minor_min":0.104,"minor_max":0.114,"pitch_min":0.1177,"pitch_max":0.1214,"major_min":0.138},"3A":{"allowance":0.0,"major_max":0.138,"major_min":0.132,"pitch_max":0.1177,"pitch_min":0.1156,"unr_minor_max":0.1008},"3B":{"minor_min":0.104,"minor_max":0.1139,"pitch_min":0.1177,"pitch_max":0.1204,"major_min":0.138}},{"designation":"#6-40 UNF","basic_major_d":0.138,"tpi":40,"2A":{"allowance":0.0008,"major_max":0.1372,"major_min":0.1321,"pitch_max":0.121,"pitch_min":0.1184,"unr_minor_max":0.1074},"2B":{"minor_min":0.111,"minor_max":0.119,"pitch_min":0.1218,"pitch_max":0.1252,"major_min":0.138},"3A":{"allowance":0.0,"major_max":0.138,"major_min":0.1329,"pitch_max":0.1218,"pitch_min":0.1198,"unr_minor_max":0.1082},"3B":{"minor_min":0.111,"minor_max":0.1186,"pitch_min":0.1218,"pitch_max":0.1243,"major_min":0.138}},{"designation":"#8-32 UNC","basic_major_d":0.164,"tpi":32,"2A":{"allowance":0.0009,"major_max":0.1631,"major_min":0.1571,"pitch_max":0.1428,"pitch_min":0.1399,"unr_minor_max":0.1259},"2B":{"minor_min":0.13,"minor_max":0.139,"pitch_min":0.1437,"pitch_max":0.1475,"major_min":0.164},"3A":{"allowance":0.0,"major_max":0.164,"major_min":0.158,"pitch_max":0.1437,"pitch_min":0.1415,"unr_minor_max":0.1268},"3B":{"minor_min":0.13,"minor_max":0.1388,"pitch_min":0.1437,"pitch_max":0.1465,"major_min":0.164}},{"designation":"#8-36 UNF","basic_major_d":0.164,"tpi":36,"2A":{"allowance":0.0008,"major_max":0.1632,"major_min":0.1577,"pitch_max":0.1452,"pitch_min":0.1424,"unr_minor_max":0.1301},"2B":{"minor_min":0.134,"minor_max":0.142,"pitch_min":0.146,"pitch_max":0.1496,"major_min":0.164},"3A":{"allowance":0.0,"major_max":0.164,"major_min":0.1585,"pitch_max":0.146,"pitch_min":0.1439,"unr_minor_max":0.1309},"3B":{"minor_min":0.134,"minor_max":0.1416,"pitch_min":0.146,"pitch_max":0.1487,"major_min":0.164}},{"designation":"#10-24 UNC","basic_major_d":0.19,"tpi":24,"2A":{"allowance":0.001,"major_max":0.189,"major_min":0.1818,"pitch_max":0.1619,"pitch_min":0.1586,"unr_minor_max":0.1394},"2B":{"minor_min":0.145,"minor_max":0.155,"pitch_min":0.1629,"pitch_max":0.1672,"major_min":0.19},"3A":{"allowance":0.0,"major_max":0.19,"major_min":0.1828,"pitch_max":0.1629,"pitch_min":0.1604,"unr_minor_max":0.1404},"3B":{"minor_min":0.145,"minor_max":0.1555,"pitch_min":0.1629,"pitch_max":0.1661,"major_min":0.19}},{"designation":"#10-32 UNF","basic_major_d":0.19,"tpi":32,"2A":{"allowance":0.0009,"major_max":0.1891,"major_min":0.1831,"pitch_max":0.1688,"pitch_min":0.1658,"unr_minor_max":0.1519},"2B":{"minor_min":0.156,"minor_max":0.164,"pitch_min":0.1697,"pitch_max":0.1736,"major_min":0.19},"3A":{"allowance":0.0,"major_max":0.19,"major_min":0.184,"pitch_max":0.1697,"pitch_min":0.1674,"unr_minor_max":0.1528},"3B":{"minor_min":0.156,"minor_max":0.1641,"pitch_min":0.1697,"pitch_max":0.1726,"major_min":0.19}},{"designation":"#12-24 UNC","basic_major_d":0.216,"tpi":24,"2A":{"allowance":0.001,"major_max":0.215,"major_min":0.2078,"pitch_max":0.1879,"pitch_min":0.1845,"unr_minor_max":0.1654},"2B":{"minor_min":0.171,"minor_max":0.181,"pitch_min":0.1889,"pitch_max":0.1933,"major_min":0.216},"3A":{"allowance":0.0,"major_max":0.216,"major_min":0.2088,"pitch_max":0.1889,"pitch_min":0.1863,"unr_minor_max":0.1664},"3B":{"minor_min":0.171,"minor_max":0.1807,"pitch_min":0.1889,"pitch_max":0.1922,"major_min":0.216}},{"designation":"#12-28 UNF","basic_major_d":0.216,"tpi":28,"2A":{"allowance":0.001,"major_max":0.215,"major_min":0.2085,"pitch_max":0.1918,"pitch_min":0.1886,"unr_minor_max":0.1725},"2B":{"minor_min":0.177,"minor_max":0.186,"pitch_min":0.1928,"pitch_max":0.197,"major_min":0.216},"3A":{"allowance":0.0,"major_max":0.216,"major_min":0.2095,"pitch_max":0.1928,"pitch_min":0.1904,"unr_minor_max":0.1735},"3B":{"minor_min":0.177,"minor_max":0.1857,"pitch_min":0.1928,"pitch_max":0.1959,"major_min":0.216}},{"designation":"1/4-20 UNC","basic_major_d":0.25,"tpi":20,"2A":{"allowance":0.0011,"major_max":0.2489,"major_min":0.2408,"pitch_max":0.2164,"pitch_min":0.2127,"unr_minor_max":0.1894},"2B":{"minor_min":0.196,"minor_max":0.207,"pitch_min":0.2175,"pitch_max":0.2224,"major_min":0.25},"3A":{"allowance":0.0,"major_max":0.25,"major_min":0.2419,"pitch_max":0.2175,"pitch_min":0.2147,"unr_minor_max":0.1905},"3B":{"minor_min":0.196,"minor_max":0.2067,"pitch_min":0.2175,"pitch_max":0.2211,"major_min":0.25}},{"designation":"1/4-28 UNF","basic_major_d":0.25,"tpi":28,"2A":{"allowance":0.001,"major_max":0.249,"major_min":0.2425,"pitch_max":0.2258,"pitch_min":0.2225,"unr_minor_max":0.2065},"2B":{"minor_min":0.211,"minor_max":0.22,"pitch_min":0.2268,"pitch_max":0.2311,"major_min":0.25},"3A":{"allowance":0.0,"major_max":0.25,"major_min":0.2435,"pitch_max":0.2268,"pitch_min":0.2243,"unr_minor_max":0.2075},"3B":{"minor_min":0.211,"minor_max":0.219,"pitch_min":0.2268,"pitch_max":0.23,"major_min":0.25}},{"designation":"5/16-18 UNC","basic_major_d":0.3125,"tpi":18,"2A":{"allowance":0.0012,"major_max":0.3113,"major_min":0.3026,"pitch_max":0.2752,"pitch_min":0.2712,"unr_minor_max":0.2451},"2B":{"minor_min":0.252,"minor_max":0.265,"pitch_min":0.2764,"pitch_max":0.2817,"major_min":0.3125},"3A":{"allowance":0.0,"major_max":0.3125,"major_min":0.3038,"pitch_max":0.2764,"pitch_min":0.2734,"unr_minor_max":0.2463},"3B":{"minor_min":0.252,"minor_max":0.263,"pitch_min":0.2764,"pitch_max":0.2803,"major_min":0.3125}},{"designation":"5/16-24 UNF","basic_major_d":0.3125,"tpi":24,"2A":{"allowance":0.0011,"major_max":0.3114,"major_min":0.3042,"pitch_max":0.2843,"pitch_min":0.2806,"unr_minor_max":0.2618},"2B":{"minor_min":0.267,"minor_max":0.277,"pitch_min":0.2854,"pitch_max":0.2902,"major_min":0.3125},"3A":{"allowance":0.0,"major_max":0.3125,"major_min":0.3053,"pitch_max":0.2854,"pitch_min":0.2827,"unr_minor_max":0.2629},"3B":{"minor_min":0.267,"minor_max":0.2754,"pitch_min":0.2854,"pitch_max":0.289,"major_min":0.3125}},{"designation":"3/8-16 UNC","basic_major_d":0.375,"tpi":16,"2A":{"allowance":0.0013,"major_max":0.3737,"major_min":0.3643,"pitch_max":0.3331,"pitch_min":0.3287,"unr_minor_max":0.2993},"2B":{"minor_min":0.307,"minor_max":0.321,"pitch_min":0.3344,"pitch_max":0.3401,"major_min":0.375},"3A":{"allowance":0.0,"major_max":0.375,"major_min":0.3656,"pitch_max":0.3344,"pitch_min":0.3311,"unr_minor_max":0.3006},"3B":{"minor_min":0.307,"minor_max":0.3182,"pitch_min":0.3344,"pitch_max":0.3387,"major_min":0.375}},{"designation":"3/8-24 UNF","basic_major_d":0.375,"tpi":24,"2A":{"allowance":0.0011,"major_max":0.3739,"major_min":0.3667,"pitch_max":0.3468,"pitch_min":0.343,"unr_minor_max":0.3243},"2B":{"minor_min":0.33,"minor_max":0.34,"pitch_min":0.3479,"pitch_max":0.3528,"major_min":0.375},"3A":{"allowance":0.0,"major_max":0.375,"major_min":0.3678,"pitch_max":0.3479,"pitch_min":0.345,"unr_minor_max":0.3254},"3B":{"minor_min":0.33,"minor_max":0.3372,"pitch_min":0.3479,"pitch_max":0.3516,"major_min":0.375}},{"designation":"7/16-14 UNC","basic_major_d":0.4375,"tpi":14,"2A":{"allowance":0.0014,"major_max":0.4361,"major_min":0.4258,"pitch_max":0.3897,"pitch_min":0.385,"unr_minor_max":0.351},"2B":{"minor_min":0.36,"minor_max":0.376,"pitch_min":0.3911,"pitch_max":0.3972,"major_min":0.4375},"3A":{"allowance":0.0,"major_max":0.4375,"major_min":0.4272,"pitch_max":0.3911,"pitch_min":0.3876,"unr_minor_max":0.3524},"3B":{"minor_min":0.36,"minor_max":0.3717,"pitch_min":0.3911,"pitch_max":0.3957,"major_min":0.4375}},{"designation":"7/16-20 UNF","basic_major_d":0.4375,"tpi":20,"2A":{"allowance":0.0013,"major_max":0.4362,"major_min":0.4281,"pitch_max":0.4037,"pitch_min":0.3995,"unr_minor_max":0.3767},"2B":{"minor_min":0.383,"minor_max":0.395,"pitch_min":0.405,"pitch_max":0.4104,"major_min":0.4375},"3A":{"allowance":0.0,"major_max":0.4375,"major_min":0.4294,"pitch_max":0.405,"pitch_min":0.4019,"unr_minor_max":0.378},"3B":{"minor_min":0.383,"minor_max":0.3916,"pitch_min":0.405,"pitch_max":0.4091,"major_min":0.4375}},{"designation":"1/2-13 UNC","basic_major_d":0.5,"tpi":13,"2A":{"allowance":0.0015,"major_max":0.4985,"major_min":0.4876,"pitch_max":0.4485,"pitch_min":0.4435,"unr_minor_max":0.4069},"2B":{"minor_min":0.417,"minor_max":0.434,"pitch_min":0.45,"pitch_max":0.4565,"major_min":0.5},"3A":{"allowance":0.0,"major_max":0.5,"major_min":0.4891,"pitch_max":0.45,"pitch_min":0.4463,"unr_minor_max":0.4084},"3B":{"minor_min":0.417,"minor_max":0.4284,"pitch_min":0.45,"pitch_max":0.4548,"major_min":0.5}},{"designation":"1/2-20 UNF","basic_major_d":0.5,"tpi":20,"2A":{"allowance":0.0013,"major_max":0.4987,"major_min":0.4906,"pitch_max":0.4662,"pitch_min":0.4619,"unr_minor_max":0.4392},"2B":{"minor_min":0.446,"minor_max":0.457,"pitch_min":0.4675,"pitch_max":0.4731,"major_min":0.5},"3A":{"allowance":0.0,"major_max":0.5,"major_min":0.4919,"pitch_max":0.4675,"pitch_min":0.4643,"unr_minor_max":0.4405},"3B":{"minor_min":0.446,"minor_max":0.4537,"pitch_min":0.4675,"pitch_max":0.4717,"major_min":0.5}},{"designation":"9/16-12 UNC","basic_major_d":0.5625,"tpi":12,"2A":{"allowance":0.0016,"major_max":0.5609,"major_min":0.5495,"pitch_max":0.5068,"pitch_min":0.5016,"unr_minor_max":0.4617},"2B":{"minor_min":0.472,"minor_max":0.49,"pitch_min":0.5084,"pitch_max":0.5152,"major_min":0.5625},"3A":{"allowance":0.0,"major_max":0.5625,"major_min":0.5511,"pitch_max":0.5084,"pitch_min":0.5045,"unr_minor_max":0.4633},"3B":{"minor_min":0.472,"minor_max":0.4843,"pitch_min":0.5084,"pitch_max":0.5135,"major_min":0.5625}},{"designation":"9/16-18 UNF","basic_major_d":0.5625,"tpi":18,"2A":{"allowance":0.0014,"major_max":0.5611,"major_min":0.5524,"pitch_max":0.525,"pitch_min":0.5205,"unr_minor_max":0.4949},"2B":{"minor_min":0.502,"minor_max":0.515,"pitch_min":0.5264,"pitch_max":0.5323,"major_min":0.5625},"3A":{"allowance":0.0,"major_max":0.5625,"major_min":0.5538,"pitch_max":0.5264,"pitch_min":0.523,"unr_minor_max":0.4963},"3B":{"minor_min":0.502,"minor_max":0.5106,"pitch_min":0.5264,"pitch_max":0.5308,"major_min":0.5625}},{"designation":"5/8-11 UNC","basic_major_d":0.625,"tpi":11,"2A":{"allowance":0.0017,"major_max":0.6233,"major_min":0.6112,"pitch_max":0.5643,"pitch_min":0.5588,"unr_minor_max":0.515},"2B":{"minor_min":0.527,"minor_max":0.546,"pitch_min":0.566,"pitch_max":0.5732,"major_min":0.625},"3A":{"allowance":0.0,"major_max":0.625,"major_min":0.6129,"pitch_max":0.566,"pitch_min":0.5619,"unr_minor_max":0.5167},"3B":{"minor_min":0.527,"minor_max":0.5391,"pitch_min":0.566,"pitch_max":0.5714,"major_min":0.625}},{"designation":"5/8-18 UNF","basic_major_d":0.625,"tpi":18,"2A":{"allowance":0.0014,"major_max":0.6236,"major_min":0.6149,"pitch_max":0.5875,"pitch_min":0.5828,"unr_minor_max":0.5574},"2B":{"minor_min":0.565,"minor_max":0.578,"pitch_min":0.5889,"pitch_max":0.5949,"major_min":0.625},"3A":{"allowance":0.0,"major_max":0.625,"major_min":0.6163,"pitch_max":0.5889,"pitch_min":0.5854,"unr_minor_max":0.5588},"3B":{"minor_min":0.565,"minor_max":0.573,"pitch_min":0.5889,"pitch_max":0.5934,"major_min":0.625}},{"designation":"3/4-10 UNC","basic_major_d":0.75,"tpi":10,"2A":{"allowance":0.0018,"major_max":0.7482,"major_min":0.7353,"pitch_max":0.6832,"pitch_min":0.6773,"unr_minor_max":0.6291},"2B":{"minor_min":0.642,"minor_max":0.663,"pitch_min":0.685,"pitch_max":0.6927,"major_min":0.75},"3A":{"allowance":0.0,"major_max":0.75,"major_min":0.7371,"pitch_max":0.685,"pitch_min":0.6806,"unr_minor_max":0.6309},"3B":{"minor_min":0.642,"minor_max":0.6545,"pitch_min":0.685,"pitch_max":0.6907,"major_min":0.75}},{"designation":"3/4-16 UNF","basic_major_d":0.75,"tpi":16,"2A":{"allowance":0.0015,"major_max":0.7485,"major_min":0.7391,"pitch_max":0.7079,"pitch_min":0.7029,"unr_minor_max":0.6741},"2B":{"minor_min":0.682,"minor_max":0.696,"pitch_min":0.7094,"pitch_max":0.7159,"major_min":0.75},"3A":{"allowance":0.0,"major_max":0.75,"major_min":0.7406,"pitch_max":0.7094,"pitch_min":0.7056,"unr_minor_max":0.6756},"3B":{"minor_min":0.682,"minor_max":0.6909,"pitch_min":0.7094,"pitch_max":0.7143,"major_min":0.75}},{"designation":"7/8-9 UNC","basic_major_d":0.875,"tpi":9,"2A":{"allowance":0.0019,"major_max":0.8731,"major_min":0.8592,"pitch_max":0.8009,"pitch_min":0.7946,"unr_minor_max":0.7408},"2B":{"minor_min":0.755,"minor_max":0.778,"pitch_min":0.8028,"pitch_max":0.811,"major_min":0.875},"3A":{"allowance":0.0,"major_max":0.875,"major_min":0.8611,"pitch_max":0.8028,"pitch_min":0.7981,"unr_minor_max":0.7427},"3B":{"minor_min":0.755,"minor_max":0.7681,"pitch_min":0.8028,"pitch_max":0.8089,"major_min":0.875}},{"designation":"7/8-14 UNF","basic_major_d":0.875,"tpi":14,"2A":{"allowance":0.0016,"major_max":0.8734,"major_min":0.8631,"pitch_max":0.827,"pitch_min":0.8216,"unr_minor_max":0.7883},"2B":{"minor_min":0.798,"minor_max":0.813,"pitch_min":0.8286,"pitch_max":0.8356,"major_min":0.875},"3A":{"allowance":0.0,"major_max":0.875,"major_min":0.8647,"pitch_max":0.8286,"pitch_min":0.8245,"unr_minor_max":0.7899},"3B":{"minor_min":0.798,"minor_max":0.8067,"pitch_min":0.8286,"pitch_max":0.8339,"major_min":0.875}},{"designation":"1-8 UNC","basic_major_d":1.0,"tpi":8,"2A":{"allowance":0.002,"major_max":0.998,"major_min":0.983,"pitch_max":0.9168,"pitch_min":0.9101,"unr_minor_max":0.8492},"2B":{"minor_min":0.865,"minor_max":0.89,"pitch_min":0.9188,"pitch_max":0.9276,"major_min":1.0},"3A":{"allowance":0.0,"major_max":1.0,"major_min":0.985,"pitch_max":0.9188,"pitch_min":0.9137,"unr_minor_max":0.8512},"3B":{"minor_min":0.865,"minor_max":0.8797,"pitch_min":0.9188,"pitch_max":0.9254,"major_min":1.0}},{"designation":"1-12 UNF","basic_major_d":1.0,"tpi":12,"2A":{"allowance":0.0018,"major_max":0.9982,"major_min":0.9868,"pitch_max":0.9441,"pitch_min":0.9382,"unr_minor_max":0.899},"2B":{"minor_min":0.91,"minor_max":0.928,"pitch_min":0.9459,"pitch_max":0.9535,"major_min":1.0},"3A":{"allowance":0.0,"major_max":1.0,"major_min":0.9886,"pitch_max":0.9459,"pitch_min":0.9415,"unr_minor_max":0.9008},"3B":{"minor_min":0.91,"minor_max":0.9198,"pitch_min":0.9459,"pitch_max":0.9516,"major_min":1.0}},{"designation":"1-1/8-7 UNC","basic_major_d":1.125,"tpi":7,"2A":{"allowance":0.0022,"major_max":1.1228,"major_min":1.1064,"pitch_max":1.03,"pitch_min":1.0228,"unr_minor_max":0.9527},"2B":{"minor_min":0.97,"minor_max":0.998,"pitch_min":1.0322,"pitch_max":1.0416,"major_min":1.125},"3A":{"allowance":0.0,"major_max":1.125,"major_min":1.1086,"pitch_max":1.0322,"pitch_min":1.0268,"unr_minor_max":0.9549},"3B":{"minor_min":0.97,"minor_max":0.9875,"pitch_min":1.0322,"pitch_max":1.0393,"major_min":1.125}},{"designation":"1-1/8-12 UNF","basic_major_d":1.125,"tpi":12,"2A":{"allowance":0.0018,"major_max":1.1232,"major_min":1.1118,"pitch_max":1.0691,"pitch_min":1.0631,"unr_minor_max":1.024},"2B":{"minor_min":1.035,"minor_max":1.053,"pitch_min":1.0709,"pitch_max":1.0787,"major_min":1.125},"3A":{"allowance":0.0,"major_max":1.125,"major_min":1.1136,"pitch_max":1.0709,"pitch_min":1.0664,"unr_minor_max":1.0258},"3B":{"minor_min":1.035,"minor_max":1.0448,"pitch_min":1.0709,"pitch_max":1.0768,"major_min":1.125}},{"designation":"1-1/4-7 UNC","basic_major_d":1.25,"tpi":7,"2A":{"allowance":0.0022,"major_max":1.2478,"major_min":1.2314,"pitch_max":1.155,"pitch_min":1.1476,"unr_minor_max":1.0777},"2B":{"minor_min":1.095,"minor_max":1.123,"pitch_min":1.1572,"pitch_max":1.1668,"major_min":1.25},"3A":{"allowance":0.0,"major_max":1.25,"major_min":1.2336,"pitch_max":1.1572,"pitch_min":1.1517,"unr_minor_max":1.0799},"3B":{"minor_min":1.095,"minor_max":1.1125,"pitch_min":1.1572,"pitch_max":1.1644,"major_min":1.25}},{"designation":"1-1/4-12 UNF","basic_major_d":1.25,"tpi":12,"2A":{"allowance":0.0018,"major_max":1.2482,"major_min":1.2368,"pitch_max":1.1941,"pitch_min":1.1879,"unr_minor_max":1.149},"2B":{"minor_min":1.16,"minor_max":1.178,"pitch_min":1.1959,"pitch_max":1.2039,"major_min":1.25},"3A":{"allowance":0.0,"major_max":1.25,"major_min":1.2386,"pitch_max":1.1959,"pitch_min":1.1913,"unr_minor_max":1.1508},"3B":{"minor_min":1.16,"minor_max":1.1698,"pitch_min":1.1959,"pitch_max":1.2019,"major_min":1.25}},{"designation":"1-3/8-6 UNC","basic_major_d":1.375,"tpi":6,"2A":{"allowance":0.0024,"major_max":1.3726,"major_min":1.3544,"pitch_max":1.2643,"pitch_min":1.2563,"unr_minor_max":1.1741},"2B":{"minor_min":1.195,"minor_max":1.225,"pitch_min":1.2667,"pitch_max":1.2771,"major_min":1.375},"3A":{"allowance":0.0,"major_max":1.375,"major_min":1.3568,"pitch_max":1.2667,"pitch_min":1.2607,"unr_minor_max":1.1765},"3B":{"minor_min":1.195,"minor_max":1.2146,"pitch_min":1.2667,"pitch_max":1.2745,"major_min":1.375}},{"designation":"1-3/8-12 UNF","basic_major_d":1.375,"tpi":12,"2A":{"allowance":0.0019,"major_max":1.3731,"major_min":1.3617,"pitch_max":1.319,"pitch_min":1.3127,"unr_minor_max":1.2739},"2B":{"minor_min":1.285,"minor_max":1.303,"pitch_min":1.3209,"pitch_max":1.3291,"major_min":1.375},"3A":{"allowance":0.0,"major_max":1.375,"major_min":1.3636,"pitch_max":1.3209,"pitch_min":1.3162,"unr_minor_max":1.2758},"3B":{"minor_min":1.285,"minor_max":1.2948,"pitch_min":1.3209,"pitch_max":1.327,"major_min":1.375}},{"designation":"1-1/2-6 UNC","basic_major_d":1.5,"tpi":6,"2A":{"allowance":0.0024,"major_max":1.4976,"major_min":1.4794,"pitch_max":1.3893,"pitch_min":1.3812,"unr_minor_max":1.2991},"2B":{"minor_min":1.32,"minor_max":1.35,"pitch_min":1.3917,"pitch_max":1.4022,"major_min":1.5},"3A":{"allowance":0.0,"major_max":1.5,"major_min":1.4818,"pitch_max":1.3917,"pitch_min":1.3856,"unr_minor_max":1.3015},"3B":{"minor_min":1.32,"minor_max":1.3396,"pitch_min":1.3917,"pitch_max":1.3996,"major_min":1.5}},{"designation":"1-1/2-12 UNF","basic_major_d":1.5,"tpi":12,"2A":{"allowance":0.0019,"major_max":1.4981,"major_min":1.4867,"pitch_max":1.444,"pitch_min":1.4376,"unr_minor_max":1.3989},"2B":{"minor_min":1.41,"minor_max":1.428,"pitch_min":1.4459,"pitch_max":1.4542,"major_min":1.5},"3A":{"allowance":0.0,"major_max":1.5,"major_min":1.4886,"pitch_max":1.4459,"pitch_min":1.4411,"unr_minor_max":1.4008},"3B":{"minor_min":1.41,"minor_max":1.4198,"pitch_min":1.4459,"pitch_max":1.4522,"major_min":1.5}}]};
+  // Find a thread by designation ("1/2-13 UNC") or by major diameter (in) + TPI
+  function threadLimits(desig, d_in, tpi){
+    const T = UNIFIED_THREAD_LIMITS.threads;
+    return T.find(t => t.designation === desig) || T.find(t => Math.abs(t.basic_major_d - d_in) < 5e-4 && t.tpi === Math.round(tpi)) || null;
+  }
+  /* s = { thread (data-file entry), cls:'2'|'3' (2A/2B or 3A/3B), SutExt, SutInt (psi, screw and nut/hole),
+           L (in, engagement to check; optional), tau (shear/tensile ratio, default 0.5) } */
+  function stripping(s){
+    const t = s.thread, n = t.tpi, D = t.basic_major_d, ext = t[s.cls + 'A'], int = t[s.cls + 'B'];
+    const Es = ext.pitch_min, Ds = ext.major_min, Kn = int.minor_max, En = int.pitch_max;
+    const highStrength = s.SutExt > 180000;
+    const At = highStrength ? Math.PI*(Es/2 - 0.16238/n)**2 : 0.7854*(D - 0.9743/n)**2;      // (2b) / (2a)
+    const aS = Math.PI*n*Kn*(1/(2*n) + 0.57735*(Es - Kn));                                 // (5) per inch of engagement
+    const aN = Math.PI*n*Ds*(1/(2*n) + 0.57735*(Ds - En));                                 // (6) per inch of engagement
+    const Le = 2*At / (Math.PI*Kn*(0.5 + 0.57735*n*(Es - Kn)));                            // (1)
+    const J = (aS*Le*s.SutExt) / (aN*Le*s.SutInt);                                         // (3)
+    const Q = J*Le;                                                                         // (4)
+    const required = Math.max(Le, Q), tau = s.tau > 0 ? s.tau : 0.5;
+    const out = { n, D, Es, Ds, Kn, En, highStrength, At, aS, aN, Le, AsLe:aS*Le, AnLe:aN*Le, J, Q, required, internalFirst:J > 1 };
+    if (s.L > 0){
+      const loads = { screw_break:s.SutExt*At, external_strip:tau*s.SutExt*aS*s.L, internal_strip:tau*s.SutInt*aN*s.L };
+      out.L = s.L; out.loads = loads;
+      out.governing = Object.keys(loads).reduce((a, b) => loads[b] < loads[a] ? b : a);
+    }
+    return out;
+  }
   // §8 Bolts needed for a target load factor: N = C·n_L·P_total / (S_p A_t − F_i)
   const boltsFor = (C, nL, Ptotal, Fp, Fi) => C*nL*Ptotal/(Fp - Fi);
 
   return { IN, KPSI, MPSI_GPA, MATS, GRADES, grade, K_TABLE, threadAreas, threadLength, standardLength, grip,
-    boltStiffness, frustum, memberStiffness, km822, km823, fatigueFactor, solve, boltsFor };
+    boltStiffness, frustum, memberStiffness, km822, km823, fatigueFactor, solve, boltsFor,
+    UNIFIED_THREAD_LIMITS, threadLimits, stripping };
 })();
 /* === BOLTED JOINT CORE END === */
 
@@ -2589,6 +2623,20 @@ const BOLT_THREADS = Object.fromEntries([
     .map(([d,p]) => [`M${d}x${p}`, { label:`M${d} × ${p}`, sys:'metric', d, p }]),
 ]);
 const BOLT_LAYERS = [1,2,3,4];
+// Nut / tapped-part materials for the thread stripping check. Sut in ksi: typical published minimums — check your
+// material's datasheet. fam picks the rule of thumb for minimum full-thread engagement.
+const STRIP_MATS = {
+  same:    { label:'Steel, same strength as the bolt', fam:'steel' },
+  mild:    { label:'Mild steel (1018), 64 ksi',        Sut:64, fam:'steel' },
+  castiron:{ label:'Gray cast iron, class 30, 30 ksi', Sut:30, fam:'castiron' },
+  al6061:  { label:'6061-T6 aluminum, 45 ksi',         Sut:45, fam:'soft' },
+  al7075:  { label:'7075-T6 aluminum, 83 ksi',         Sut:83, fam:'soft' },
+  brass:   { label:'Brass (C360), 58 ksi',             Sut:58, fam:'soft' },
+  custom:  { label:'Custom' },
+};
+// General shop practice for minimum full-thread engagement (NOT from Machinery's Handbook)
+const ENGAGE_RULE = { steel:{ D:1.0, label:'steel into steel' }, castiron:{ D:1.5, label:'cast iron' }, soft:{ D:2.0, label:'aluminum and other soft metals' } };
+const PSI = 145.0377;          // MPa → psi
 const boltThread = v => v.thread === 'custom' ? { sys:v.tsys, d:v.dC, p:v.pC } : BOLT_THREADS[v.thread];
 const MPSI = BJ.MPSI_GPA;     // 1 Mpsi in GPa
 const BOLT = {
@@ -2640,6 +2688,15 @@ const BOLT = {
     {key:'crit', label:'Fatigue criterion', type:'select', def:'goodman', options:[{value:'goodman', label:'Goodman (most conservative)'}, {value:'gerber', label:'Gerber'}, {value:'asme', label:'ASME-elliptic'}]},
     {key:'nT', label:'Target load factor', kind:'none', def:2, help:'Used to suggest how many bolts you need.'},
     {key:'Db', label:'Bolt-circle diameter', kind:'lenS', def:0, help:'Optional (gasketed joints): checks that bolts are 3d–6d apart. 0 = skip.'},
+    {section:'Thread stripping (inch threads)'},
+    {key:'scls', label:'Thread class', type:'select', def:'2', options:[{value:'2', label:'2A / 2B (standard)'}, {value:'3', label:'3A / 3B (precision)'}]},
+    {key:'nmat', label:'Nut or tapped-part material', type:'select', def:'castiron', options:Object.entries(STRIP_MATS).map(([value,m]) => ({ value, label:m.label }))},
+    {key:'nSut', label:'Its tensile strength', kind:'mpa', def:30*BJ.KPSI, showIf:v => v.nmat !== 'same'},
+    {key:'nfam', label:'Treat it like', type:'select', def:'soft', showIf:v => v.nmat === 'custom',
+      options:Object.entries(ENGAGE_RULE).map(([value,r]) => ({ value, label:`${r.label} (${r.D} D rule)` }))},
+    {key:'eng', label:'Thread engagement', kind:'lenS', def:0,
+      help:'0 = automatic: the nut thickness (≈ ⅞ d) for a bolt and nut; for a cap screw, the tapped depth the screw reaches. Count full threads only, not the lead-in chamfer or the incomplete threads at the bottom of a blind hole.'},
+    {key:'tauR', label:'Shear ÷ tensile strength', kind:'none', def:0.5, help:'0.5 matches the handbook (conservative); real steels are nearer 0.6.'},
   ],
   onChange(key, v){
     let redraw = false;
@@ -2648,6 +2705,7 @@ const BOLT = {
       v.Sp = g.Sp; v.Sut = g.Sut; v.Se = Number.isFinite(g.Se) ? g.Se : 0; redraw = true;
     }
     BOLT_LAYERS.forEach(i => { if (key === `m${i}` && v[key] !== 'custom'){ v[`E${i}`] = BJ.MATS[v[key]].Empsi*MPSI; redraw = true; } });
+    if (key === 'nmat' && STRIP_MATS[v.nmat].Sut){ v.nSut = STRIP_MATS[v.nmat].Sut*BJ.KPSI; redraw = true; }
     return redraw;
   },
   compute(v){
@@ -2677,7 +2735,7 @@ const BOLT = {
     const gov = modes.reduce((a, b) => b[1] < a[1] ? b : a);
     const conflict = Number.isFinite(r.nf.goodman) && Number.isFinite(r.nf.gerber) && (r.nf.goodman < r.nProof) !== (r.nf.gerber < r.nProof);
     const Nreq = BJ.boltsFor(r.C, v.nT, v.Pmax, r.Fp, r.Fi);
-    return { ...r, th, K, gov, conflict, Nreq, spacing, warnings };
+    return { ...r, th, K, gov, conflict, Nreq, spacing, strip:boltStrip(v, th, r, layers), warnings };
   },
   renderOut(el, v, r){
     if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
@@ -2710,6 +2768,7 @@ const BOLT = {
           </table>
           ${r.cross ? `<div class="legend"><span>One material: eq. 8-22 ${fmtK(r.cross.k822,'stiff')}, eq. 8-23 (FE) ${fmtK(r.cross.k823,'stiff')}</span></div>` : ''}</figure>
       </div>
+      ${stripPanel(v, r)}
       <details class="adv card"><summary>Advanced details</summary>
         <table><tr><th>Quantity</th><th>Formula</th><th>Value</th></tr>
           <tr><td>Tensile-stress area A_t</td><td class="mono">${r.th.sys === 'inch' ? 'π/4 (d − 0.9743/n)²' : 'π/4 (d − 0.9382 p)²'}</td><td class="mono">${fmtK(r.At,'area')}</td></tr>
@@ -2756,6 +2815,14 @@ const BOLT = {
       rel('One material: frusta k_m ≈ eq. 8-22 (book rounds tan 30°)', BJ.km822(207000, 12, 40), one.km, 'N/mm'),
       rel('Thread table: M10 × 1.5 A_t', 58.0, at(10, 1.5), 'mm²'),
       rel('Thread table: M12 × 1.75 A_t', 84.3, at(12, 1.75), 'mm²'),
+      ...(() => { const t = BJ.threadLimits('1/2-13 UNC'), a = BJ.stripping({ thread:t, cls:'2', SutExt:120000, SutInt:45000, L:0.5, tau:0.5 });
+        const q = BJ.stripping({ thread:t, cls:'2', SutExt:120000, SutInt:120000 });
+        return [
+          { name:'Stripping: A_s at formula (1) L_e = 2·A_t (definition)', expected:2*q.At, got:q.AsLe, unit:'in²', tol:1e-12 },
+          { name:'Stripping: τ = 0.5 S_ut at L_e → external strip = screw break', expected:120000*q.At, got:0.5*120000*q.aS*q.Le, unit:'lbf', tol:1e-6 },
+          { name:'Stripping: ½-13 steel in 45 ksi aluminum, Q = J·L_e', expected:0.6736, got:a.required, unit:'in', tol:0.6736*0.002 },
+          { name:'Stripping: … at 0.5 in, internal thread strips first (1 = yes)', expected:1, got:a.governing === 'internal_strip' ? 1 : 0, unit:'', tol:0 },
+        ]; })(),
     ];
   },
   docs(){ return `
@@ -2769,11 +2836,18 @@ yield           n_p = S_p·A_t / (C·P + F_i)                    (8-28)
 load factor     n_L = (S_p·A_t − F_i) / (C·P)                  (8-29)
 separation      n₀ = F_i / (P·(1 − C))                         (8-30)
 fatigue         σ_a = C·ΔP / 2A_t     σ_m = σ_a + F_i/A_t
-Goodman         n_f = S_e(S_ut − σ_i) / (S_ut σ_a + S_e(σ_m − σ_i))   (8-38)</div>
+Goodman         n_f = S_e(S_ut − σ_i) / (S_ut σ_a + S_e(σ_m − σ_i))   (8-38)
+
+thread stripping (Machinery's Handbook, inch threads, worst-case class limits):
+A_s/L = π n K_n,max [1/2n + 0.57735 (E_s,min − K_n,max)]     (5)
+A_n/L = π n D_s,min [1/2n + 0.57735 (D_s,min − E_n,max)]     (6)
+L_e   = 2 A_t / (π K_n,max [1/2 + 0.57735 n (E_s,min − K_n,max)])   (1)
+J     = A_s S_ut,screw / (A_n S_ut,nut)    Q = J · L_e        (3), (4)
+loads: break = S_ut A_t,  strip = τ · (A/L) · L,  τ = 0.5 S_ut</div>
       <p>The clamped parts are modelled as two cones spreading at α from under the head and the nut (or the cap screw's effective grip end), meeting mid-grip. Each cone is cut wherever the material changes and the pieces act as springs in series. Gerber and ASME-elliptic are found by following the load line out from the preload until it hits the failure curve. Method and equations: Shigley's <i>Mechanical Engineering Design</i>, 10th ed., ch. 8 (see <code>docs/bolted-joint-reference.md</code>).</p>
     </div>
     <div><h3>Validation</h3>
-      <p>The page opens on Shigley Example 8-5. The full known-answer suite (Examples 8-2, 8-4 and 8-5, 55 checks) is in <code>tests/bolted_joint_cases.json</code>; run <code>python3 tests/run_bolted_joint_tests.py</code>.</p>
+      <p>The page opens on Shigley Example 8-5. The full known-answer suites are <code>tests/bolted_joint_cases.json</code> (Shigley Examples 8-2, 8-4, 8-5) and <code>tests/thread_stripping_cases.json</code> (9 Machinery's Handbook cases); run <code>python3 tests/run_bolted_joint_tests.py</code>.</p>
       ${validationTable(this)}</div>`; }
 };
 function boltPlot(v, r){
@@ -2795,6 +2869,59 @@ function boltPlot(v, r){
   const sel = r.nf[v.crit], dot = (k, col) => { if (!Number.isFinite(k)) return; f.c.fillStyle = col; f.c.beginPath();
     f.c.arc(f.X(r.si + k*(r.sm - r.si)), f.Y(k*r.sa), 4.5, 0, 7); f.c.fill(); };
   dot(r.nProof, COL.red); dot(sel, { goodman:COL.orange, gerber:COL.green, asme:COL.purple }[v.crit]);
+}
+
+// Thread stripping check for the bolt above (inch threads only). Reuses the bolt's thread, grade (S_ut) and joint.
+function boltStrip(v, th, r, layers){
+  if (th.sys !== 'inch') return { na:'Thread stripping uses the Machinery’s Handbook method, which covers Unified inch threads only — there is no metric version, so the check is skipped for metric bolts.' };
+  const t = BJ.threadLimits(null, th.d/25.4, 25.4/th.p);
+  if (!t) return { na:'This thread size is not in the Unified thread table (#4 to 1-1/2 in, UNC and UNF), so the stripping check is skipped.' };
+  const tap = v.joint === 'cap' ? layers[layers.length - 1].t : null;
+  const auto = v.joint === 'cap' ? Math.max(0, Math.min(r.L - r.h, tap)) : 0.875*th.d;
+  const Lmm = v.eng > 0 ? v.eng : auto;
+  const SutInt = v.nmat === 'same' ? v.Sut : v.nSut;
+  if (!(SutInt > 0)) return { na:'Enter the tensile strength of the nut or tapped part.' };
+  const s = BJ.stripping({ thread:t, cls:v.scls, SutExt:v.Sut*PSI, SutInt:SutInt*PSI, L:Lmm/25.4, tau:v.tauR });
+  const D = t.basic_major_d, LD = s.L/D, fam = v.nmat === 'custom' ? v.nfam : STRIP_MATS[v.nmat].fam, rule = ENGAGE_RULE[fam];
+  // The rules of thumb are for screws in tapped holes; a standard nut (≈ ⅞ D) of matching grade is designed to
+  // develop the bolt's full strength, so for a bolt and nut only the calculation decides.
+  const useRule = v.joint === 'cap';
+  const status = s.L < s.required - 1e-9 ? 'red' : useRule && LD < rule.D - 1e-9 ? 'amber' : 'green';
+  const weakest = Math.min(...Object.values(s.loads)) * 4.4482216;              // N
+  return { ...s, t, LD, rule, useRule, status, auto:!(v.eng > 0), Lmm, tap, weakestN:weakest, vsBolt:weakest / r.Fb,
+    stripsAtPreload:s.governing !== 'screw_break' && weakest < r.Fi, stripsInService:s.governing !== 'screw_break' && weakest < r.Fb };
+}
+function stripPanel(v, r){
+  const s = r.strip;
+  if (s.na) return `<figure class="panel" style="margin-top:12px"><figcaption>THREAD STRIPPING</figcaption><p style="margin:4px 0">${s.na}</p></figure>`;
+  const inch = x => fmtK(x*25.4,'lenS'), lbf = x => fmtK(x*4.4482216,'kforce');
+  const hole = v.joint === 'cap' ? 'hole' : 'nut';
+  const names = { screw_break:'Screw breaks', external_strip:'Screw threads strip', internal_strip:`${v.joint === 'cap' ? 'Tapped-hole' : 'Nut'} threads strip` };
+  const col = { green:['#e6f4ea','#17803d','✓ Good practice'], amber:['var(--warn-bg)','var(--warn-ink)','◐ Meets the calculation, short of the rule of thumb'], red:['#fdecea','#b3261e','✗ Shorter than the calculation requires'] }[s.status];
+  return `
+    <figure class="panel" style="margin-top:12px"><figcaption>THREAD STRIPPING · ${s.t.designation}-${v.scls}A/${v.scls}B · Machinery's Handbook formulas (1)–(6)</figcaption>
+      <div style="background:${col[0]};color:${col[1]};border-radius:8px;padding:10px 12px;margin:2px 0 10px">
+        <b>${col[2]}</b> — engagement ${inch(s.L)} = <b>${fmtNum(s.LD,2)} D</b>${s.auto ? ` (auto: ${v.joint === 'cap' ? 'tapped depth the screw reaches' : 'standard nut ≈ ⅞ d'})` : ''}.<br>
+        Calculation needs ${inch(s.required)} = ${fmtNum(s.required/s.D,2)} D${s.J > 1 ? ` (Q, because the ${hole} is weaker)` : ''}.
+        ${s.useRule ? `Rule of thumb for ${s.rule.label}: ≈ ${s.rule.D.toFixed(1)} D <i>(general shop practice, not from the handbook)</i>.`
+          : `Rules of thumb (1.0 D steel, 1.5 D cast iron, 2.0 D aluminum) are for tapped holes; a standard nut (≈ ⅞ D) of matching grade is made to develop the bolt's full strength.`}
+        <div style="margin-top:6px">The screw should break before the threads strip: a broken screw is easy to replace, but a stripped tapped hole can ruin the part.</div>
+        ${s.status === 'red' ? `<div style="margin-top:6px"><b>Fixes:</b> engage more thread (longer screw or deeper tap); use a coarse thread (UNC) instead of fine (UNF), which has more shear area in the hole per inch; or use a thread insert (helical coil or key-locking) to spread the load into soft material.</div>` : ''}
+      </div>
+      <div class="tiles">
+        ${tile('Required, formula (1) L_e', `${inch(s.Le)} · ${fmtNum(s.Le/s.D,2)} D`)}
+        ${tile('Strength factor J', fmtNum(s.J,3) + (s.J > 1 ? ` — ${hole} is weaker` : ' — ≤ 1, L_e is enough'))}
+        ${tile('Q = J × L_e', s.J > 1 ? `${inch(s.Q)} · ${fmtNum(s.Q/s.D,2)} D` : '— (J ≤ 1)')}
+        ${tile(`Fails first at ${inch(s.L)}`, names[s.governing], s.governing === 'screw_break' ? '' : 'primary')}
+      </div>
+      <table class="dark"><tr><th>Failure at this engagement</th><th>Load</th><th>Area</th></tr>
+        ${Object.entries(s.loads).map(([k, P]) => `<tr class="${k === s.governing ? 'now' : ''}"><td>${names[k]}</td><td class="mono">${lbf(P)}</td>
+          <td class="mono">${k === 'screw_break' ? `A_t ${fmtK(s.At*645.16,'area')}${s.highStrength ? ' (2b, S_ut > 180 ksi)' : ' (2a)'}` : `${fmtK((k === 'external_strip' ? s.aS : s.aN)*s.L*645.16,'area')} shear`}</td></tr>`).join('')}
+      </table>
+      ${s.stripsAtPreload ? `<div class="warn" style="margin-top:10px">⚠ The threads would strip at ${lbf(Math.min(...Object.values(s.loads)))}, below the ${fmtK(r.Fi,'kforce')} preload: tightening this joint to its preload would strip them before any load is applied.</div>`
+        : s.stripsInService ? `<div class="warn" style="margin-top:10px">⚠ The threads would strip at ${lbf(Math.min(...Object.values(s.loads)))}, below the bolt's highest working load of ${fmtK(r.Fb,'kforce')}.</div>` : ''}
+      <div class="legend"><span>Shear strength = ${fmtNum(v.tauR,2)} × S_ut. The weakest failure is ${fmtNum(s.vsBolt,2)}× the bolt's highest working load (F_b). Static tension only; worst-case thread fit; full threads only.</span></div>
+    </figure>`;
 }
 
 const CALCS = [MCURVE, MECH, DRIVE, STARTUP, GEAR, BELT, GBOX, SWAP, PLANET, SHOT, PROJ, SCREW, BEAM, CANT, TWIST, BUCKLE, BOLT, BEND];
