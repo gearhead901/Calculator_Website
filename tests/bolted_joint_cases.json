@@ -1,0 +1,121 @@
+{
+  "description": "Known-answer test cases for the bolted joint calculator. Inputs and published answers come from the worked examples in Shigley's Mechanical Engineering Design, 10th ed., Chapter 8 (method summarized in docs/bolted-joint-reference.md). Units: inches, Mpsi for stiffness (Mlbf/in), kip for force, kpsi for stress. The book rounds intermediate values, so compare with a relative tolerance.",
+  "tolerance_relative": 0.01,
+  "cases": [
+    {
+      "id": "shigley_ex_8_5",
+      "title": "Cap screw into cast-iron base, fluctuating load (main target case)",
+      "book_ref": "Example 8-5, book p. 440-442 (PDF p. 463-465)",
+      "inputs": {
+        "joint_type": "cap_screw",
+        "thread": { "d": 0.625, "tpi": 11, "series": "UNC" },
+        "grade": "SAE 5",
+        "washer": { "t": 0.0625, "material": "hardened steel", "E_Mpsi": 30 },
+        "top_member": { "t": 0.625, "material": "steel", "E_Mpsi": 30 },
+        "tapped_member": { "t": 0.625, "material": "cast iron", "E_Mpsi": 16 },
+        "cone_half_angle_deg": 30,
+        "washer_face_diameter": "1.5d",
+        "threaded_full_length_in_grip": true,
+        "preload_rule": "0.75 * proof load (reused fastener)",
+        "load_per_bolt_kip": { "P_min": 0, "P_max": 5 },
+        "strengths_kpsi": { "Sp": 85, "Sut": 120, "Se": 18.6 }
+      },
+      "expected": {
+        "At_in2": 0.226,
+        "h_in": 0.6875,
+        "grip_l_in": 1.0,
+        "frusta": [
+          { "name": "upper (steel, from washer face)", "t_in": 0.5, "D_in": 0.9375, "E_Mpsi": 30, "k_Mlbf_in": 46.46 },
+          { "name": "middle (steel, rest of top plate)", "t_in": 0.1875, "D_in": 1.298, "E_Mpsi": 30, "k_Mlbf_in": 197.43 },
+          { "name": "lower (cast iron)", "t_in": 0.3125, "D_in": 0.9375, "E_Mpsi": 16, "k_Mlbf_in": 32.39 }
+        ],
+        "km_Mlbf_in": 17.40,
+        "kb_Mlbf_in": 6.78,
+        "C": 0.280,
+        "Fi_kip": 14.4,
+        "n_p_yield": 1.22,
+        "n_L_load_factor": 3.44,
+        "n_0_separation": 4.00,
+        "sigma_i_kpsi": 63.72,
+        "sigma_a_kpsi": 3.10,
+        "sigma_m_kpsi": 66.82,
+        "n_f_goodman": 2.44,
+        "proof_line_Sa_kpsi": 10.64,
+        "n_proof_line": 3.43,
+        "n_f_gerber": 3.65
+      },
+      "notes": "Grip uses l = h + d/2 because t2 >= d. The middle frustum's 197.43 is the book's figure; computing it unrounded gives about 197.6, still within tolerance. n_L is 3.44 with the book's rounded Fi = 14.4 kip and 3.43 unrounded. Goodman (2.44) says fatigue governs, but Gerber (3.65) is above the proof-line factor (3.43). The book points out this conflict."
+    },
+    {
+      "id": "shigley_ex_8_2",
+      "title": "Member and bolt stiffness, steel over cast iron vs. all steel",
+      "book_ref": "Example 8-2, book p. 422-424 (PDF p. 445-447)",
+      "inputs": {
+        "joint_type": "bolt_and_nut",
+        "thread": { "d": 0.5, "tpi": 20, "series": "UNF" },
+        "bolt_length_L_in": 1.5,
+        "grade": "SAE 5",
+        "layers_top_to_bottom": [
+          { "name": "washer", "t": 0.095, "E_Mpsi": 30 },
+          { "name": "top plate", "t": 0.5, "E_Mpsi": 30 },
+          { "name": "bottom plate", "t": 0.75, "E_Mpsi": 14.5, "material_case_a": "gray cast iron", "material_case_b_c": "steel (E = 30)" }
+        ],
+        "washer_face_diameter_in": 0.75,
+        "cone_half_angle_deg": 30,
+        "note_on_layers": "The book includes only one washer (under the head) in the grip for this example: l = 0.095 + 0.5 + 0.75 = 1.345 in."
+      },
+      "expected": {
+        "grip_l_in": 1.345,
+        "case_a_mixed": {
+          "frusta_k_Mlbf_in": [30.80, 285.5, 14.15],
+          "km_Mlbf_in": 9.378
+        },
+        "case_b_all_steel_eq_8_22_km_Mlbf_in": 14.64,
+        "case_c_all_steel_eq_8_23_km_Mlbf_in": 14.92,
+        "bolt": {
+          "LT_in": 1.25,
+          "ld_in": 0.25,
+          "lt_in": 1.095,
+          "Ad_in2": 0.1963,
+          "At_in2": 0.1599,
+          "kb_Mlbf_in": 3.69
+        }
+      }
+    },
+    {
+      "id": "shigley_ex_8_4",
+      "title": "Cast-iron pressure vessel: number of bolts for a target load factor",
+      "book_ref": "Example 8-4, book p. 434-435 (PDF p. 457-458)",
+      "inputs": {
+        "joint_type": "bolt_and_nut",
+        "thread": { "d": 0.625, "tpi": 11, "series": "UNC" },
+        "grade": "SAE 5",
+        "grip_l_in": 1.5,
+        "bolt_length_L_in": 2.25,
+        "members_material": "No. 25 cast iron, E = 14 Mpsi (both members)",
+        "km_method": "eq. 8-22 (single material)",
+        "P_total_kip": 36,
+        "target_load_factor_nL": 2,
+        "preload_rule": "0.75 * proof load (reused fastener)",
+        "strengths_kpsi": { "Sp": 85 }
+      },
+      "expected": {
+        "LT_in": 1.5,
+        "ld_in": 0.75,
+        "lt_in": 0.75,
+        "kb_Mlbf_in": 5.21,
+        "km_eq_8_22_Mlbf_in": 8.95,
+        "km_eq_8_23_Mlbf_in": 8.81,
+        "C": 0.368,
+        "Fi_kip": 14.4,
+        "N_required_unrounded": 5.52,
+        "N_chosen": 6,
+        "with_N_6": {
+          "n_L_load_factor": 2.18,
+          "n_p_yield": 1.16,
+          "n_0_separation": 3.80
+        }
+      }
+    }
+  ]
+}

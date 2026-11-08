@@ -27,6 +27,12 @@ Paths use `~` and `%USERPROFILE%` (the user's home folder) so usernames don't ap
 
 `Dropbox/Claude/<project>/` is the owner's dedicated folder for Claude reference files. Claude may have access only to that subfolder, not the whole Dropbox, so use the full path instead of listing the Dropbox root. If access is denied, ask the owner to grant it in the OS privacy settings rather than retrying. See `REFERENCES.md` for what's there.
 
+## Calculator design notes
+
+Engineering method summaries for each calculator live in `docs/`, and known-answer test cases live in `tests/`. Read these instead of the big reference PDFs; open a PDF only for a specific page the notes don't cover. Write new notes in your own words with equations and data (the repo is public, so don't copy book text).
+
+- Bolted joint: `docs/bolted-joint-reference.md`, `tests/bolted_joint_cases.json`
+
 ## Public repo: keep personal info out
 
 The repo is public, so everything in it, including the full commit history, is visible to anyone. Never commit the owner's real name, personal email, computer usernames, or absolute paths that contain a username. Before each commit, check the diff for these.
