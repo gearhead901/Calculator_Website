@@ -8,6 +8,8 @@ This file is a paraphrase plus equations. Equation numbers like (8-20) match the
 
 Test cases with known answers are in [`tests/bolted_joint_cases.json`](../tests/bolted_joint_cases.json).
 
+To see each equation next to the code that implements it, open [`bolted-joint-equations.html`](bolted-joint-equations.html) in a browser.
+
 ---
 
 ## 1. Symbols and units
