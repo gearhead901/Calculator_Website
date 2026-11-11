@@ -83,5 +83,48 @@ Ideas and open work, roughly in priority order. Nothing here is being worked on 
 - **Method:** `projFireRate()` already measures the gap along the simulated path, so it should work as is. Check it against a hand-worked case and decide what the plot should show.
 - **Maybe also:** a safety margin for shot-to-shot speed variation (a slower ball can be caught by the next one).
 
+## Arm calculator
+
+### 11. Counterbalance (gas spring)
+- An older tab of the team spreadsheet had a gas-spring counterbalance: spring force, mount radius on the arm, mount distance from the pivot, compressed length and spring angle, and holding torque vs. angle with and without the spring. It was unfinished.
+- **Add:** an optional gas spring (or constant-force spring) whose torque at each angle is subtracted from gravity, in both the simulation and the holding current, plus a plot of holding torque vs. angle with and without it.
+
+### 12. Smaller arm follow-ups
+- Brake to a stop at the end angle (Mechanism Startup has this), and lowering moves (end angle below start).
+- Rotor inertia for the motors in the motor list, with a source for each number, so users don't have to type it.
+- Load radius and arm tube length as separate inputs, if arms with a long tube and a short load radius come up.
+
+## Ideas from the team spreadsheet
+
+### 13. Shaft stack-up / gearbox width
+- Add up the parts on a shaft and get the length between plates.
+  - Standard widths from the sheet:
+    - 20 DP gear: ½ in
+    - HTD 5 mm pulley: 9/16 in (9 mm belt) or ⅞ in (15 mm belt)
+    - GT2 3 mm pulley: ⅝ in
+    - #25 sprocket: ⅜ in
+    - #35 sprocket: 17/32 in
+    - bearing flange: 1/16 in
+  - Then round up to a standard length, add the gap and the plate thicknesses (¼ in or ⅛ in).
+- The sheet's combos are 2 gears, 2 pulleys, 1 gear + 1 pulley, #35 chain + gear, 3 gears and 3 pulleys. Let the user build any stack instead.
+- Check the widths against current WCP / REV / AndyMark parts before using them.
+
+### 14. Steady operating point (new mode in Motor Curves)
+- Given a target output speed and torque and a ratio, for each motor:
+  - motor speed and torque
+  - the voltage it actually needs (not full 12 V)
+  - current, electrical power, efficiency and I²R heat
+- Show the motors side by side. Useful for turrets, swerve steering and anything that runs steady instead of flat out.
+
+### 15. Compare common profiles (Cantilever)
+- A table of common profiles under the same load and span:
+  - 1×1 and 1×2 tube (⅛ and 1/16 wall)
+  - solid bars
+  - spacers
+  - ⅜ and ½ hex
+  - ½ rounded hex
+- Rank them by deflection, weight and stiffness-to-weight.
+- Add **rounded hex** (the generic name; don't use the VEX trade name) as a section shape here and in Column Buckling. Its dimensions need looking up.
+
 ## Other open items
 - **Friend as collaborator:** add the software-engineer friend to the GitHub repo for code review (see CLAUDE.md).
