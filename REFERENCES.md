@@ -24,3 +24,7 @@ Engineering references:
 - `shigley's.pdf` — Shigley's Mechanical Engineering Design, 10th ed. PDF page = book page + 23. Chapter 8 (screws and bolted joints) is PDF pages 424–489. Its bolted-joint method is already summarized in `docs/bolted-joint-reference.md`, so read that first.
 - `ASME Y14.5-2009-03.pdf` — ASME Y14.5-2009 dimensioning and tolerancing (GD&T) standard
 - `nasa fastner guide.pdf` — NASA fastener design guide
+
+Online references:
+
+- [Wikipedia, "Density of air"](https://en.wikipedia.org/wiki/Density_of_air): ISA standard sea-level density 1.2250 kg/m³ at 15 °C and 101.325 kPa (dry air). Used by the Shot Trajectory and Projectile calculators for drag and lift. The same page lists 1.2754 kg/m³ at 0 °C and 100 kPa (IUPAC standard conditions), the value ambcalc.com uses, and 1.2041 kg/m³ at 20 °C.
