@@ -1555,13 +1555,12 @@ const ARM = {
       ${step('Step 2 · Refine with your gear stages')}`;
     if (!f) html += `<p class="help">Enter your gear stages (Step 2 inputs) to simulate the real gearbox.</p>`;
     else {
-      const s = f.sim, m = f.m, diff = rec ? (m.G/rec.G - 1)*100 : NaN;
+      const s = f.sim, m = f.m;
       html += `
       <div class="tiles">
         ${tile('Your stages', fmtNum(m.G,2)+' : 1', 'primary')}
-        ${tile('vs recommended', rec ? (diff >= 0 ? '+' : '−')+fmtNum(Math.abs(diff),1)+' %' : '—')}
+        ${tile('Holding current / motor', fmtK(f.holdI,'amp')+`<div style="font-size:12px;font-weight:400;opacity:.75">target ${fmtK(v.hmax,'amp')}</div>`, 'primary')}
         ${tile('Time to end angle', s.reached ? fmtNum(s.time,3)+' s' : (s.stuck ? 'stalls' : `> ${v.tmax} s`), 'primary')}
-        ${tile('Holding current / motor', fmtK(f.holdI,'amp'), 'primary')}
         ${tile('Peak current / motor', fmtK(f.peakI,'amp'))}
         ${tile('Hit current limit?', f.limited ? 'Yes' : 'No')}
         ${tile('Inertia at the arm', fmtK(m.J,'moi'))}

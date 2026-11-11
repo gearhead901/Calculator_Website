@@ -90,7 +90,8 @@ Ideas and open work, roughly in priority order. Nothing here is being worked on 
 - **Add:** an optional gas spring (or constant-force spring) whose torque at each angle is subtracted from gravity, in both the simulation and the holding current, plus a plot of holding torque vs. angle with and without it.
 
 ### 12. Smaller arm follow-ups
-- Brake to a stop at the end angle (Mechanism Startup has this), and lowering moves (end angle below start).
+- Lowering moves (end angle below start) in all three steps. Step 3’s profile already stops at the end angle; Steps 1–2 still time the lift at full voltage without stopping.
+- Mechanism Startup: with the current limit set to 0 (none), "brake to a stop" assumes infinite braking and overshoots. Use the real reverse-voltage current instead.
 - Rotor inertia for the motors in the motor list, with a source for each number, so users don't have to type it.
 - Load radius and arm tube length as separate inputs, if arms with a long tube and a short load radius come up.
 
