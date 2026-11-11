@@ -75,5 +75,13 @@ Ideas and open work, roughly in priority order. Nothing here is being worked on 
 - This is what Shigley's Figs. 8-15 and 8-21 show, and it makes the member stiffness numbers make sense.
 - Could be combined with item 8 as one drawing with a "show cones" toggle.
 
+## Projectile: max fire rate
+
+### 10. Shots that peak after the goal
+- v8's max fire rate only covers shots that peak **before** the goal (ball coming down into it). If the ball is still rising at the goal, the tiles show "—".
+- **Why it's different:** the balls never reach the slowest point (the apex), so the closest approach is wherever they are slowest while two are in the air, usually at the goal. The limit is looser than v_x / D.
+- **Method:** `projFireRate()` already measures the gap along the simulated path, so it should work as is. Check it against a hand-worked case and decide what the plot should show.
+- **Maybe also:** a safety margin for shot-to-shot speed variation (a slower ball can be caught by the next one).
+
 ## Other open items
 - **Friend as collaborator:** add the software-engineer friend to the GitHub repo for code review (see CLAUDE.md).
