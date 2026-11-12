@@ -352,6 +352,88 @@
   body[data-theme=dense] .warn{padding:5px 9px;font-size:12.5px;margin-bottom:8px}
   /* keep "100.0 : 1" on one line in the ratio tables */
   table td:first-child{white-space:nowrap}
+
+  /* =================================================================
+     STYLE LAB · LAYOUTS (Arm only): body[data-nl] = bands, tabs or dash
+     ================================================================= */
+  /* summary line: the answers of all three steps */
+  .labsum{margin:0 0 16px}
+  .sum-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+  .sum-i{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;min-width:0}
+  .sum-i .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .sum-i .v{font-size:20px;font-weight:700;letter-spacing:-.01em;font-family:var(--num-font);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sum-i .s{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sum-i:first-child{background:var(--primary-bg);border-color:var(--primary-bg);color:var(--primary-ink)}
+  .sum-i:first-child .k,.sum-i:first-child .s{color:var(--primary-k)}
+  .sum-more{display:none}
+  body[data-nl=dash] #labSum{position:sticky;top:56px;z-index:4;padding:8px 0;margin:0 0 8px;background:var(--bg)}
+  body[data-theme=m13][data-nl=dash] #labSum,body[data-theme=m13dark][data-nl=dash] #labSum{background:transparent;top:70px}
+  body[data-theme=dense][data-nl=dash] #labSum{top:44px}
+
+  /* bands: one per step, inputs beside results */
+  body[data-nl=bands] .calc,body[data-nl=tabs] .calc{display:none}
+  .band{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px 20px;align-items:start;margin:0 0 26px}
+  .band-h{grid-column:1/-1;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--line);padding-bottom:6px}
+  .band-h b{color:var(--accent-ink);margin-right:4px}
+  .band-h .band-a{color:var(--ink);text-transform:none;letter-spacing:0;font-weight:600}
+  .band-l{position:sticky;top:70px}
+  .band-r{min-width:0}
+  .btn.next{margin-top:14px;padding:9px 16px}
+  .steptabs button i{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:2px}
+  body[data-theme=m13] .band-h,body[data-theme=m13] .band-h b,body[data-theme=m13] .band-h .band-a{color:#fff;border-color:rgba(255,255,255,.35)}
+  body[data-theme=m13dark] .band-h .band-a{color:#e8edf5}
+  body[data-theme=notebook] .band-h{font-family:"Architects Daughter",cursive;letter-spacing:.04em;text-transform:none;font-size:18px;color:var(--accent);border-color:var(--accent)}
+
+  /* dashboard: inputs in their own scrolling column under the summary */
+  body[data-nl=dash] .form{position:sticky;top:156px;max-height:calc(100vh - 170px);overflow:auto}
+
+  /* hero answers: the main result of each step is big, the rest smaller */
+  body[data-nl] .tile.primary .v{font-size:28px}
+  body[data-nl] .tile:not(.primary) .v{font-size:17px}
+  body[data-nl] .tile:not(.primary){padding:9px 12px}
+  body[data-nl] .tiles{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+
+  /* compact inputs */
+  .field.has-help > .help{display:none}
+  .field.has-help.show-help > .help{display:block}
+  .info{color:var(--accent);cursor:help;font-size:12px;margin-left:2px}
+  details.specs{margin:2px 0 6px;border-left:2px solid var(--line);padding-left:8px}
+  details.specs summary{cursor:pointer;font-size:13px;color:var(--muted);padding:3px 0}
+  details.specs summary span{font-family:var(--num-font);margin-left:6px}
+  table.stages{font-size:13px;margin:4px 0}
+  table.stages th{font-size:11px;padding:4px 4px} table.stages th span{font-weight:400}
+  table.stages td{padding:3px 4px;border:0}
+  table.stages td:first-child{color:var(--muted);text-align:center;width:36px}
+  table.stages .inbox .unit{display:none}
+  table.stages .inbox input{padding:5px 6px}
+  .stagebox .help{font-size:11.5px;color:var(--muted);margin:2px 0 6px}
+  .dim{color:var(--muted)}
+  .btn.showall{margin-top:8px;font-size:13px;color:var(--ink)}
+  body[data-nl] .tile .v.long{font-size:16px !important;line-height:1.3}
+
+  /* how it works folds away */
+  body[data-nl] .docs:not(.open){display:none}
+  .docsbtn{margin-top:22px}
+
+  @media (max-width:1100px){
+    .band{grid-template-columns:1fr} .band-l{position:static}
+    .sum-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+    body[data-nl=dash] .form{position:static;max-height:none}
+  }
+  /* phone: only the summary until "Show details" */
+  @media (max-width:820px){
+    .sum-row{grid-template-columns:1fr 1fr}
+    .sum-i .v{font-size:22px}
+    body[data-nl] .sum-more{display:block;width:100%;margin-top:10px;padding:10px}
+    body[data-nl]:not(.lab-details) :is(#labBands,.calc,#stepTabs,#docsBtn,.docs){display:none !important}
+    body[data-nl=dash] #labSum{position:static}
+    body:is([data-theme=m13],[data-theme=m13dark]) .sidebar{position:static;height:auto;top:auto}
+    body:is([data-theme=m13],[data-theme=m13dark]) .layout{padding:8px}
+    body:is([data-theme=m13],[data-theme=m13dark]) .topbar{width:auto;margin:8px 8px 0;height:auto;min-height:48px;flex-wrap:wrap;padding:6px 12px}
+    .labbar{bottom:8px}
+  }
+  body:is([data-theme=m13],[data-theme=m13dark]) .sum-i{border:0;backdrop-filter:blur(12px);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  body:is([data-theme=m13],[data-theme=m13dark]) .sum-i:first-child{background-image:radial-gradient(rgba(255,255,255,.22) 1.3px,transparent 1.5px);background-size:7px 7px;box-shadow:0 0 0 1px rgba(255,255,255,.45),0 1px 3px rgba(0,0,0,.12)}
 </style>
 </head>
 <body>
@@ -376,7 +458,7 @@
   <span class="lablab">Style</span>
   <div class="lseg" id="themeSeg"><button data-t="current">Current</button><button data-t="notebook">Notebook</button><button data-t="panel">Instrument</button><button data-t="m13">match13 light</button><button data-t="m13dark">match13 dark</button><button data-t="dense">Dense</button></div>
   <span class="lablab">Layout</span>
-  <div class="lseg" id="layoutSeg"><button data-l="scroll">Long page</button><button data-l="tabs">Step tabs</button></div>
+  <div class="lseg" id="layoutSeg"><button data-l="scroll">v14 long page</button><button data-l="bands">Step bands</button><button data-l="tabs">Step tabs</button><button data-l="dash">Dashboard</button></div>
 </div>
 
 <script>
@@ -433,7 +515,7 @@ const fmtSign = (v,k) => (v>=0?'+':'−') + fmtNum(Math.abs(toDisp(v,k)), U(k)[2
    state.values[calcId][inputKey] = value in base units.
    The URL hash mirrors the state, so "Copy link" just copies the URL.
    ================================================================= */
-const state = { calc:'arm', units:'imperial', values:{}, theme:'current', layout:'scroll' };
+const state = { calc:'arm', units:'imperial', values:{}, theme:'current', layout:'bands' };
 
 function defaultsFor(calc){
   const v = {};
@@ -452,7 +534,7 @@ function readHash(){
   const q = new URLSearchParams(location.hash.slice(1));
   if (q.get('u') === 'metric' || q.get('u') === 'imperial') state.units = q.get('u');
   if (['current','notebook','panel','m13','m13dark','dense'].includes(q.get('st'))) state.theme = q.get('st');
-  if (q.get('sl') === 'tabs' || q.get('sl') === 'scroll') state.layout = q.get('sl');
+  if (['scroll','bands','tabs','dash'].includes(q.get('sl'))) state.layout = q.get('sl');
   const calc = CALCS.find(c => c.id === q.get('c'));
   if (!calc) return;
   state.calc = calc.id;
@@ -4166,28 +4248,169 @@ function renderForm(){
   }).join('');
   applyTabs();
 }
-// ---- Style Lab: step tabs ----
-// Every form row and result block is tagged with the "Step N" heading above it. With Layout = Step tabs,
-// only the chosen step (and anything before Step 1) is shown.
-let labStep = 1;
+// ---- Style Lab: layouts ----
+// Layouts:  scroll = the v14 long page (form on the left, every result on the right)
+//           bands  = one full-width band per step, its inputs beside its results
+//           tabs   = the same bands, one step at a time, with Next buttons
+//           dash   = a summary line pinned at the top, inputs in their own scrolling column
+// The new layouts (bands, tabs, dash) only change Arm, the calculator with steps. They don't touch the maths:
+// the page draws the form and the results as usual, then this code moves the pieces into place.
+let labStep = 1, labShowAll = false, labSpecsOpen = false, labDetails = false, labR = null;
 const STEP_NAMES = { 1:'Ratio search', 2:'Gear stages', 3:'Motion profile' };
-function applyTabs(){
-  const form = document.getElementById('form'), out = document.getElementById('out'), calc = document.querySelector('.calc');
-  if (!form || !out || !calc) return;
-  const tag = el => { let n = 0; [...el.children].forEach(c => {
-    const m = (c.classList.contains('sec') || c.tagName === 'H3') && /^Step (\d)/.exec(c.textContent); if (m) n = +m[1]; c.dataset.step = n; }); };
-  tag(form); tag(out);
-  const steps = [...new Set([...form.children].map(c => +c.dataset.step).filter(n => n))];
-  const on = state.layout === 'tabs' && steps.length > 1;
-  if (!steps.includes(labStep)) labStep = steps[0] || 1;
-  let bar = document.getElementById('stepTabs');
-  if (!on){ if (bar) bar.remove(); }
-  else {
-    if (!bar){ bar = document.createElement('div'); bar.id = 'stepTabs'; bar.className = 'steptabs'; calc.before(bar); }
-    bar.innerHTML = steps.map(n => `<button data-step-tab="${n}" class="${n === labStep ? 'on' : ''}"><b>Step ${n}</b><span>${STEP_NAMES[n] || ''}</span></button>`).join('');
-  }
-  [...form.children, ...out.children].forEach(c => { const n = +c.dataset.step; c.style.display = on && n && n !== labStep ? 'none' : ''; });
+const LAYOUTS = ['scroll', 'bands', 'tabs', 'dash'];
+const labNew = () => state.calc === 'arm' && state.layout !== 'scroll';
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+
+// Tag every form row and result block with the "Step N" heading above it (0 = before Step 1).
+function tagSteps(el){
+  let n = 0;
+  [...el.children].forEach(c => {
+    const m = (c.classList.contains('sec') || c.tagName === 'H3') && /^Step (\d)/.exec(c.textContent);
+    if (m) n = +m[1];
+    c.dataset.step = n;
+  });
 }
+
+// The key answers of all three steps, in one line. On a phone this is all you see until "Show details".
+function labSummary(v, r){
+  if (!r || r.bad) return '';
+  const f = r.ref, p3 = r.p3, pr = p3 && p3.pr, rec = r.rec;
+  const motor = (MOTOR_DB[v.motor] || {}).label || 'custom motor';
+  const item = (k, val, sub = '') => `<div class="sum-i"><div class="k">${k}</div><div class="v">${val}</div>${sub ? `<div class="s">${sub}</div>` : ''}</div>`;
+  return `<div class="sum-row">
+    ${item('Gear ratio', f ? fmtNum(f.m.G,2)+' : 1' : rec ? fmtNum(rec.G,1)+' : 1' : '—', f ? (rec ? `Step 1 picked ${fmtNum(rec.G,0)} : 1` : '') : 'from Step 1')}
+    ${item('Holding current', f ? fmtK(f.holdI,'amp') : rec ? fmtK(rec.holdI,'amp') : '—', 'per motor, worst angle')}
+    ${item('Move time', pr ? fmtNum(pr.time,2)+' s' : '—', pr ? `${fmtNum(v.a0,0)}° → ${fmtNum(v.a1,0)}°, ${v.pgoal}` : '')}
+    ${item('Peak current', pr ? fmtK(pr.peakI,'amp') : '—', 'per motor')}
+    ${item('Peak voltage', pr ? fmtNum(pr.peakV,1)+' V' : '—', `of ${fmtNum(v.volt,0)} V`)}
+    ${item('Motors', `${v.n} × ${esc(motor)}`, `${fmtK(v.ilim,'amp')} limit`)}
+  </div>
+  <button class="btn sum-more" data-lab-details>${labDetails ? 'Hide details' : 'Show details'}</button>`;
+}
+// What each step decided, for the step tabs
+function stepAnswer(n, r){
+  if (!r || r.bad) return '';
+  if (n === 1) return r.rec ? `picks ${fmtNum(r.rec.G,0)} : 1` : 'no ratio fits';
+  if (n === 2) return r.ref ? `${fmtNum(r.ref.m.G,1)} : 1 · ${fmtK(r.ref.holdI,'amp')}` : 'enter stages';
+  if (n === 3) return r.p3 && r.p3.pr ? `${fmtNum(r.p3.pr.time,2)} s move` : '—';
+  return '';
+}
+
+// Compact inputs: motor specs fold away, help text becomes an ⓘ, the gear stages become one small table.
+function compactForm(nodes){
+  const byKey = k => nodes.find(n => n.querySelector && n.querySelector(`[data-key="${k}"]`));
+  // in the step bands the band header already says "Step N", so the section labels drop it
+  if (state.layout !== 'dash') nodes.forEach(n => { if (n.classList && n.classList.contains('sec')) n.textContent = n.textContent.replace(/^Step \d · /, '').replace(/ \(driver → driven, 0 = unused\)/, ''); });
+  // ⓘ help
+  nodes.forEach(n => {
+    const h = n.querySelector && n.querySelector(':scope > .help'), lab = n.querySelector && n.querySelector(':scope > label');
+    if (h && lab){ lab.insertAdjacentHTML('beforeend', ` <span class="info" title="${esc(h.textContent)}" data-lab-info>ⓘ</span>`); n.classList.add('has-help'); }
+  });
+  // motor specs behind "Edit specs" (open for a custom motor)
+  const specs = ['fs', 'ts', 'if', 'is'].map(byKey).filter(Boolean);
+  if (specs.length){
+    const d = document.createElement('details'); d.className = 'specs'; d.open = labSpecsOpen || state.values.arm.motor === 'custom';
+    d.innerHTML = `<summary>Motor specs <span>${fmtNum(state.values.arm.fs,0)} rpm · ${fmtK(state.values.arm.ts,'torque')} stall</span></summary>`;
+    d.addEventListener('toggle', () => { labSpecsOpen = d.open; });
+    specs[0].before(d); specs.forEach(n => d.append(n));
+  }
+  // gear stages → table
+  const first = byKey('s1a');
+  if (first){
+    const t = document.createElement('div'); t.className = 'stagebox';
+    let h = `<table class="stages"><tr><th>Stage</th><th>Driver</th><th>Driven</th><th>Shaft inertia <span>${U('moi')[0]}</span></th></tr>`;
+    ARM_STAGES.forEach(k => { h += `<tr data-row="${k}"><td>${k}</td><td></td><td></td><td></td></tr>`; });
+    t.innerHTML = h + `</table><p class="help">Driver → driven tooth counts, or 1 → 5 for a 5:1 planetary. 0 = unused. Shaft inertia = everything spinning on the shaft after the stage (from CAD); the last one is the arm shaft.</p>`;
+    first.before(t);
+    ARM_STAGES.forEach(k => ['a', 'b', 'J'].forEach((c, i) => {
+      const n = byKey('s' + k + c), cell = t.querySelector(`tr[data-row="${k}"]`).children[i + 1];
+      if (n){ cell.append(n.querySelector('.inbox')); n.remove(); } else cell.innerHTML = '<span class="dim">—</span>';
+    }));
+  }
+}
+
+// Shorter ratio table: the 3 rows either side of the pick, plus "Show all".
+function shortTable(root){
+  const now = root.querySelector('table.dark tr.now'); if (!now) return;
+  const rows = [...now.parentElement.children].filter(r => r.querySelector('td')), i = rows.indexOf(now);
+  rows.forEach((r, j) => { r.style.display = labShowAll || Math.abs(j - i) <= 3 ? '' : 'none'; });
+  const fig = now.closest('figure');
+  if (fig && !fig.querySelector('[data-lab-all]'))
+    fig.insertAdjacentHTML('beforeend', `<button class="btn showall" data-lab-all>${labShowAll ? 'Show fewer' : `Show all ${rows.length} ratios`}</button>`);
+}
+
+// Hero sizes suit numbers; a tile holding a phrase ("Brisk (70% of the fastest)") stays normal size.
+const markLong = root => root.querySelectorAll('.tile .v').forEach(v => v.classList.toggle('long', v.textContent.trim().length > 14));
+// Build or refresh the new layout. Called after the form is drawn and after the results are drawn.
+function labArrange(){
+  const main = document.getElementById('main'), calcEl = main.querySelector('.calc'), form = document.getElementById('form'), out = document.getElementById('out');
+  if (!calcEl) return;
+  if (labNew()) document.body.dataset.nl = state.layout; else delete document.body.dataset.nl;
+  document.body.classList.toggle('lab-details', labDetails);
+  if (!labNew()){ main.querySelectorAll('#labSum,#labBands,#stepTabs,#docsBtn').forEach(e => e.remove()); return; }
+  // summary line
+  let sum = document.getElementById('labSum');
+  if (!sum){ sum = document.createElement('div'); sum.id = 'labSum'; sum.className = 'labsum'; calcEl.before(sum); }
+  sum.innerHTML = labSummary(state.values.arm, labR);
+  // "How it works" folds away
+  const docs = main.querySelector('.docs');
+  if (docs && !document.getElementById('docsBtn')){
+    docs.insertAdjacentHTML('beforebegin', `<button class="btn docsbtn" id="docsBtn" data-lab-docs>How it works &amp; checks ▾</button>`);
+  }
+  if (state.layout === 'dash'){ if (form.children.length && !form.querySelector('.specs,.stagebox,.info')) compactForm([...form.children]); if (out.children.length){ shortTable(out); markLong(out); } return; }
+  // bands (and tabs): one band per step, inputs on the left, results on the right
+  let bands = document.getElementById('labBands');
+  if (!bands){
+    bands = document.createElement('div'); bands.id = 'labBands';
+    bands.innerHTML = [1, 2, 3].map(n => `<section class="band" data-band="${n}">
+      <div class="band-h"><b>Step ${n}</b> ${STEP_NAMES[n]}<span class="band-a"></span></div>
+      <div class="band-l card form"></div><div class="band-r"></div></section>`).join('');
+    calcEl.after(bands);
+  }
+  if (form.children.length){
+    tagSteps(form);
+    const nodes = [...form.children];
+    [1, 2, 3].forEach(n => {
+      const l = bands.querySelector(`[data-band="${n}"] .band-l`); l.innerHTML = '';
+      const mine = nodes.filter(c => +c.dataset.step === n || (n === 1 && +c.dataset.step === 0));
+      mine.forEach(c => l.append(c));
+      compactForm(mine);
+    });
+  }
+  if (out.children.length){
+    tagSteps(out);
+    const nodes = [...out.children];
+    [1, 2, 3].forEach(n => {
+      const rr = bands.querySelector(`[data-band="${n}"] .band-r`); rr.innerHTML = '';
+      nodes.filter(c => +c.dataset.step === n || (n === 1 && +c.dataset.step === 0)).forEach(c => { if (c.tagName !== 'H3') rr.append(c); });
+      if (n === 1) shortTable(rr);
+      markLong(rr);
+      if (state.layout === 'tabs' && n < 3) rr.insertAdjacentHTML('beforeend', `<button class="btn accent next" data-step-tab="${n + 1}">Next: Step ${n + 1} · ${STEP_NAMES[n + 1]} →</button>`);
+    });
+    out.innerHTML = '';
+  }
+  [1, 2, 3].forEach(n => { bands.querySelector(`[data-band="${n}"] .band-a`).textContent = stepAnswer(n, labR) ? ' · ' + stepAnswer(n, labR) : ''; });
+  // tabs
+  let bar = document.getElementById('stepTabs');
+  if (state.layout !== 'tabs'){ if (bar) bar.remove(); bands.querySelectorAll('.band').forEach(b => b.style.display = ''); return; }
+  if (!bar){ bar = document.createElement('div'); bar.id = 'stepTabs'; bar.className = 'steptabs'; bands.before(bar); }
+  bar.innerHTML = [1, 2, 3].map(n => `<button data-step-tab="${n}" class="${n === labStep ? 'on' : ''}"><b>Step ${n}</b><span>${STEP_NAMES[n]}</span><i>${stepAnswer(n, labR)}</i></button>`).join('');
+  bands.querySelectorAll('.band').forEach(b => { b.style.display = +b.dataset.band === labStep ? '' : 'none'; });
+}
+const applyTabs = labArrange;   // the page calls this after drawing the form and the results
+
+// Arm draws its plots after the pieces are in place, so each canvas is sized for where it ends up.
+const armRenderV14 = ARM.renderOut;
+ARM.renderOut = function(el, v, r){
+  labR = r;
+  if (!labNew()) return armRenderV14.call(this, el, v, r);
+  const p1 = armPlots, p3 = armStep3Plots;
+  armPlots = armStep3Plots = () => {};
+  try { armRenderV14.call(this, el, v, r); } finally { armPlots = p1; armStep3Plots = p3; }
+  labArrange();
+  if (!r.bad){ armPlots(v, r); armStep3Plots(v, r); }
+};
+
 function applyStyle(){
   document.body.dataset.theme = state.theme; document.body.dataset.layout = state.layout;
   document.querySelectorAll('#themeSeg button').forEach(b => b.classList.toggle('on', b.dataset.t === state.theme));
@@ -4200,8 +4423,13 @@ document.querySelector('.labbar').addEventListener('click', e => {
   applyStyle(); renderPage();
 });
 document.addEventListener('click', e => {
-  const b = e.target.closest('[data-step-tab]'); if (!b) return;
-  labStep = +b.dataset.stepTab; applyTabs(); update(); window.scrollTo({ top:0, behavior:'smooth' });
+  const tab = e.target.closest('[data-step-tab]'), all = e.target.closest('[data-lab-all]'), det = e.target.closest('[data-lab-details]');
+  const docs = e.target.closest('[data-lab-docs]'), info = e.target.closest('[data-lab-info]');
+  if (tab){ labStep = +tab.dataset.stepTab; renderForm(); update(); window.scrollTo({ top:0, behavior:'smooth' }); }
+  else if (all){ labShowAll = !labShowAll; update(); }
+  else if (det){ labDetails = !labDetails; labArrange(); update(); }
+  else if (docs){ const d = document.querySelector('.docs'); d.classList.toggle('open'); docs.textContent = d.classList.contains('open') ? 'Hide how it works & checks ▴' : 'How it works & checks ▾'; }
+  else if (info){ e.preventDefault(); info.closest('.field').classList.toggle('show-help'); }
 });
 function renderPage(){
   const calc = current();
