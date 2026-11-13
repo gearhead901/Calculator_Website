@@ -1,0 +1,188 @@
+
+  /* =================================================================
+     STYLE LAB
+     Every colour the page and its plots use is a CSS variable. Each style below only changes variables
+     (plus a few extra rules), so the calculator code is the same in all five.
+     ================================================================= */
+  :root{
+    --font:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif; --head-font:inherit; --num-font:inherit;
+    --mono:ui-monospace,SFMono-Regular,Menlo,monospace; --radius:12px;
+    --top-bg:rgba(246,245,240,.92); --hover:#ecebe4; --accent-ink:#17695f; --input-bg:#fbfbf9; --eq-bg:#f3f2ec;
+    --primary-bg:var(--ink); --primary-ink:#fff; --primary-k:#b8bcc4;
+    /* plot colours (canvas): background, grid, axis, labels, caption, main line ("white"), series */
+    --p-bg:#222a38; --p-grid:#344055; --p-axis:#8794a8; --p-text:#9aa6b8; --p-cap:#9aa6b8; --p-ink:#e9edf3;
+    --p-green:#4cc38a; --p-red:#e5534b; --p-blue:#4f8df5; --p-purple:#a77bf3; --p-orange:#f0a43a;
+    --p-readout:#151b26; --p-code:#e6eaf0; --p-tline:#344055; --p-tcell:#c9d1de; --p-now:rgba(79,141,245,.18); --p-nowink:#fff;
+    --p-font:-apple-system,Segoe UI,sans-serif; --p-style:lines;
+  }
+  body{font-family:var(--font)}
+  h1{font-family:var(--head-font)}
+  .card,.tile,figure.panel{border-radius:var(--radius)}
+  .tile .v,td.mono{font-family:var(--num-font)}
+  td.mono{font-family:var(--mono)}
+
+  /* the floating style switcher */
+  .labbar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:10px;
+    padding:8px 10px 8px 16px;border-radius:999px;background:#111418;color:#e9edf3;box-shadow:0 8px 30px rgba(0,0,0,.35);
+    font:13px/1.2 -apple-system,"Segoe UI",sans-serif;max-width:calc(100vw - 24px);overflow-x:auto;white-space:nowrap}
+  .labbar b{letter-spacing:.12em;text-transform:uppercase;font-size:11px;color:#8fe3d8}
+  .labbar .lablab{font-size:11px;color:#8b95a3;text-transform:uppercase;letter-spacing:.1em}
+  .labbar .lseg{display:inline-flex;background:#22272e;border-radius:999px;padding:2px}
+  .labbar .lseg button{border:0;background:none;color:#c3cad4;padding:6px 11px;border-radius:999px;cursor:pointer;font:inherit}
+  .labbar .lseg button.on{background:#e9edf3;color:#111418;font-weight:600}
+  #toast{bottom:80px}
+  body{padding-bottom:70px}
+
+  /* step tabs (Layout: Step tabs) */
+  .steptabs{display:flex;gap:6px;margin:0 0 14px;flex-wrap:wrap}
+  .steptabs button{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:var(--radius);padding:10px 16px;cursor:pointer;text-align:left;font:inherit}
+  .steptabs button b{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .steptabs button span{font-size:14px;color:var(--ink)}
+  .steptabs button.on{border-color:var(--accent);box-shadow:inset 0 -3px 0 var(--accent);color:var(--accent-ink)}
+
+  /* ---------- 2. Engineering notebook ---------- */
+  body[data-theme=notebook]{
+    --bg:#fbfaf3; --card:#fffef8; --ink:#1f2a44; --muted:#5d6a85; --line:#c9d3e6;
+    --accent:#b03a2e; --accent-soft:#f6e3df; --accent-ink:#8e2a20; --warn-bg:#fff5cc; --warn-ink:#6b5300;
+    --top-bg:rgba(251,250,243,.96); --hover:#eef1f8; --input-bg:#fff; --eq-bg:#f2f5fb;
+    --primary-bg:#fffef8; --primary-ink:#1f2a44; --primary-k:#5d6a85;
+    --p-bg:#fffef8; --p-grid:#d6e0f0; --p-axis:#7d8aa6; --p-text:#5d6a85; --p-cap:#5d6a85; --p-ink:#1f2a44;
+    --p-green:#2e8b57; --p-red:#c0392b; --p-blue:#2457c5; --p-purple:#7b4bb7; --p-orange:#d9822b;
+    --p-readout:#f2f5fb; --p-code:#1f2a44; --p-tline:#d6e0f0; --p-tcell:#1f2a44; --p-now:#fff1a8; --p-nowink:#1f2a44;
+    --font:"IBM Plex Sans",sans-serif; --head-font:"Architects Daughter",cursive; --num-font:"IBM Plex Mono",monospace; --mono:"IBM Plex Mono",monospace;
+    --p-font:"IBM Plex Mono",monospace; --radius:2px;
+    background-image:linear-gradient(#e6ecf6 1px,transparent 1px),linear-gradient(90deg,#e6ecf6 1px,transparent 1px);background-size:22px 22px;
+  }
+  body[data-theme=notebook] main{border-left:2px solid #eab0aa}
+  body[data-theme=notebook] .eyebrow,body[data-theme=notebook] .form .sec,body[data-theme=notebook] .docs h3{font-family:"Architects Daughter",cursive;letter-spacing:.06em;font-size:14px;text-transform:none;color:var(--accent)}
+  body[data-theme=notebook] #out > h3{font-family:"Architects Daughter",cursive !important;letter-spacing:.04em !important;text-transform:none !important;font-size:18px !important;color:var(--accent) !important;border-bottom:1px solid var(--accent);padding-bottom:4px}
+  body[data-theme=notebook] .card,body[data-theme=notebook] .tile,body[data-theme=notebook] figure.panel{border:1px solid #9fb0cf;box-shadow:none}
+  body[data-theme=notebook] .tile.primary{border:3px double var(--ink)}
+  body[data-theme=notebook] .tile .v{font-weight:600}
+  body[data-theme=notebook] .inbox{border-radius:0;border:0;border-bottom:1px solid var(--ink);background:transparent}
+  body[data-theme=notebook] .inbox input{text-align:right;font-family:var(--num-font)}
+  body[data-theme=notebook] .seg,body[data-theme=notebook] .btn{border-radius:2px}
+  body[data-theme=notebook] .steptabs button{border:1px solid #9fb0cf}
+
+  /* ---------- 3. Dark instrument panel ---------- */
+  body[data-theme=panel]{
+    color-scheme:dark;
+    --bg:#0b0f14; --card:#121821; --ink:#e6edf3; --muted:#8b98a9; --line:#223041;
+    --accent:#2fd4c9; --accent-soft:rgba(47,212,201,.12); --accent-ink:#2fd4c9; --warn-bg:#2b2310; --warn-ink:#f0c060;
+    --top-bg:rgba(11,15,20,.92); --hover:#18212d; --input-bg:#0b1118; --eq-bg:#0b1118;
+    --primary-bg:#0b1118; --primary-ink:#2fd4c9; --primary-k:#8b98a9;
+    --p-bg:#0b1118; --p-grid:#1b2633; --p-axis:#5d6b7d; --p-text:#7d8a9c; --p-cap:#7d8a9c; --p-ink:#e6edf3;
+    --p-green:#3ddc97; --p-red:#ff5c5c; --p-blue:#4da3ff; --p-purple:#b58cff; --p-orange:#ffb547;
+    --p-readout:#070a0f; --p-code:#c9f3ee; --p-tline:#1b2633; --p-tcell:#c9d1de; --p-now:rgba(47,212,201,.14); --p-nowink:#2fd4c9;
+    --num-font:"JetBrains Mono",monospace; --mono:"JetBrains Mono",monospace; --p-font:"JetBrains Mono",monospace; --radius:10px;
+  }
+  body[data-theme=panel] .seg button.on{background:var(--accent);color:#04201e}
+  body[data-theme=panel] .tile{border-top:2px solid #26384c}
+  body[data-theme=panel] .tile .k{text-transform:uppercase;letter-spacing:.1em;font-size:10.5px}
+  body[data-theme=panel] .tile.primary{border:1px solid rgba(47,212,201,.45)}
+  body[data-theme=panel] .tile.primary .v{text-shadow:0 0 14px rgba(47,212,201,.55)}
+  body[data-theme=panel] figure.panel{border:1px solid var(--line)}
+  body[data-theme=panel] .tile.fail{background:#2a1215}
+  body[data-theme=panel] .verdict.fail{background:#2a1215} body[data-theme=panel] .verdict.ok{background:#0f2a1f;color:#3ddc97}
+  body[data-theme=panel] .brand .dot{box-shadow:0 0 10px var(--accent)}
+  body[data-theme=panel] .eyebrow{text-shadow:0 0 10px rgba(47,212,201,.4)}
+
+  /* ---------- 4. match13-style: blue, frosted glass, pills, dot-matrix ---------- */
+  body[data-theme=m13]{
+    --bg:#1b7fd3; --card:rgba(255,255,255,.86); --ink:#10233a; --muted:#5a6b80; --line:rgba(16,35,58,.10);
+    --accent:#1b7fd3; --accent-soft:#dcebfa; --accent-ink:#0f5fa8; --warn-bg:#fff4d6; --warn-ink:#7a5200;
+    --top-bg:transparent; --hover:rgba(27,127,211,.10); --input-bg:#eef5fc; --eq-bg:#eef4fb;
+    --primary-bg:#1b7fd3; --primary-ink:#fff; --primary-k:#d3e7fa;
+    --p-bg:transparent; --p-style:dots; --p-grid:#c9dcef; --p-axis:#8aa0b8; --p-text:#5a6b80; --p-cap:#5a6b80; --p-ink:#10233a;
+    --p-green:#16a34a; --p-red:#e0483e; --p-blue:#1b7fd3; --p-purple:#7c5cd6; --p-orange:#ef8f1a;
+    --p-readout:#eef4fb; --p-code:#10233a; --p-tline:#dde8f3; --p-tcell:#10233a; --p-now:#dcebfa; --p-nowink:#0f5fa8;
+    --font:"IBM Plex Sans",sans-serif; --num-font:"IBM Plex Sans",sans-serif; --mono:"IBM Plex Mono",monospace; --p-font:"IBM Plex Sans",sans-serif; --radius:16px;
+    background:linear-gradient(180deg,#1673c4 0%,#1b7fd3 45%,#5aa7ea 100%) fixed;
+  }
+  body:is([data-theme=m13],[data-theme=m13dark]) .topbar{border:0;margin:12px auto 0;width:max-content;max-width:calc(100% - 24px);height:52px;border-radius:999px;
+    background:rgba(255,255,255,.86);backdrop-filter:blur(12px);box-shadow:0 1px 3px rgba(0,0,0,.12);top:12px}
+  body:is([data-theme=m13],[data-theme=m13dark]) .seg,body:is([data-theme=m13],[data-theme=m13dark]) .btn{border-radius:999px;border:0;background:#eef5fc}
+  body:is([data-theme=m13],[data-theme=m13dark]) .seg button.on{background:var(--accent);color:#fff}
+  body:is([data-theme=m13],[data-theme=m13dark]) .layout{gap:14px;padding:14px}
+  body:is([data-theme=m13],[data-theme=m13dark]) .sidebar{border:0;background:rgba(255,255,255,.86);backdrop-filter:blur(12px);border-radius:16px;top:78px;height:calc(100vh - 92px)}
+  body:is([data-theme=m13],[data-theme=m13dark]) .navitem{border-radius:999px}
+  body:is([data-theme=m13],[data-theme=m13dark]) .navitem.on{background:var(--accent);color:#fff}
+  body:is([data-theme=m13],[data-theme=m13dark]) main{padding-top:10px}
+  body:is([data-theme=m13],[data-theme=m13dark]) .eyebrow{color:#d3e7fa}
+  body:is([data-theme=m13],[data-theme=m13dark]) h1{color:#fff}
+  body:is([data-theme=m13],[data-theme=m13dark]) .lede,body:is([data-theme=m13],[data-theme=m13dark]) footer,body:is([data-theme=m13],[data-theme=m13dark]) #out > p.help,body:is([data-theme=m13],[data-theme=m13dark]) #out > .legend,body:is([data-theme=m13],[data-theme=m13dark]) #out > .help{color:#e3f0fc}
+  body:is([data-theme=m13],[data-theme=m13dark]) #out > h3{color:#fff !important}
+  body:is([data-theme=m13],[data-theme=m13dark]) .card,body:is([data-theme=m13],[data-theme=m13dark]) .tile,body:is([data-theme=m13],[data-theme=m13dark]) figure.panel,body:is([data-theme=m13],[data-theme=m13dark]) .steptabs button{border:0;backdrop-filter:blur(12px);box-shadow:0 1px 3px rgba(0,0,0,.10)}
+  body:is([data-theme=m13],[data-theme=m13dark]) .tile .k{text-transform:uppercase;letter-spacing:.08em;font-size:10.5px;font-weight:600}
+  body:is([data-theme=m13],[data-theme=m13dark]) .tile.primary{background-image:radial-gradient(rgba(255,255,255,.22) 1.3px,transparent 1.5px);background-size:7px 7px}
+  body:is([data-theme=m13],[data-theme=m13dark]) .inbox{border:0;border-radius:999px;background:var(--input-bg)}
+  body:is([data-theme=m13],[data-theme=m13dark]) .form .sec{font-size:10.5px}
+  body:is([data-theme=m13],[data-theme=m13dark]) .steptabs button{background:rgba(255,255,255,.86)}
+  body:is([data-theme=m13],[data-theme=m13dark]) .steptabs button.on{background:#fff;box-shadow:inset 0 -3px 0 var(--accent),0 1px 3px rgba(0,0,0,.1)}
+  body:is([data-theme=m13],[data-theme=m13dark]) .docs .eq{border-radius:12px}
+
+    body:is([data-theme=m13],[data-theme=m13dark]) figure.panel{background:var(--card)}
+
+  /* ---------- 4b. match13-style dark: night sky, dark glass with thin borders ---------- */
+  body[data-theme=m13dark]{
+    color-scheme:dark;
+    --bg:#04060c; --card:rgba(12,14,20,.78); --ink:#e8edf5; --muted:#9aa4b5; --line:rgba(255,255,255,.12);
+    --accent:#2aa3ef; --accent-soft:rgba(42,163,239,.16); --accent-ink:#7cc8f7; --warn-bg:rgba(240,180,40,.14); --warn-ink:#f3c766;
+    --top-bg:transparent; --hover:rgba(255,255,255,.06); --input-bg:rgba(255,255,255,.06); --eq-bg:rgba(255,255,255,.05);
+    --primary-bg:#1883d6; --primary-ink:#fff; --primary-k:#cfe4f8;
+    --p-bg:transparent; --p-style:dots; --p-grid:rgba(255,255,255,.22); --p-axis:#6b7588; --p-text:#8a94a6; --p-cap:#9aa4b5; --p-ink:#ffffff;
+    --p-green:#6cc644; --p-red:#ff6b5e; --p-blue:#2f7bf5; --p-purple:#a98bff; --p-orange:#ffb340;
+    --p-readout:rgba(255,255,255,.05); --p-code:#dfe7f3; --p-tline:rgba(255,255,255,.10); --p-tcell:#dfe7f3; --p-now:rgba(42,163,239,.18); --p-nowink:#7cc8f7;
+    --font:"IBM Plex Sans",sans-serif; --num-font:"IBM Plex Sans",sans-serif; --mono:"IBM Plex Mono",monospace; --p-font:"IBM Plex Sans",sans-serif; --radius:16px;
+    background:radial-gradient(ellipse at 70% -10%,#1b2f5e 0%,#0a1024 40%,#03050b 100%) fixed;
+  }
+  body[data-theme=m13dark] .topbar,body[data-theme=m13dark] .sidebar,body[data-theme=m13dark] .steptabs button{background:rgba(12,14,20,.78);border:1px solid rgba(255,255,255,.12)}
+  body[data-theme=m13dark] .seg,body[data-theme=m13dark] .btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14)}
+  body[data-theme=m13dark] .card,body[data-theme=m13dark] .tile,body[data-theme=m13dark] figure.panel{border:1px solid rgba(255,255,255,.12)}
+  body[data-theme=m13dark] .tile.primary{border-color:transparent}
+  body[data-theme=m13dark] .steptabs button.on{background:rgba(255,255,255,.10);box-shadow:inset 0 -3px 0 var(--accent)}
+  body[data-theme=m13dark] .eyebrow{color:#7cc8f7}
+  body[data-theme=m13dark] .lede,body[data-theme=m13dark] footer,body[data-theme=m13dark] #out > p.help,body[data-theme=m13dark] #out > .legend{color:#b9c3d3}
+  body[data-theme=m13dark] .tile.fail{background:#2a1215}
+
+  /* ---------- 5. Dense pro tool ---------- */
+  body[data-theme=dense]{
+    --bg:#f4f5f7; --card:#fff; --ink:#16181d; --muted:#6a7280; --line:#dfe2e7;
+    --accent:#2563eb; --accent-soft:#e8effd; --accent-ink:#1d4ed8;
+    --top-bg:#fff; --hover:#eef0f3; --input-bg:#fff; --eq-bg:#f4f5f7;
+    --primary-bg:#fff; --primary-ink:#16181d; --primary-k:#6a7280;
+    --p-bg:#fff; --p-grid:#eceef2; --p-axis:#9aa1ac; --p-text:#6a7280; --p-cap:#6a7280; --p-ink:#16181d;
+    --p-green:#2ca02c; --p-red:#d62728; --p-blue:#1f77b4; --p-purple:#9467bd; --p-orange:#ff7f0e;
+    --p-readout:#f4f5f7; --p-code:#16181d; --p-tline:#eceef2; --p-tcell:#16181d; --p-now:#e8effd; --p-nowink:#1d4ed8;
+    --num-font:var(--mono); --radius:4px; font-size:13px;
+  }
+  body[data-theme=dense] .topbar{height:44px;background:#fff}
+  body[data-theme=dense] .layout{grid-template-columns:184px 1fr;min-height:calc(100vh - 44px)}
+  body[data-theme=dense] .sidebar{top:44px;height:calc(100vh - 44px);padding:10px 8px}
+  body[data-theme=dense] .navitem{padding:4px 8px;font-size:13px;border-radius:3px}
+  body[data-theme=dense] main{padding:14px 18px 40px;max-width:none}
+  body[data-theme=dense] h1{font-size:22px;margin:2px 0 2px;letter-spacing:-.01em}
+  body[data-theme=dense] .lede{font-size:13px;max-width:none;margin-bottom:10px}
+  body[data-theme=dense] .calc{grid-template-columns:330px 1fr;gap:12px}
+  body[data-theme=dense] .form{position:sticky;top:56px;max-height:calc(100vh - 70px);overflow:auto;padding:10px 12px}
+  body[data-theme=dense] .field{grid-template-columns:1fr 112px;margin:2px 0;gap:6px}
+  body[data-theme=dense] .field label{font-size:12.5px}
+  body[data-theme=dense] .field .help{font-size:11px}
+  body[data-theme=dense] .inbox{border-radius:3px}
+  body[data-theme=dense] .inbox input{text-align:right;padding:3px 6px;font-family:var(--mono);font-size:12.5px}
+  body[data-theme=dense] .inbox select{padding:3px 6px;font-size:12.5px}
+  body[data-theme=dense] .form .sec{margin:8px 0 3px;padding-top:6px;font-size:10px}
+  body[data-theme=dense] .tiles{grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:6px;margin-bottom:8px}
+  body[data-theme=dense] .tile{padding:6px 9px}
+  body[data-theme=dense] .tile .k{font-size:11px}
+  body[data-theme=dense] .tile .v{font-size:16px}
+  body[data-theme=dense] .tile.primary{border-left:3px solid var(--accent)}
+  body[data-theme=dense] figure.panel{border:1px solid var(--line);padding:6px 8px 8px}
+  body[data-theme=dense] figure.panel canvas{height:250px}
+  body[data-theme=dense] .panels{gap:8px}
+  body[data-theme=dense] #out > h3{margin:12px 0 6px !important;font-size:11px !important}
+  body[data-theme=dense] th,body[data-theme=dense] td{padding:3px 6px;font-size:12.5px}
+  body[data-theme=dense] .docs{margin-top:16px;gap:12px}
+  body[data-theme=dense] .warn{padding:5px 9px;font-size:12.5px;margin-bottom:8px}
+  /* keep "100.0 : 1" on one line in the ratio tables */
+  table td:first-child{white-space:nowrap}

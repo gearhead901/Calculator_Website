@@ -2,6 +2,14 @@
 
 Prototype calculator website. The prototypes are single, self-contained HTML files in `prototype/` (`calc_prototype_v1.html` … `v18.html`). The newest version is the current one.
 
+## How versions are built
+
+From v19 on, versions are assembled from `src/` by `python build/build.py NN` (writes `prototype/calc_prototype_vNN.html`; `--check` compares a rebuild with an existing file). `src/page.html` is the page; calculators that have moved to their own folder (so far only **Arm**, in `src/arm/`) are pulled in where `/*@include arm@*/` appears, and `{{VERSION}}` becomes the version number. To change Arm, edit `src/arm/*.js`; to change anything else, edit `src/page.html`. Add a line to the version history comment at the top of `src/page.html` for each new version. Never edit the generated files in `prototype/` by hand. The Style Lab (`design/style_lab.html`) is separate and still built by `build/make_lab.py`.
+
+Versions up to v18 were made by patch scripts (`build/make_vNN.py`), kept as a record. See `build/README.md`.
+
+Files use LF line endings on every computer (`.gitattributes`). On Windows, write scripts as files rather than inline shell commands, because Git Bash can mangle backslashes and non-ASCII characters.
+
 ## Working across computers
 
 The owner works on this repo from two computers: a Mac and a Windows laptop. GitHub (`gearhead901/Calculator_Website`, **public**) keeps them in sync.
