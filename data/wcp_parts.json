@@ -1,0 +1,5390 @@
+{
+ "vendor": "WCP",
+ "source": "https://wcproducts.com/products.json",
+ "date": "2026-11-12",
+ "products_read": 2135,
+ "parts": [
+  {
+   "sku": "WCP-0666",
+   "type": "belt",
+   "teeth": 45,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "45t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0666"
+  },
+  {
+   "sku": "WCP-0667",
+   "type": "belt",
+   "teeth": 50,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "50t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0667"
+  },
+  {
+   "sku": "WCP-1636",
+   "type": "belt",
+   "teeth": 51,
+   "pitch": "GT2 3mm",
+   "width": "6mm",
+   "name": "51t x 6mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1636"
+  },
+  {
+   "sku": "WCP-0668",
+   "type": "belt",
+   "teeth": 55,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "55t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0668"
+  },
+  {
+   "sku": "WCP-0669",
+   "type": "belt",
+   "teeth": 60,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "60t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0669"
+  },
+  {
+   "sku": "WCP-1046",
+   "type": "belt",
+   "teeth": 65,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "65t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1046"
+  },
+  {
+   "sku": "WCP-0670",
+   "type": "belt",
+   "teeth": 70,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "70t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0670"
+  },
+  {
+   "sku": "WCP-1047",
+   "type": "belt",
+   "teeth": 75,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "75t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1047"
+  },
+  {
+   "sku": "WCP-1048",
+   "type": "belt",
+   "teeth": 80,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "80t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1048"
+  },
+  {
+   "sku": "WCP-0671",
+   "type": "belt",
+   "teeth": 85,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "85t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0671"
+  },
+  {
+   "sku": "WCP-0672",
+   "type": "belt",
+   "teeth": 90,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "90t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0672"
+  },
+  {
+   "sku": "WCP-1049",
+   "type": "belt",
+   "teeth": 95,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "95t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1049"
+  },
+  {
+   "sku": "WCP-0673",
+   "type": "belt",
+   "teeth": 100,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "100t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0673"
+  },
+  {
+   "sku": "WCP-0674",
+   "type": "belt",
+   "teeth": 105,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "105t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0674"
+  },
+  {
+   "sku": "WCP-0675",
+   "type": "belt",
+   "teeth": 110,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "110t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0675"
+  },
+  {
+   "sku": "WCP-1050",
+   "type": "belt",
+   "teeth": 115,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "115t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1050"
+  },
+  {
+   "sku": "WCP-0676",
+   "type": "belt",
+   "teeth": 120,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "120t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0676"
+  },
+  {
+   "sku": "WCP-0677",
+   "type": "belt",
+   "teeth": 125,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "125t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0677"
+  },
+  {
+   "sku": "WCP-1051",
+   "type": "belt",
+   "teeth": 130,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "130t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1051"
+  },
+  {
+   "sku": "WCP-0678",
+   "type": "belt",
+   "teeth": 140,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "140t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0678"
+  },
+  {
+   "sku": "WCP-1052",
+   "type": "belt",
+   "teeth": 150,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "150t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1052"
+  },
+  {
+   "sku": "WCP-1053",
+   "type": "belt",
+   "teeth": 160,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "160t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1053"
+  },
+  {
+   "sku": "WCP-1054",
+   "type": "belt",
+   "teeth": 170,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "170t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1054"
+  },
+  {
+   "sku": "WCP-0679",
+   "type": "belt",
+   "teeth": 180,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "180t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-0679"
+  },
+  {
+   "sku": "WCP-1055",
+   "type": "belt",
+   "teeth": 190,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "190t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1055"
+  },
+  {
+   "sku": "WCP-1056",
+   "type": "belt",
+   "teeth": 200,
+   "pitch": "GT2 3mm",
+   "width": "9mm",
+   "name": "200t x 9mm Wide Timing Belt (GT2 3mm)",
+   "handle": "wcp-1056"
+  },
+  {
+   "sku": "WCP-0160",
+   "type": "belt",
+   "teeth": 30,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "30t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0160"
+  },
+  {
+   "sku": "WCP-0161",
+   "type": "belt",
+   "teeth": 30,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "30t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0161"
+  },
+  {
+   "sku": "WCP-2273",
+   "type": "belt",
+   "teeth": 30,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "30t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2273"
+  },
+  {
+   "sku": "WCP-0525",
+   "type": "belt",
+   "teeth": 35,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "35t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0525"
+  },
+  {
+   "sku": "WCP-0612",
+   "type": "belt",
+   "teeth": 35,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "35t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0612"
+  },
+  {
+   "sku": "WCP-0526",
+   "type": "belt",
+   "teeth": 40,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "40t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0526"
+  },
+  {
+   "sku": "WCP-0613",
+   "type": "belt",
+   "teeth": 40,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "40t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0613"
+  },
+  {
+   "sku": "WCP-2275",
+   "type": "belt",
+   "teeth": 40,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "40t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2275"
+  },
+  {
+   "sku": "WCP-2707",
+   "type": "belt",
+   "teeth": 41,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "41t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-2707"
+  },
+  {
+   "sku": "WCP-0511",
+   "type": "belt",
+   "teeth": 43,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "43t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0511"
+  },
+  {
+   "sku": "WCP-2433",
+   "type": "belt",
+   "teeth": 44,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "44t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-2433"
+  },
+  {
+   "sku": "WCP-2434",
+   "type": "belt",
+   "teeth": 44,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "44t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-2434"
+  },
+  {
+   "sku": "WCP-0162",
+   "type": "belt",
+   "teeth": 45,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "45t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0162"
+  },
+  {
+   "sku": "WCP-0163",
+   "type": "belt",
+   "teeth": 45,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "45t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0163"
+  },
+  {
+   "sku": "WCP-2708",
+   "type": "belt",
+   "teeth": 47,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "47t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-2708"
+  },
+  {
+   "sku": "WCP-0527",
+   "type": "belt",
+   "teeth": 50,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "50t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0527"
+  },
+  {
+   "sku": "WCP-0615",
+   "type": "belt",
+   "teeth": 50,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "50t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0615"
+  },
+  {
+   "sku": "WCP-2277",
+   "type": "belt",
+   "teeth": 50,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "50t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2277"
+  },
+  {
+   "sku": "WCP-0512",
+   "type": "belt",
+   "teeth": 53,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "53t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0512"
+  },
+  {
+   "sku": "WCP-0164",
+   "type": "belt",
+   "teeth": 55,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "55t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0164"
+  },
+  {
+   "sku": "WCP-0165",
+   "type": "belt",
+   "teeth": 55,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "55t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0165"
+  },
+  {
+   "sku": "WCP-1635",
+   "type": "belt",
+   "teeth": 57,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "57t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1635"
+  },
+  {
+   "sku": "WCP-0617",
+   "type": "belt",
+   "teeth": 60,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "60t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0617"
+  },
+  {
+   "sku": "WCP-0644",
+   "type": "belt",
+   "teeth": 60,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "60t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0644"
+  },
+  {
+   "sku": "WCP-2279",
+   "type": "belt",
+   "teeth": 60,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "60t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2279"
+  },
+  {
+   "sku": "WCP-1757",
+   "type": "belt",
+   "teeth": 64,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "64t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1757"
+  },
+  {
+   "sku": "WCP-1779",
+   "type": "belt",
+   "teeth": 64,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "64t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1779"
+  },
+  {
+   "sku": "WCP-0528",
+   "type": "belt",
+   "teeth": 65,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "65t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0528"
+  },
+  {
+   "sku": "WCP-0618",
+   "type": "belt",
+   "teeth": 65,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "65t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0618"
+  },
+  {
+   "sku": "WCP-0619",
+   "type": "belt",
+   "teeth": 70,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "70t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0619"
+  },
+  {
+   "sku": "WCP-0645",
+   "type": "belt",
+   "teeth": 70,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "70t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0645"
+  },
+  {
+   "sku": "WCP-2282",
+   "type": "belt",
+   "teeth": 70,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "70t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2282"
+  },
+  {
+   "sku": "WCP-0529",
+   "type": "belt",
+   "teeth": 75,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "75t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0529"
+  },
+  {
+   "sku": "WCP-0620",
+   "type": "belt",
+   "teeth": 75,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "75t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0620"
+  },
+  {
+   "sku": "WCP-0621",
+   "type": "belt",
+   "teeth": 80,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "80t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0621"
+  },
+  {
+   "sku": "WCP-0646",
+   "type": "belt",
+   "teeth": 80,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "80t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0646"
+  },
+  {
+   "sku": "WCP-2284",
+   "type": "belt",
+   "teeth": 80,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "80t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2284"
+  },
+  {
+   "sku": "WCP-0530",
+   "type": "belt",
+   "teeth": 85,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "85t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0530"
+  },
+  {
+   "sku": "WCP-0622",
+   "type": "belt",
+   "teeth": 85,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "85t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0622"
+  },
+  {
+   "sku": "WCP-0623",
+   "type": "belt",
+   "teeth": 90,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "90t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0623"
+  },
+  {
+   "sku": "WCP-0647",
+   "type": "belt",
+   "teeth": 90,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "90t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0647"
+  },
+  {
+   "sku": "WCP-2286",
+   "type": "belt",
+   "teeth": 90,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "90t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2286"
+  },
+  {
+   "sku": "WCP-0531",
+   "type": "belt",
+   "teeth": 95,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "95t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0531"
+  },
+  {
+   "sku": "WCP-0624",
+   "type": "belt",
+   "teeth": 95,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "95t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0624"
+  },
+  {
+   "sku": "WCP-0625",
+   "type": "belt",
+   "teeth": 100,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "100t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0625"
+  },
+  {
+   "sku": "WCP-0648",
+   "type": "belt",
+   "teeth": 100,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "100t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0648"
+  },
+  {
+   "sku": "WCP-1772",
+   "type": "belt",
+   "teeth": 100,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "100t x 9mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1772"
+  },
+  {
+   "sku": "WCP-1794",
+   "type": "belt",
+   "teeth": 100,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "100t x 15mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1794"
+  },
+  {
+   "sku": "WCP-2288",
+   "type": "belt",
+   "teeth": 100,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "100t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2288"
+  },
+  {
+   "sku": "WCP-0626",
+   "type": "belt",
+   "teeth": 104,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "104t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0626"
+  },
+  {
+   "sku": "WCP-0649",
+   "type": "belt",
+   "teeth": 104,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "104t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0649"
+  },
+  {
+   "sku": "WCP-0532",
+   "type": "belt",
+   "teeth": 105,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "105t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0532"
+  },
+  {
+   "sku": "WCP-0627",
+   "type": "belt",
+   "teeth": 105,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "105t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0627"
+  },
+  {
+   "sku": "WCP-0628",
+   "type": "belt",
+   "teeth": 110,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "110t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0628"
+  },
+  {
+   "sku": "WCP-0650",
+   "type": "belt",
+   "teeth": 110,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "110t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0650"
+  },
+  {
+   "sku": "WCP-2291",
+   "type": "belt",
+   "teeth": 110,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "110t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2291"
+  },
+  {
+   "sku": "WCP-0533",
+   "type": "belt",
+   "teeth": 115,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "115t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0533"
+  },
+  {
+   "sku": "WCP-0629",
+   "type": "belt",
+   "teeth": 115,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "115t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0629"
+  },
+  {
+   "sku": "WCP-0630",
+   "type": "belt",
+   "teeth": 120,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "120t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0630"
+  },
+  {
+   "sku": "WCP-0651",
+   "type": "belt",
+   "teeth": 120,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "120t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0651"
+  },
+  {
+   "sku": "WCP-2293",
+   "type": "belt",
+   "teeth": 120,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "120t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2293"
+  },
+  {
+   "sku": "WCP-0534",
+   "type": "belt",
+   "teeth": 125,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "125t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0534"
+  },
+  {
+   "sku": "WCP-0631",
+   "type": "belt",
+   "teeth": 125,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "125t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0631"
+  },
+  {
+   "sku": "WCP-1773",
+   "type": "belt",
+   "teeth": 125,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "125t x 9mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1773"
+  },
+  {
+   "sku": "WCP-1795",
+   "type": "belt",
+   "teeth": 125,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "125t x 15mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1795"
+  },
+  {
+   "sku": "WCP-0632",
+   "type": "belt",
+   "teeth": 130,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "130t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0632"
+  },
+  {
+   "sku": "WCP-0652",
+   "type": "belt",
+   "teeth": 130,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "130t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0652"
+  },
+  {
+   "sku": "WCP-2295",
+   "type": "belt",
+   "teeth": 130,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "130t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2295"
+  },
+  {
+   "sku": "WCP-0535",
+   "type": "belt",
+   "teeth": 135,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "135t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0535"
+  },
+  {
+   "sku": "WCP-0633",
+   "type": "belt",
+   "teeth": 135,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "135t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0633"
+  },
+  {
+   "sku": "WCP-0634",
+   "type": "belt",
+   "teeth": 140,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "140t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0634"
+  },
+  {
+   "sku": "WCP-0653",
+   "type": "belt",
+   "teeth": 140,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "140t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0653"
+  },
+  {
+   "sku": "WCP-2297",
+   "type": "belt",
+   "teeth": 140,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "140t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2297"
+  },
+  {
+   "sku": "WCP-0536",
+   "type": "belt",
+   "teeth": 145,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "145t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0536"
+  },
+  {
+   "sku": "WCP-0635",
+   "type": "belt",
+   "teeth": 145,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "145t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0635"
+  },
+  {
+   "sku": "WCP-0636",
+   "type": "belt",
+   "teeth": 150,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "150t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0636"
+  },
+  {
+   "sku": "WCP-0654",
+   "type": "belt",
+   "teeth": 150,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "150t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0654"
+  },
+  {
+   "sku": "WCP-1774",
+   "type": "belt",
+   "teeth": 150,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "150t x 9mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1774"
+  },
+  {
+   "sku": "WCP-1796",
+   "type": "belt",
+   "teeth": 150,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "150t x 15mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1796"
+  },
+  {
+   "sku": "WCP-2299",
+   "type": "belt",
+   "teeth": 150,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "150t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2299"
+  },
+  {
+   "sku": "WCP-1758",
+   "type": "belt",
+   "teeth": 155,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "155t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1758"
+  },
+  {
+   "sku": "WCP-1780",
+   "type": "belt",
+   "teeth": 155,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "155t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1780"
+  },
+  {
+   "sku": "WCP-0637",
+   "type": "belt",
+   "teeth": 160,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "160t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0637"
+  },
+  {
+   "sku": "WCP-0655",
+   "type": "belt",
+   "teeth": 160,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "160t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0655"
+  },
+  {
+   "sku": "WCP-2301",
+   "type": "belt",
+   "teeth": 160,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "160t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2301"
+  },
+  {
+   "sku": "WCP-1759",
+   "type": "belt",
+   "teeth": 165,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "165t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1759"
+  },
+  {
+   "sku": "WCP-1781",
+   "type": "belt",
+   "teeth": 165,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "165t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1781"
+  },
+  {
+   "sku": "WCP-0638",
+   "type": "belt",
+   "teeth": 170,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "170t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0638"
+  },
+  {
+   "sku": "WCP-0656",
+   "type": "belt",
+   "teeth": 170,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "170t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0656"
+  },
+  {
+   "sku": "WCP-2303",
+   "type": "belt",
+   "teeth": 170,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "170t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2303"
+  },
+  {
+   "sku": "WCP-1760",
+   "type": "belt",
+   "teeth": 175,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "175t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1760"
+  },
+  {
+   "sku": "WCP-1775",
+   "type": "belt",
+   "teeth": 175,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "175t x 9mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1775"
+  },
+  {
+   "sku": "WCP-1782",
+   "type": "belt",
+   "teeth": 175,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "175t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1782"
+  },
+  {
+   "sku": "WCP-1797",
+   "type": "belt",
+   "teeth": 175,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "175t x 15mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1797"
+  },
+  {
+   "sku": "WCP-0639",
+   "type": "belt",
+   "teeth": 180,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "180t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0639"
+  },
+  {
+   "sku": "WCP-0657",
+   "type": "belt",
+   "teeth": 180,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "180t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0657"
+  },
+  {
+   "sku": "WCP-2305",
+   "type": "belt",
+   "teeth": 180,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "180t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2305"
+  },
+  {
+   "sku": "WCP-1761",
+   "type": "belt",
+   "teeth": 185,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "185t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1761"
+  },
+  {
+   "sku": "WCP-1783",
+   "type": "belt",
+   "teeth": 185,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "185t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1783"
+  },
+  {
+   "sku": "WCP-0537",
+   "type": "belt",
+   "teeth": 190,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "190t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0537"
+  },
+  {
+   "sku": "WCP-0640",
+   "type": "belt",
+   "teeth": 190,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "190t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0640"
+  },
+  {
+   "sku": "WCP-2307",
+   "type": "belt",
+   "teeth": 190,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "190t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2307"
+  },
+  {
+   "sku": "WCP-1762",
+   "type": "belt",
+   "teeth": 195,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "195t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1762"
+  },
+  {
+   "sku": "WCP-1784",
+   "type": "belt",
+   "teeth": 195,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "195t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1784"
+  },
+  {
+   "sku": "WCP-0641",
+   "type": "belt",
+   "teeth": 200,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "200t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0641"
+  },
+  {
+   "sku": "WCP-0658",
+   "type": "belt",
+   "teeth": 200,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "200t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0658"
+  },
+  {
+   "sku": "WCP-1776",
+   "type": "belt",
+   "teeth": 200,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "200t x 9mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1776"
+  },
+  {
+   "sku": "WCP-1798",
+   "type": "belt",
+   "teeth": 200,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "200t x 15mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1798"
+  },
+  {
+   "sku": "WCP-2309",
+   "type": "belt",
+   "teeth": 200,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "200t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2309"
+  },
+  {
+   "sku": "WCP-1763",
+   "type": "belt",
+   "teeth": 210,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "210t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1763"
+  },
+  {
+   "sku": "WCP-1785",
+   "type": "belt",
+   "teeth": 210,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "210t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1785"
+  },
+  {
+   "sku": "WCP-2310",
+   "type": "belt",
+   "teeth": 210,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "210t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2310"
+  },
+  {
+   "sku": "WCP-1764",
+   "type": "belt",
+   "teeth": 220,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "220t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1764"
+  },
+  {
+   "sku": "WCP-1786",
+   "type": "belt",
+   "teeth": 220,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "220t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1786"
+  },
+  {
+   "sku": "WCP-2311",
+   "type": "belt",
+   "teeth": 220,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "220t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2311"
+  },
+  {
+   "sku": "WCP-0642",
+   "type": "belt",
+   "teeth": 225,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "225t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0642"
+  },
+  {
+   "sku": "WCP-0659",
+   "type": "belt",
+   "teeth": 225,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "225t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0659"
+  },
+  {
+   "sku": "WCP-1765",
+   "type": "belt",
+   "teeth": 230,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "230t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1765"
+  },
+  {
+   "sku": "WCP-1787",
+   "type": "belt",
+   "teeth": 230,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "230t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1787"
+  },
+  {
+   "sku": "WCP-2313",
+   "type": "belt",
+   "teeth": 230,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "230t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2313"
+  },
+  {
+   "sku": "WCP-1766",
+   "type": "belt",
+   "teeth": 240,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "240t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1766"
+  },
+  {
+   "sku": "WCP-1788",
+   "type": "belt",
+   "teeth": 240,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "240t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1788"
+  },
+  {
+   "sku": "WCP-2314",
+   "type": "belt",
+   "teeth": 240,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "240t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2314"
+  },
+  {
+   "sku": "WCP-0643",
+   "type": "belt",
+   "teeth": 250,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "250t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0643"
+  },
+  {
+   "sku": "WCP-0660",
+   "type": "belt",
+   "teeth": 250,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "250t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-0660"
+  },
+  {
+   "sku": "WCP-1777",
+   "type": "belt",
+   "teeth": 250,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "250t x 9mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1777"
+  },
+  {
+   "sku": "WCP-1799",
+   "type": "belt",
+   "teeth": 250,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "250t x 15mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1799"
+  },
+  {
+   "sku": "WCP-2315",
+   "type": "belt",
+   "teeth": 250,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "250t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2315"
+  },
+  {
+   "sku": "WCP-1767",
+   "type": "belt",
+   "teeth": 260,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "260t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1767"
+  },
+  {
+   "sku": "WCP-1789",
+   "type": "belt",
+   "teeth": 260,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "260t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1789"
+  },
+  {
+   "sku": "WCP-2316",
+   "type": "belt",
+   "teeth": 260,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "260t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2316"
+  },
+  {
+   "sku": "WCP-1768",
+   "type": "belt",
+   "teeth": 270,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "270t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1768"
+  },
+  {
+   "sku": "WCP-1790",
+   "type": "belt",
+   "teeth": 270,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "270t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1790"
+  },
+  {
+   "sku": "WCP-2317",
+   "type": "belt",
+   "teeth": 270,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "270t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2317"
+  },
+  {
+   "sku": "WCP-1769",
+   "type": "belt",
+   "teeth": 280,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "280t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1769"
+  },
+  {
+   "sku": "WCP-1791",
+   "type": "belt",
+   "teeth": 280,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "280t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1791"
+  },
+  {
+   "sku": "WCP-2318",
+   "type": "belt",
+   "teeth": 280,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "280t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2318"
+  },
+  {
+   "sku": "WCP-1770",
+   "type": "belt",
+   "teeth": 290,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "290t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1770"
+  },
+  {
+   "sku": "WCP-1792",
+   "type": "belt",
+   "teeth": 290,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "290t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1792"
+  },
+  {
+   "sku": "WCP-2319",
+   "type": "belt",
+   "teeth": 290,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "290t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2319"
+  },
+  {
+   "sku": "WCP-1771",
+   "type": "belt",
+   "teeth": 300,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "300t x 9mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1771"
+  },
+  {
+   "sku": "WCP-1778",
+   "type": "belt",
+   "teeth": 300,
+   "pitch": "HTD 5mm",
+   "width": "9mm",
+   "name": "300t x 9mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1778"
+  },
+  {
+   "sku": "WCP-1793",
+   "type": "belt",
+   "teeth": 300,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "300t x 15mm Wide Timing Belt (HTD 5mm)",
+   "handle": "wcp-1793"
+  },
+  {
+   "sku": "WCP-1800",
+   "type": "belt",
+   "teeth": 300,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "300t x 15mm Wide Double Sided Timing Belt (HTD 5mm)",
+   "handle": "wcp-1800"
+  },
+  {
+   "sku": "WCP-2320",
+   "type": "belt",
+   "teeth": 300,
+   "pitch": "HTD 5mm",
+   "width": "15mm",
+   "name": "300t x 15mm Wide Rubber Coated Timing Belt (HTD 5mm, 45A)",
+   "handle": "wcp-2320"
+  },
+  {
+   "sku": "WCP-2250",
+   "type": "gear",
+   "teeth": 8,
+   "pitch": "10 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "name": "8t Steel Spur Gear (10 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-2250"
+  },
+  {
+   "sku": "WCP-2251",
+   "type": "gear",
+   "teeth": 8,
+   "pitch": "10 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "8t Steel Spur Gear (10 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-2251"
+  },
+  {
+   "sku": "WCP-2252",
+   "type": "gear",
+   "teeth": 8,
+   "pitch": "10 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "8t Aluminum Spur Gear (10 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-2252"
+  },
+  {
+   "sku": "WCP-0552",
+   "type": "gear",
+   "teeth": 10,
+   "pitch": "10 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "10t Aluminum Spur Gear (10 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0552"
+  },
+  {
+   "sku": "WCP-0750",
+   "type": "gear",
+   "teeth": 10,
+   "pitch": "10 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "10t Steel Spur Gear (10 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0750"
+  },
+  {
+   "sku": "WCP-1005",
+   "type": "gear",
+   "teeth": 10,
+   "pitch": "10 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "name": "10t Steel Spur Gear (10 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1005"
+  },
+  {
+   "sku": "WCP-0904",
+   "type": "gear",
+   "teeth": 6,
+   "pitch": "20 DP",
+   "bore": "BAG",
+   "material": "Steel",
+   "cdTeeth": 8,
+   "name": "6t Steel Spur Gear (20 DP, 8t Center Distance, BAG Bore)",
+   "handle": "wcp-0904"
+  },
+  {
+   "sku": "WCP-1150",
+   "type": "gear",
+   "teeth": 6,
+   "pitch": "20 DP",
+   "bore": "RS550/775",
+   "material": "Steel",
+   "cdTeeth": 8,
+   "name": "6t Steel Spur Gear (20 DP, 8t Center Distance, RS550/775 Bore)",
+   "handle": "wcp-1150"
+  },
+  {
+   "sku": "WCP-0489",
+   "type": "gear",
+   "teeth": 8,
+   "pitch": "20 DP",
+   "bore": "Falcon",
+   "material": "Steel",
+   "cdTeeth": 10,
+   "name": "8t Steel Spur Gear (20 DP, 10t Center Distance, Falcon Bore)",
+   "handle": "wcp-0489"
+  },
+  {
+   "sku": "WCP-0905",
+   "type": "gear",
+   "teeth": 8,
+   "pitch": "20 DP",
+   "bore": "BAG",
+   "material": "Steel",
+   "cdTeeth": 10,
+   "name": "8t Steel Spur Gear (20 DP, 10t Center Distance, BAG Bore)",
+   "handle": "wcp-0905"
+  },
+  {
+   "sku": "WCP-1006",
+   "type": "gear",
+   "teeth": 8,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "cdTeeth": 10,
+   "name": "8t Steel Spur Gear (20 DP, 10t Center Distance, 8mm SplineXS Bore)",
+   "handle": "wcp-1006"
+  },
+  {
+   "sku": "WCP-1151",
+   "type": "gear",
+   "teeth": 8,
+   "pitch": "20 DP",
+   "bore": "RS550/775",
+   "material": "Steel",
+   "cdTeeth": 10,
+   "name": "8t Steel Spur Gear (20 DP, 10t Center Distance, RS550/775 Bore)",
+   "handle": "wcp-1151"
+  },
+  {
+   "sku": "WCP-1345",
+   "type": "gear",
+   "teeth": 8,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 10,
+   "name": "8t x 1/2\" Wide Steel Spur Gear (20 DP, 10t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1345"
+  },
+  {
+   "sku": "WCP-0490",
+   "type": "gear",
+   "teeth": 9,
+   "pitch": "20 DP",
+   "bore": "Falcon",
+   "material": "Steel",
+   "cdTeeth": 10,
+   "name": "9t Steel Spur Gear (20 DP, 10t Center Distance, Falcon Bore)",
+   "handle": "wcp-0490"
+  },
+  {
+   "sku": "WCP-0898",
+   "type": "gear",
+   "teeth": 9,
+   "pitch": "20 DP",
+   "bore": "8mm Round",
+   "material": "Steel",
+   "cdTeeth": 10,
+   "name": "9t Steel Spur Gear (20 DP, 10t Center Distance, 8mm Round Bore)",
+   "handle": "wcp-0898"
+  },
+  {
+   "sku": "WCP-1007",
+   "type": "gear",
+   "teeth": 9,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "cdTeeth": 10,
+   "name": "9t Steel Spur Gear (20 DP, 10t Center Distance, 8mm SplineXS Bore)",
+   "handle": "wcp-1007"
+  },
+  {
+   "sku": "WCP-1346",
+   "type": "gear",
+   "teeth": 9,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 10,
+   "name": "9t x 1/2\" Wide Steel Spur Gear (20 DP, 10t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1346"
+  },
+  {
+   "sku": "WCP-0491",
+   "type": "gear",
+   "teeth": 10,
+   "pitch": "20 DP",
+   "bore": "Falcon",
+   "material": "Steel",
+   "cdTeeth": 12,
+   "name": "10t Steel Spur Gear (20 DP, 12t Center Distance, Falcon Bore)",
+   "handle": "wcp-0491"
+  },
+  {
+   "sku": "WCP-0899",
+   "type": "gear",
+   "teeth": 10,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 12,
+   "name": "10t Steel Spur Gear (20 DP, 12t Center Distance, 8mm Key Bore)",
+   "handle": "wcp-0899"
+  },
+  {
+   "sku": "WCP-1008",
+   "type": "gear",
+   "teeth": 10,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "cdTeeth": 12,
+   "name": "10t Steel Spur Gear (20 DP, 12t Center Distance, 8mm SplineXS Bore)",
+   "handle": "wcp-1008"
+  },
+  {
+   "sku": "WCP-1347",
+   "type": "gear",
+   "teeth": 10,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 12,
+   "name": "10t x 1/2\" Wide Steel Spur Gear (20 DP, 12t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1347"
+  },
+  {
+   "sku": "WCP-0492",
+   "type": "gear",
+   "teeth": 11,
+   "pitch": "20 DP",
+   "bore": "Falcon",
+   "material": "Steel",
+   "cdTeeth": 12,
+   "name": "11t Steel Spur Gear (20 DP, 12t Center Distance, Falcon Bore)",
+   "handle": "wcp-0492"
+  },
+  {
+   "sku": "WCP-0900",
+   "type": "gear",
+   "teeth": 11,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 12,
+   "name": "11t Steel Spur Gear (20 DP, 12t Center Distance, 8mm Key Bore)",
+   "handle": "wcp-0900"
+  },
+  {
+   "sku": "WCP-1009",
+   "type": "gear",
+   "teeth": 11,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "cdTeeth": 12,
+   "name": "11t Steel Spur Gear (20 DP, 12t Center Distance, 8mm SplineXS Bore)",
+   "handle": "wcp-1009"
+  },
+  {
+   "sku": "WCP-1348",
+   "type": "gear",
+   "teeth": 11,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 12,
+   "name": "11t x 1/2\" Wide Steel Spur Gear (20 DP, 12t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1348"
+  },
+  {
+   "sku": "DIS-0042",
+   "type": "gear",
+   "teeth": 12,
+   "pitch": "20 DP",
+   "bore": "CIM",
+   "material": "Aluminum",
+   "name": "12t Aluminum Spur Gear (20 DP, CIM Motor, Pinion Only)",
+   "handle": "dis-0042"
+  },
+  {
+   "sku": "DIS-0043",
+   "type": "gear",
+   "teeth": 12,
+   "pitch": "20 DP",
+   "bore": "CIM",
+   "material": "Steel",
+   "name": "12t Steel Spur Gear (20 DP, CIM Motor, Pinion Only)",
+   "handle": "dis-0043"
+  },
+  {
+   "sku": "WCP-0493",
+   "type": "gear",
+   "teeth": 12,
+   "pitch": "20 DP",
+   "bore": "Falcon",
+   "material": "Steel",
+   "name": "12t Steel Spur Gear (20 DP, Falcon Bore)",
+   "handle": "wcp-0493"
+  },
+  {
+   "sku": "WCP-0901",
+   "type": "gear",
+   "teeth": 12,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "name": "12t Steel Spur Gear (20 DP, 8mm Key Bore)",
+   "handle": "wcp-0901"
+  },
+  {
+   "sku": "WCP-1010",
+   "type": "gear",
+   "teeth": 12,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "name": "12t Steel Spur Gear (20 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1010"
+  },
+  {
+   "sku": "WCP-1011",
+   "type": "gear",
+   "teeth": 12,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "cdTeeth": 14,
+   "name": "12t Steel Spur Gear (20 DP, 14t Center Distance, 8mm SplineXS Bore)",
+   "handle": "wcp-1011"
+  },
+  {
+   "sku": "WCP-1136",
+   "type": "gear",
+   "teeth": 12,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 14,
+   "name": "12t Steel Spur Gear (20 DP, 14t Center Distance, 8mm Key Bore)",
+   "handle": "wcp-1136"
+  },
+  {
+   "sku": "WCP-1349",
+   "type": "gear",
+   "teeth": 12,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 14,
+   "name": "12t x 1/2\" Wide Steel Spur Gear (20 DP, 14t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1349"
+  },
+  {
+   "sku": "WCP-1350",
+   "type": "gear",
+   "teeth": 12,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "name": "12t x 1/2\" Wide Steel Spur Gear (20 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1350"
+  },
+  {
+   "sku": "WCP-0494",
+   "type": "gear",
+   "teeth": 13,
+   "pitch": "20 DP",
+   "bore": "Falcon",
+   "material": "Steel",
+   "cdTeeth": 14,
+   "name": "13t Steel Spur Gear (20 DP, 14t Center Distance, Falcon Bore)",
+   "handle": "wcp-0494"
+  },
+  {
+   "sku": "WCP-0902",
+   "type": "gear",
+   "teeth": 13,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 14,
+   "name": "13t Steel Spur Gear (20 DP, 14t Center Distance, 8mm Key Bore)",
+   "handle": "wcp-0902"
+  },
+  {
+   "sku": "WCP-1012",
+   "type": "gear",
+   "teeth": 13,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "cdTeeth": 14,
+   "name": "13t Steel Spur Gear (20 DP, 14t Center Distance, 8mm SplineXS Bore)",
+   "handle": "wcp-1012"
+  },
+  {
+   "sku": "WCP-1351",
+   "type": "gear",
+   "teeth": 13,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 14,
+   "name": "13t x 1/2\" Wide Steel Spur Gear (20 DP, 14t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1351"
+  },
+  {
+   "sku": "WCP-0495",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "Falcon",
+   "material": "Steel",
+   "name": "14t Steel Spur Gear (20 DP, Falcon Bore)",
+   "handle": "wcp-0495"
+  },
+  {
+   "sku": "WCP-0680",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "14t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0680"
+  },
+  {
+   "sku": "WCP-0731",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "14t Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0731"
+  },
+  {
+   "sku": "WCP-0903",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "name": "14t Steel Spur Gear (20 DP, 8mm Key Bore)",
+   "handle": "wcp-0903"
+  },
+  {
+   "sku": "WCP-1013",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "name": "14t Steel Spur Gear (20 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1013"
+  },
+  {
+   "sku": "WCP-1014",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "cdTeeth": 16,
+   "name": "14t Steel Spur Gear (20 DP, 16t Center Distance, 8mm SplineXS Bore)",
+   "handle": "wcp-1014"
+  },
+  {
+   "sku": "WCP-1234",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 16,
+   "name": "14t Steel Spur Gear (20 DP, 16t Center Distance, 8mm Key Bore)",
+   "handle": "wcp-1234"
+  },
+  {
+   "sku": "WCP-1352",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 16,
+   "name": "14t x 1/2\" Wide Steel Spur Gear (20 DP, 16t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1352"
+  },
+  {
+   "sku": "WCP-1353",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "name": "14t x 1/2\" Wide Steel Spur Gear (20 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1353"
+  },
+  {
+   "sku": "WCP-1717",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "cdTeeth": 16,
+   "name": "14t Steel Spur Gear (20 DP, 16t Center Distance, 3/8\" Hex Bore)",
+   "handle": "wcp-1717"
+  },
+  {
+   "sku": "WCP-1718",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "cdTeeth": 16,
+   "name": "14t Aluminum Spur Gear (20 DP, 16t Center Distance, 3/8\" Hex Bore)",
+   "handle": "wcp-1718"
+  },
+  {
+   "sku": "WCP-2705",
+   "type": "gear",
+   "teeth": 14,
+   "pitch": "20 DP",
+   "bore": "1/2in Rounded Hex",
+   "material": "Steel",
+   "cdTeeth": 16,
+   "name": "14t Steel Spur Gear (20 DP, 16t Center Distance, 1/2\" Rounded Hex Bore)",
+   "handle": "wcp-2705"
+  },
+  {
+   "sku": "WCP-1015",
+   "type": "gear",
+   "teeth": 15,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "cdTeeth": 16,
+   "name": "15t Steel Spur Gear (20 DP, 16t Center Distance, 8mm SplineXS Bore)",
+   "handle": "wcp-1015"
+  },
+  {
+   "sku": "WCP-1235",
+   "type": "gear",
+   "teeth": 15,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 16,
+   "name": "15t Steel Spur Gear (20 DP, 16t Center Distance, 8mm Key Bore)",
+   "handle": "wcp-1235"
+  },
+  {
+   "sku": "WCP-1382",
+   "type": "gear",
+   "teeth": 15,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 16,
+   "name": "15t x 1/2\" Wide Steel Spur Gear (20 DP, 16t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1382"
+  },
+  {
+   "sku": "WCP-1637",
+   "type": "gear",
+   "teeth": 15,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 17,
+   "name": "15t x 1/2\" Wide Steel Spur Gear (20DP, 17t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1637"
+  },
+  {
+   "sku": "WCP-1646",
+   "type": "gear",
+   "teeth": 15,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 17,
+   "name": "15t Steel Spur Gear (20DP, 17t CD, 8mm Key Bore)",
+   "handle": "wcp-1646"
+  },
+  {
+   "sku": "WCP-2706",
+   "type": "gear",
+   "teeth": 15,
+   "pitch": "20 DP",
+   "bore": "1/2in Rounded Hex",
+   "material": "Steel",
+   "cdTeeth": 16,
+   "name": "15t Steel Spur Gear (20 DP, 16t Center Distance, 1/2\" Rounded Hex Bore)",
+   "handle": "wcp-2706"
+  },
+  {
+   "sku": "WCP-0290",
+   "type": "gear",
+   "teeth": 16,
+   "pitch": "20 DP",
+   "bore": "1/2in Rounded Hex",
+   "material": "Steel",
+   "name": "16t Steel Spur Gear (20 DP, 1/2\" Rounded Hex Bore)",
+   "handle": "wcp-0290"
+  },
+  {
+   "sku": "WCP-0681",
+   "type": "gear",
+   "teeth": 16,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "16t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0681"
+  },
+  {
+   "sku": "WCP-0732",
+   "type": "gear",
+   "teeth": 16,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "16t Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0732"
+  },
+  {
+   "sku": "WCP-1016",
+   "type": "gear",
+   "teeth": 16,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "name": "16t Steel Spur Gear (20 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1016"
+  },
+  {
+   "sku": "WCP-1236",
+   "type": "gear",
+   "teeth": 16,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "name": "16t Steel Spur Gear (20 DP, 8mm Key Bore)",
+   "handle": "wcp-1236"
+  },
+  {
+   "sku": "WCP-1383",
+   "type": "gear",
+   "teeth": 16,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "name": "16t x 1/2\" Wide Steel Spur Gear (20 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1383"
+  },
+  {
+   "sku": "WCP-1638",
+   "type": "gear",
+   "teeth": 16,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 17,
+   "name": "16t x 1/2\" Wide Steel Spur Gear (20DP, 17t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1638"
+  },
+  {
+   "sku": "WCP-1647",
+   "type": "gear",
+   "teeth": 16,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 17,
+   "name": "16t Steel Spur Gear (20DP, 17t CD, 8mm Key Bore)",
+   "handle": "wcp-1647"
+  },
+  {
+   "sku": "WCP-1719",
+   "type": "gear",
+   "teeth": 16,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "cdTeeth": 18,
+   "name": "16t Steel Spur Gear (20 DP, 18t Center Distance, 3/8\" Hex Bore)",
+   "handle": "wcp-1719"
+  },
+  {
+   "sku": "WCP-1720",
+   "type": "gear",
+   "teeth": 16,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "cdTeeth": 18,
+   "name": "16t Aluminum Spur Gear (20 DP, 18t Center Distance, 3/8\" Hex Bore)",
+   "handle": "wcp-1720"
+  },
+  {
+   "sku": "WCP-1639",
+   "type": "gear",
+   "teeth": 17,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "name": "17t x 1/2\" Wide Steel Spur Gear (20DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1639"
+  },
+  {
+   "sku": "WCP-1640",
+   "type": "gear",
+   "teeth": 17,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 19,
+   "name": "17t x 1/2\" Wide Steel Spur Gear, (20DP, 19t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1640"
+  },
+  {
+   "sku": "WCP-1648",
+   "type": "gear",
+   "teeth": 17,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "name": "17t Steel Spur Gear (20DP, 17t CD, 8mm Key Bore)",
+   "handle": "wcp-1648"
+  },
+  {
+   "sku": "WCP-1649",
+   "type": "gear",
+   "teeth": 17,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 19,
+   "name": "17t Steel Spur Gear, (20DP, 19t CD, 8mm Key Bore)",
+   "handle": "wcp-1649v"
+  },
+  {
+   "sku": "WCP-0432",
+   "type": "gear",
+   "teeth": 18,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "18t Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0432"
+  },
+  {
+   "sku": "WCP-0682",
+   "type": "gear",
+   "teeth": 18,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "18t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0682"
+  },
+  {
+   "sku": "WCP-0700",
+   "type": "gear",
+   "teeth": 18,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "18t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0700"
+  },
+  {
+   "sku": "WCP-0733",
+   "type": "gear",
+   "teeth": 18,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "18t Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0733"
+  },
+  {
+   "sku": "WCP-1384",
+   "type": "gear",
+   "teeth": 18,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "name": "18t x 1/2\" Wide Steel Spur Gear (20 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1384"
+  },
+  {
+   "sku": "WCP-1641",
+   "type": "gear",
+   "teeth": 18,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 19,
+   "name": "18t x 1/2\" Wide Steel Spur Gear (20DP, 19t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1641"
+  },
+  {
+   "sku": "WCP-1650",
+   "type": "gear",
+   "teeth": 18,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 19,
+   "name": "18t Steel Spur Gear (20DP, 19t CD, 8mm Key Bore)",
+   "handle": "wcp-1650"
+  },
+  {
+   "sku": "WCP-2092",
+   "type": "gear",
+   "teeth": 18,
+   "pitch": "20 DP",
+   "bore": "1/4in Round",
+   "material": "Steel",
+   "name": "18t Steel Spur Gear (20 DP, 1/4\" Round)",
+   "handle": "wcp-2092"
+  },
+  {
+   "sku": "WCP-2093",
+   "type": "gear",
+   "teeth": 18,
+   "pitch": "20 DP",
+   "bore": "1/4in Round",
+   "material": "Aluminum",
+   "name": "18t Aluminum Spur Gear (20 DP, 1/4\" Round)",
+   "handle": "wcp-2093"
+  },
+  {
+   "sku": "WCP-1642",
+   "type": "gear",
+   "teeth": 19,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "name": "19t x 1/2\" Wide Steel Spur Gear (20DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1642"
+  },
+  {
+   "sku": "WCP-1643",
+   "type": "gear",
+   "teeth": 19,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 21,
+   "name": "19t x 1/2\" Wide Steel Spur Gear (20DP, 21t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1643"
+  },
+  {
+   "sku": "WCP-1651",
+   "type": "gear",
+   "teeth": 19,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "name": "19t Steel Spur Gear (20DP, 19t CD, 8mm Key Bore)",
+   "handle": "wcp-1651"
+  },
+  {
+   "sku": "WCP-1652",
+   "type": "gear",
+   "teeth": 19,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 21,
+   "name": "19t Steel Spur Gear (20DP, 21t CD, 8mm Key Bore)",
+   "handle": "wcp-1652"
+  },
+  {
+   "sku": "WCP-0433",
+   "type": "gear",
+   "teeth": 20,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "20t Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0433"
+  },
+  {
+   "sku": "WCP-0683",
+   "type": "gear",
+   "teeth": 20,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "20t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0683"
+  },
+  {
+   "sku": "WCP-0701",
+   "type": "gear",
+   "teeth": 20,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "20t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0701"
+  },
+  {
+   "sku": "WCP-0734",
+   "type": "gear",
+   "teeth": 20,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "20t Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0734"
+  },
+  {
+   "sku": "WCP-1385",
+   "type": "gear",
+   "teeth": 20,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "name": "20t x 1/2\" Wide Steel Spur Gear (20 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1385"
+  },
+  {
+   "sku": "WCP-1644",
+   "type": "gear",
+   "teeth": 20,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "cdTeeth": 21,
+   "name": "20t x 1/2\" Wide Steel Spur Gear (20DP, 21t CD, 8mm SplineXS Bore)",
+   "handle": "wcp-1644"
+  },
+  {
+   "sku": "WCP-1653",
+   "type": "gear",
+   "teeth": 20,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "cdTeeth": 21,
+   "name": "20t Steel Spur Gear (20DP, 21t CD, 8mm Key Bore)",
+   "handle": "wcp-1653"
+  },
+  {
+   "sku": "WCP-1645",
+   "type": "gear",
+   "teeth": 21,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "name": "21t x 1/2\" Wide Steel Spur Gear (20DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1645"
+  },
+  {
+   "sku": "WCP-1654",
+   "type": "gear",
+   "teeth": 21,
+   "pitch": "20 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "name": "21t Steel Spur Gear (20DP, 21t CD, 8mm Key Bore)",
+   "handle": "wcp-1654"
+  },
+  {
+   "sku": "WCP-0434",
+   "type": "gear",
+   "teeth": 22,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "22t Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0434"
+  },
+  {
+   "sku": "WCP-0684",
+   "type": "gear",
+   "teeth": 22,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "22t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0684"
+  },
+  {
+   "sku": "WCP-0702",
+   "type": "gear",
+   "teeth": 22,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "22t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0702"
+  },
+  {
+   "sku": "WCP-0735",
+   "type": "gear",
+   "teeth": 22,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "22t Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0735"
+  },
+  {
+   "sku": "WCP-1386",
+   "type": "gear",
+   "teeth": 22,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "name": "22t x 1/2\" Wide Steel Spur Gear (20 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1386"
+  },
+  {
+   "sku": "WCP-0538",
+   "type": "gear",
+   "teeth": 24,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "24t Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0538"
+  },
+  {
+   "sku": "WCP-0685",
+   "type": "gear",
+   "teeth": 24,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "24t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0685"
+  },
+  {
+   "sku": "WCP-0703",
+   "type": "gear",
+   "teeth": 24,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "24t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0703"
+  },
+  {
+   "sku": "WCP-0736",
+   "type": "gear",
+   "teeth": 24,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "24t Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0736"
+  },
+  {
+   "sku": "WCP-1387",
+   "type": "gear",
+   "teeth": 24,
+   "pitch": "20 DP",
+   "bore": "8mm SplineXS",
+   "width": "1/2in",
+   "material": "Steel",
+   "name": "24t x 1/2\" Wide Steel Spur Gear (20 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1387"
+  },
+  {
+   "sku": "WCP-0539",
+   "type": "gear",
+   "teeth": 26,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "26t Pocketed Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0539"
+  },
+  {
+   "sku": "WCP-0686",
+   "type": "gear",
+   "teeth": 26,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "26t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0686"
+  },
+  {
+   "sku": "WCP-0704",
+   "type": "gear",
+   "teeth": 26,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "26t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0704"
+  },
+  {
+   "sku": "WCP-0737",
+   "type": "gear",
+   "teeth": 26,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "26t Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0737"
+  },
+  {
+   "sku": "WCP-1725",
+   "type": "gear",
+   "teeth": 27,
+   "pitch": "20 DP",
+   "bore": "3/8in Round",
+   "material": "Steel",
+   "name": "27t Pocketed Steel Spur Gear (20 DP, 3/8\" Round, 1/4\" Round)",
+   "handle": "wcp-1725"
+  },
+  {
+   "sku": "WCP-1726",
+   "type": "gear",
+   "teeth": 27,
+   "pitch": "20 DP",
+   "bore": "3/8in Round",
+   "material": "Aluminum",
+   "name": "27t Pocketed Aluminum Spur Gear (20 DP, 3/8\" Round, 1/4\" Round)",
+   "handle": "wcp-1726"
+  },
+  {
+   "sku": "WCP-0546",
+   "type": "gear",
+   "teeth": 28,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "28t Pocketed Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0546"
+  },
+  {
+   "sku": "WCP-0687",
+   "type": "gear",
+   "teeth": 28,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "28t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0687"
+  },
+  {
+   "sku": "WCP-0705",
+   "type": "gear",
+   "teeth": 28,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "28t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0705"
+  },
+  {
+   "sku": "WCP-0738",
+   "type": "gear",
+   "teeth": 28,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "28t Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0738"
+  },
+  {
+   "sku": "WCP-0091",
+   "type": "gear",
+   "teeth": 30,
+   "pitch": "20 DP",
+   "bore": "Rounded Hex Bearing",
+   "material": "Aluminum",
+   "name": "30t Aluminum Spur Gear (20 DP, Dog, Rounded Hex Bearing)",
+   "handle": "wcp-0091"
+  },
+  {
+   "sku": "WCP-0547",
+   "type": "gear",
+   "teeth": 30,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "30t Pocketed Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0547"
+  },
+  {
+   "sku": "WCP-0553",
+   "type": "gear",
+   "teeth": 30,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "30t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0553"
+  },
+  {
+   "sku": "WCP-0688",
+   "type": "gear",
+   "teeth": 30,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "30t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0688"
+  },
+  {
+   "sku": "WCP-0706",
+   "type": "gear",
+   "teeth": 30,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "30t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0706"
+  },
+  {
+   "sku": "WCP-0540",
+   "type": "gear",
+   "teeth": 32,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "32t Pocketed Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0540"
+  },
+  {
+   "sku": "WCP-0554",
+   "type": "gear",
+   "teeth": 32,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "32t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0554"
+  },
+  {
+   "sku": "WCP-0689",
+   "type": "gear",
+   "teeth": 32,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "32t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0689"
+  },
+  {
+   "sku": "WCP-0707",
+   "type": "gear",
+   "teeth": 32,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "32t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0707"
+  },
+  {
+   "sku": "WCP-0542",
+   "type": "gear",
+   "teeth": 34,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "34t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0542"
+  },
+  {
+   "sku": "WCP-0548",
+   "type": "gear",
+   "teeth": 34,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "34t Pocketed Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0548"
+  },
+  {
+   "sku": "WCP-0690",
+   "type": "gear",
+   "teeth": 34,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "34t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0690"
+  },
+  {
+   "sku": "WCP-0708",
+   "type": "gear",
+   "teeth": 34,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "34t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0708"
+  },
+  {
+   "sku": "WCP-1082",
+   "type": "gear",
+   "teeth": 34,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "34t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1082"
+  },
+  {
+   "sku": "WCP-0175",
+   "type": "gear",
+   "teeth": 36,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "36t Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0175"
+  },
+  {
+   "sku": "WCP-0549",
+   "type": "gear",
+   "teeth": 36,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "36t Pocketed Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0549"
+  },
+  {
+   "sku": "WCP-0555",
+   "type": "gear",
+   "teeth": 36,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "36t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0555"
+  },
+  {
+   "sku": "WCP-0691",
+   "type": "gear",
+   "teeth": 36,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "36t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0691"
+  },
+  {
+   "sku": "WCP-0709",
+   "type": "gear",
+   "teeth": 36,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "36t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0709"
+  },
+  {
+   "sku": "WCP-1083",
+   "type": "gear",
+   "teeth": 36,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "36t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1083"
+  },
+  {
+   "sku": "WCP-0176",
+   "type": "gear",
+   "teeth": 38,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "38t Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0176"
+  },
+  {
+   "sku": "WCP-0550",
+   "type": "gear",
+   "teeth": 38,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "38t Pocketed Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0550"
+  },
+  {
+   "sku": "WCP-0556",
+   "type": "gear",
+   "teeth": 38,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "38t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0556"
+  },
+  {
+   "sku": "WCP-0692",
+   "type": "gear",
+   "teeth": 38,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "38t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0692"
+  },
+  {
+   "sku": "WCP-0710",
+   "type": "gear",
+   "teeth": 38,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "38t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0710"
+  },
+  {
+   "sku": "WCP-1084",
+   "type": "gear",
+   "teeth": 38,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "38t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1084"
+  },
+  {
+   "sku": "WCP-1723",
+   "type": "gear",
+   "teeth": 38,
+   "pitch": "20 DP",
+   "bore": "3/8in Round",
+   "material": "Steel",
+   "name": "38t Pocketed Steel Spur Gear (20 DP, 3/8\" Round, 1/4\" Round)",
+   "handle": "wcp-1723"
+  },
+  {
+   "sku": "WCP-1724",
+   "type": "gear",
+   "teeth": 38,
+   "pitch": "20 DP",
+   "bore": "3/8in Round",
+   "material": "Aluminum",
+   "name": "38t Pocketed Aluminum Spur Gear (20 DP, 3/8\" Round, 1/4\" Round)",
+   "handle": "wcp-1724"
+  },
+  {
+   "sku": "WCP-0093",
+   "type": "gear",
+   "teeth": 40,
+   "pitch": "20 DP",
+   "bore": "Rounded Hex Bearing",
+   "material": "Aluminum",
+   "name": "40t Aluminum Spur Gear (20 DP, Dog, Rounded Hex Bearing)",
+   "handle": "wcp-0093"
+  },
+  {
+   "sku": "WCP-0116",
+   "type": "gear",
+   "teeth": 40,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "40t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0116"
+  },
+  {
+   "sku": "WCP-0177",
+   "type": "gear",
+   "teeth": 40,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "40t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0177"
+  },
+  {
+   "sku": "WCP-0551",
+   "type": "gear",
+   "teeth": 40,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "40t Pocketed Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0551"
+  },
+  {
+   "sku": "WCP-0693",
+   "type": "gear",
+   "teeth": 40,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "40t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0693"
+  },
+  {
+   "sku": "WCP-0711",
+   "type": "gear",
+   "teeth": 40,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "40t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0711"
+  },
+  {
+   "sku": "WCP-1085",
+   "type": "gear",
+   "teeth": 40,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "40t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1085"
+  },
+  {
+   "sku": "WCP-1194",
+   "type": "gear",
+   "teeth": 40,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "40t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1194"
+  },
+  {
+   "sku": "WCP-0117",
+   "type": "gear",
+   "teeth": 42,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "42t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0117"
+  },
+  {
+   "sku": "WCP-0178",
+   "type": "gear",
+   "teeth": 42,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "42t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0178"
+  },
+  {
+   "sku": "WCP-0541",
+   "type": "gear",
+   "teeth": 42,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "42t Pocketed Steel Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0541"
+  },
+  {
+   "sku": "WCP-0694",
+   "type": "gear",
+   "teeth": 42,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "42t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0694"
+  },
+  {
+   "sku": "WCP-0712",
+   "type": "gear",
+   "teeth": 42,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "42t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0712"
+  },
+  {
+   "sku": "WCP-1086",
+   "type": "gear",
+   "teeth": 42,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "42t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1086"
+  },
+  {
+   "sku": "WCP-0094",
+   "type": "gear",
+   "teeth": 44,
+   "pitch": "20 DP",
+   "bore": "Rounded Hex Bearing",
+   "material": "Aluminum",
+   "name": "44t Aluminum Spur Gear (20 DP, Dog, Rounded Hex Bearing)",
+   "handle": "wcp-0094"
+  },
+  {
+   "sku": "WCP-0118",
+   "type": "gear",
+   "teeth": 44,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "44t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0118"
+  },
+  {
+   "sku": "WCP-0179",
+   "type": "gear",
+   "teeth": 44,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "44t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0179"
+  },
+  {
+   "sku": "WCP-0695",
+   "type": "gear",
+   "teeth": 44,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "44t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0695"
+  },
+  {
+   "sku": "WCP-0713",
+   "type": "gear",
+   "teeth": 44,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "44t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0713"
+  },
+  {
+   "sku": "WCP-1087",
+   "type": "gear",
+   "teeth": 44,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "44t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1087"
+  },
+  {
+   "sku": "WCP-0136",
+   "type": "gear",
+   "teeth": 46,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "46t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0136"
+  },
+  {
+   "sku": "WCP-0180",
+   "type": "gear",
+   "teeth": 46,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "46t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0180"
+  },
+  {
+   "sku": "WCP-0696",
+   "type": "gear",
+   "teeth": 46,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "46t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0696"
+  },
+  {
+   "sku": "WCP-0714",
+   "type": "gear",
+   "teeth": 46,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "46t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0714"
+  },
+  {
+   "sku": "WCP-1088",
+   "type": "gear",
+   "teeth": 46,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "46t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1088"
+  },
+  {
+   "sku": "WCP-0114",
+   "type": "gear",
+   "teeth": 48,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "48t  Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0114"
+  },
+  {
+   "sku": "WCP-0137",
+   "type": "gear",
+   "teeth": 48,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "48t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0137"
+  },
+  {
+   "sku": "WCP-0181",
+   "type": "gear",
+   "teeth": 48,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "48t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0181"
+  },
+  {
+   "sku": "WCP-0188",
+   "type": "gear",
+   "teeth": 48,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "48t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0188"
+  },
+  {
+   "sku": "WCP-1089",
+   "type": "gear",
+   "teeth": 48,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "48t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1089"
+  },
+  {
+   "sku": "WCP-0095",
+   "type": "gear",
+   "teeth": 50,
+   "pitch": "20 DP",
+   "bore": "Rounded Hex Bearing",
+   "material": "Aluminum",
+   "name": "50t Aluminum Spur Gear (20 DP, Dog, Rounded Hex Bearing)",
+   "handle": "wcp-0095"
+  },
+  {
+   "sku": "WCP-0119",
+   "type": "gear",
+   "teeth": 50,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "50t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0119"
+  },
+  {
+   "sku": "WCP-0182",
+   "type": "gear",
+   "teeth": 50,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "50t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0182"
+  },
+  {
+   "sku": "WCP-0698",
+   "type": "gear",
+   "teeth": 50,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "50t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0698"
+  },
+  {
+   "sku": "WCP-0715",
+   "type": "gear",
+   "teeth": 50,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "50t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0715"
+  },
+  {
+   "sku": "WCP-1090",
+   "type": "gear",
+   "teeth": 50,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "50t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1090"
+  },
+  {
+   "sku": "WCP-1199",
+   "type": "gear",
+   "teeth": 50,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "50t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1199"
+  },
+  {
+   "sku": "WCP-0138",
+   "type": "gear",
+   "teeth": 52,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "52t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0138"
+  },
+  {
+   "sku": "WCP-0183",
+   "type": "gear",
+   "teeth": 52,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "52t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0183"
+  },
+  {
+   "sku": "WCP-0699",
+   "type": "gear",
+   "teeth": 52,
+   "pitch": "20 DP",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "52t Aluminum Spur Gear (20 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0699"
+  },
+  {
+   "sku": "WCP-0716",
+   "type": "gear",
+   "teeth": 52,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "52t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0716"
+  },
+  {
+   "sku": "WCP-1091",
+   "type": "gear",
+   "teeth": 52,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "52t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1091"
+  },
+  {
+   "sku": "WCP-1143",
+   "type": "gear",
+   "teeth": 52,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "52t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1143"
+  },
+  {
+   "sku": "WCP-0120",
+   "type": "gear",
+   "teeth": 54,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "54t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0120"
+  },
+  {
+   "sku": "WCP-0717",
+   "type": "gear",
+   "teeth": 54,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "54t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0717"
+  },
+  {
+   "sku": "WCP-1092",
+   "type": "gear",
+   "teeth": 54,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "54t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1092"
+  },
+  {
+   "sku": "WCP-1144",
+   "type": "gear",
+   "teeth": 54,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "54t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1144"
+  },
+  {
+   "sku": "WCP-0139",
+   "type": "gear",
+   "teeth": 56,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "56t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0139"
+  },
+  {
+   "sku": "WCP-0718",
+   "type": "gear",
+   "teeth": 56,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "56t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0718"
+  },
+  {
+   "sku": "WCP-1093",
+   "type": "gear",
+   "teeth": 56,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "56t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1093"
+  },
+  {
+   "sku": "WCP-1145",
+   "type": "gear",
+   "teeth": 56,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "56t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1145"
+  },
+  {
+   "sku": "WCP-0140",
+   "type": "gear",
+   "teeth": 58,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "58t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0140"
+  },
+  {
+   "sku": "WCP-0186",
+   "type": "gear",
+   "teeth": 58,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "58t Pocketed Steel Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0186"
+  },
+  {
+   "sku": "WCP-0719",
+   "type": "gear",
+   "teeth": 58,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "58t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0719"
+  },
+  {
+   "sku": "WCP-1094",
+   "type": "gear",
+   "teeth": 58,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "58t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1094"
+  },
+  {
+   "sku": "WCP-1146",
+   "type": "gear",
+   "teeth": 58,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "58t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1146"
+  },
+  {
+   "sku": "WCP-0121",
+   "type": "gear",
+   "teeth": 60,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "60t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0121"
+  },
+  {
+   "sku": "WCP-0720",
+   "type": "gear",
+   "teeth": 60,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "60t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0720"
+  },
+  {
+   "sku": "WCP-1095",
+   "type": "gear",
+   "teeth": 60,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "60t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1095"
+  },
+  {
+   "sku": "WCP-1147",
+   "type": "gear",
+   "teeth": 60,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "60t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1147"
+  },
+  {
+   "sku": "WCP-1204",
+   "type": "gear",
+   "teeth": 60,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "60t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1204"
+  },
+  {
+   "sku": "WCP-0141",
+   "type": "gear",
+   "teeth": 62,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "62t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0141"
+  },
+  {
+   "sku": "WCP-0721",
+   "type": "gear",
+   "teeth": 62,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "62t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0721"
+  },
+  {
+   "sku": "WCP-1096",
+   "type": "gear",
+   "teeth": 62,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "62t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1096"
+  },
+  {
+   "sku": "WCP-1148",
+   "type": "gear",
+   "teeth": 62,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "62t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1148"
+  },
+  {
+   "sku": "WCP-0122",
+   "type": "gear",
+   "teeth": 64,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "64t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0122"
+  },
+  {
+   "sku": "WCP-0722",
+   "type": "gear",
+   "teeth": 64,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "64t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0722"
+  },
+  {
+   "sku": "WCP-1097",
+   "type": "gear",
+   "teeth": 64,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "64t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1097"
+  },
+  {
+   "sku": "WCP-1149",
+   "type": "gear",
+   "teeth": 64,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "64t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1149"
+  },
+  {
+   "sku": "WCP-1206",
+   "type": "gear",
+   "teeth": 64,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "64t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1206"
+  },
+  {
+   "sku": "WCP-0142",
+   "type": "gear",
+   "teeth": 66,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "66t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0142"
+  },
+  {
+   "sku": "WCP-0171",
+   "type": "gear",
+   "teeth": 66,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "66t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0171"
+  },
+  {
+   "sku": "WCP-1098",
+   "type": "gear",
+   "teeth": 66,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "66t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1098"
+  },
+  {
+   "sku": "WCP-1207",
+   "type": "gear",
+   "teeth": 66,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "66t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1207"
+  },
+  {
+   "sku": "WCP-1430",
+   "type": "gear",
+   "teeth": 66,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "66t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1430"
+  },
+  {
+   "sku": "WCP-0143",
+   "type": "gear",
+   "teeth": 68,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "68t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0143"
+  },
+  {
+   "sku": "WCP-0723",
+   "type": "gear",
+   "teeth": 68,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "68t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0723"
+  },
+  {
+   "sku": "WCP-1099",
+   "type": "gear",
+   "teeth": 68,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "68t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1099"
+  },
+  {
+   "sku": "WCP-1208",
+   "type": "gear",
+   "teeth": 68,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "68t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1208"
+  },
+  {
+   "sku": "WCP-1431",
+   "type": "gear",
+   "teeth": 68,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "68t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1431"
+  },
+  {
+   "sku": "WCP-0144",
+   "type": "gear",
+   "teeth": 70,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "70t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0144"
+  },
+  {
+   "sku": "WCP-0172",
+   "type": "gear",
+   "teeth": 70,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "70t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0172"
+  },
+  {
+   "sku": "WCP-1100",
+   "type": "gear",
+   "teeth": 70,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "70t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1100"
+  },
+  {
+   "sku": "WCP-1209",
+   "type": "gear",
+   "teeth": 70,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "70t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1209"
+  },
+  {
+   "sku": "WCP-1432",
+   "type": "gear",
+   "teeth": 70,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "70t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1432"
+  },
+  {
+   "sku": "WCP-0123",
+   "type": "gear",
+   "teeth": 72,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "72t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0123"
+  },
+  {
+   "sku": "WCP-0724",
+   "type": "gear",
+   "teeth": 72,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "72t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0724"
+  },
+  {
+   "sku": "WCP-1101",
+   "type": "gear",
+   "teeth": 72,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "72t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1101"
+  },
+  {
+   "sku": "WCP-1210",
+   "type": "gear",
+   "teeth": 72,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "72t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1210"
+  },
+  {
+   "sku": "WCP-1433",
+   "type": "gear",
+   "teeth": 72,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "72t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1433"
+  },
+  {
+   "sku": "WCP-0145",
+   "type": "gear",
+   "teeth": 74,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "74t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0145"
+  },
+  {
+   "sku": "WCP-0725",
+   "type": "gear",
+   "teeth": 74,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "74t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0725"
+  },
+  {
+   "sku": "WCP-1102",
+   "type": "gear",
+   "teeth": 74,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "74t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1102"
+  },
+  {
+   "sku": "WCP-1211",
+   "type": "gear",
+   "teeth": 74,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "74t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1211"
+  },
+  {
+   "sku": "WCP-1434",
+   "type": "gear",
+   "teeth": 74,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "74t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1434"
+  },
+  {
+   "sku": "WCP-0146",
+   "type": "gear",
+   "teeth": 76,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "76t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0146"
+  },
+  {
+   "sku": "WCP-0726",
+   "type": "gear",
+   "teeth": 76,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "76t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0726"
+  },
+  {
+   "sku": "WCP-1103",
+   "type": "gear",
+   "teeth": 76,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "76t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1103"
+  },
+  {
+   "sku": "WCP-1212",
+   "type": "gear",
+   "teeth": 76,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "76t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1212"
+  },
+  {
+   "sku": "WCP-1435",
+   "type": "gear",
+   "teeth": 76,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "76t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1435"
+  },
+  {
+   "sku": "WCP-0147",
+   "type": "gear",
+   "teeth": 78,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "78t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0147"
+  },
+  {
+   "sku": "WCP-0727",
+   "type": "gear",
+   "teeth": 78,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "78t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0727"
+  },
+  {
+   "sku": "WCP-1104",
+   "type": "gear",
+   "teeth": 78,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "78t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1104"
+  },
+  {
+   "sku": "WCP-1213",
+   "type": "gear",
+   "teeth": 78,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "78t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1213"
+  },
+  {
+   "sku": "WCP-1436",
+   "type": "gear",
+   "teeth": 78,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "78t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1436"
+  },
+  {
+   "sku": "WCP-0148",
+   "type": "gear",
+   "teeth": 80,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "80t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0148"
+  },
+  {
+   "sku": "WCP-0728",
+   "type": "gear",
+   "teeth": 80,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "80t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0728"
+  },
+  {
+   "sku": "WCP-1105",
+   "type": "gear",
+   "teeth": 80,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "80t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1105"
+  },
+  {
+   "sku": "WCP-1214",
+   "type": "gear",
+   "teeth": 80,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "80t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1214"
+  },
+  {
+   "sku": "WCP-1437",
+   "type": "gear",
+   "teeth": 80,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "80t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1437"
+  },
+  {
+   "sku": "WCP-0149",
+   "type": "gear",
+   "teeth": 82,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "82t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0149"
+  },
+  {
+   "sku": "WCP-0729",
+   "type": "gear",
+   "teeth": 82,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "82t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0729"
+  },
+  {
+   "sku": "WCP-1106",
+   "type": "gear",
+   "teeth": 82,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "82t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1106"
+  },
+  {
+   "sku": "WCP-1215",
+   "type": "gear",
+   "teeth": 82,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "82t Aluminum Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1215"
+  },
+  {
+   "sku": "WCP-1438",
+   "type": "gear",
+   "teeth": 82,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "82t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1438"
+  },
+  {
+   "sku": "WCP-0124",
+   "type": "gear",
+   "teeth": 84,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "84t Pocketed Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0124"
+  },
+  {
+   "sku": "WCP-0730",
+   "type": "gear",
+   "teeth": 84,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "84t Aluminum Spur Gear (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-0730"
+  },
+  {
+   "sku": "WCP-1107",
+   "type": "gear",
+   "teeth": 84,
+   "pitch": "20 DP",
+   "bore": "SplineXL",
+   "material": "Steel",
+   "name": "84t Steel Spur Gear (20 DP, SplineXL Bore)",
+   "handle": "wcp-1107"
+  },
+  {
+   "sku": "WCP-1439",
+   "type": "gear",
+   "teeth": 84,
+   "pitch": "20 DP",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "84t Pocketed Steel Spur Gear with MotionX (20 DP, 1/2\" Hex Bore)",
+   "handle": "wcp-1439"
+  },
+  {
+   "sku": "WCP-0739",
+   "type": "gear",
+   "teeth": 12,
+   "pitch": "32 DP",
+   "bore": "RS775",
+   "material": "Steel",
+   "name": "12t Steel Spur Gear (32 DP, RS775 Bore)",
+   "handle": "wcp-0739"
+  },
+  {
+   "sku": "WCP-1464",
+   "type": "gear",
+   "teeth": 15,
+   "pitch": "32 DP",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "name": "15t Steel Spur Gear (32 DP, 8mm SplineXS Bore)",
+   "handle": "wcp-1464"
+  },
+  {
+   "sku": "WCP-0740",
+   "type": "gear",
+   "teeth": 20,
+   "pitch": "32 DP",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "name": "20t Steel Spur Gear (32 DP, 8mm Key Bore)",
+   "handle": "wcp-0740"
+  },
+  {
+   "sku": "WCP-0741",
+   "type": "gear",
+   "teeth": 20,
+   "pitch": "32 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "20t Steel Spur Gear (32 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0741"
+  },
+  {
+   "sku": "WCP-0746",
+   "type": "gear",
+   "teeth": 40,
+   "pitch": "32 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "40t Steel Spur Gear (32 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0746"
+  },
+  {
+   "sku": "WCP-0747",
+   "type": "gear",
+   "teeth": 60,
+   "pitch": "32 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "60t Steel Spur Gear (32 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0747"
+  },
+  {
+   "sku": "WCP-0748",
+   "type": "gear",
+   "teeth": 80,
+   "pitch": "32 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "80t Steel Spur Gear (32 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0748"
+  },
+  {
+   "sku": "WCP-0749",
+   "type": "gear",
+   "teeth": 100,
+   "pitch": "32 DP",
+   "bore": "3/8in Hex",
+   "material": "Steel",
+   "name": "100t Steel Spur Gear (32 DP, 3/8\" Hex Bore)",
+   "handle": "wcp-0749"
+  },
+  {
+   "sku": "WCP-0614",
+   "type": "pulley",
+   "teeth": 12,
+   "pitch": "GT2 3mm",
+   "bore": "RS550",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "12t x 9mm Wide Aluminum Pulley (GT2 3mm, RS550 Bore)",
+   "handle": "wcp-0614"
+  },
+  {
+   "sku": "WCP-0616",
+   "type": "pulley",
+   "teeth": 12,
+   "pitch": "GT2 3mm",
+   "bore": "RS775",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "12t x 9mm Wide Aluminum Pulley (GT2 3mm, RS775 Bore)",
+   "handle": "wcp-0616"
+  },
+  {
+   "sku": "WCP-0318",
+   "type": "pulley",
+   "teeth": 16,
+   "pitch": "GT2 3mm",
+   "bore": "Falcon",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "16t x 15mm Wide Aluminum Pulley (GT2 3mm, Falcon Bore)",
+   "handle": "wcp-0318"
+  },
+  {
+   "sku": "WCP-0393",
+   "type": "pulley",
+   "teeth": 16,
+   "pitch": "GT2 3mm",
+   "bore": "8mm Key",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "16t x 15mm Wide Aluminum Pulley (GT2 3mm, 8mm Key Bore)",
+   "handle": "wcp-0393"
+  },
+  {
+   "sku": "WCP-0603",
+   "type": "pulley",
+   "teeth": 16,
+   "pitch": "GT2 3mm",
+   "bore": "Falcon",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "16t x 9mm Wide Aluminum Pulley (GT2 3mm, Falcon Bore)",
+   "handle": "wcp-0603"
+  },
+  {
+   "sku": "WCP-1178",
+   "type": "pulley",
+   "teeth": 16,
+   "pitch": "GT2 3mm",
+   "bore": "8mm SplineXS",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "16t x 9mm Wide Aluminum Pulley (GT2 3mm, 8mm SplineXS Bore)",
+   "handle": "wcp-1178"
+  },
+  {
+   "sku": "WCP-1179",
+   "type": "pulley",
+   "teeth": 16,
+   "pitch": "GT2 3mm",
+   "bore": "8mm SplineXS",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "16t x 15mm Wide Aluminum Pulley (GT2 3mm, 8mm SplineXS Bore)",
+   "handle": "wcp-1179"
+  },
+  {
+   "sku": "WCP-0662",
+   "type": "pulley",
+   "teeth": 24,
+   "pitch": "GT2 3mm",
+   "bore": "1/2in Hex",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "24t x 9mm Wide Aluminum Pulley (GT2 3mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0662"
+  },
+  {
+   "sku": "WCP-0663",
+   "type": "pulley",
+   "teeth": 36,
+   "pitch": "GT2 3mm",
+   "bore": "1/2in Hex",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "36t x 9mm Wide Aluminum Pulley (GT2 3mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0663"
+  },
+  {
+   "sku": "WCP-0664",
+   "type": "pulley",
+   "teeth": 48,
+   "pitch": "GT2 3mm",
+   "bore": "1/2in Hex",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "48t x 9mm Wide Aluminum Pulley (GT2 3mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0664"
+  },
+  {
+   "sku": "WCP-0665",
+   "type": "pulley",
+   "teeth": 60,
+   "pitch": "GT2 3mm",
+   "bore": "1/2in Hex",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "60t x 9mm Wide Aluminum Pulley (GT2 3mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0665"
+  },
+  {
+   "sku": "WCP-0076",
+   "type": "pulley",
+   "teeth": 12,
+   "pitch": "HTD 5mm",
+   "bore": "8mm Key",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "12t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm Key Bore)",
+   "handle": "wcp-0076"
+  },
+  {
+   "sku": "WCP-0077",
+   "type": "pulley",
+   "teeth": 12,
+   "pitch": "HTD 5mm",
+   "bore": "8mm Key",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "12t x 15mm Wide Aluminum Pulley (HTD 5mm, 8mm Key Bore)",
+   "handle": "wcp-0077"
+  },
+  {
+   "sku": "WCP-0319",
+   "type": "pulley",
+   "teeth": 12,
+   "pitch": "HTD 5mm",
+   "bore": "Falcon",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "12t x 15mm Wide Aluminum Pulley (HTD 5mm, Falcon Bore)",
+   "handle": "wcp-0319"
+  },
+  {
+   "sku": "WCP-1017",
+   "type": "pulley",
+   "teeth": 12,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "12t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-1017"
+  },
+  {
+   "sku": "WCP-1018",
+   "type": "pulley",
+   "teeth": 12,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "12t x 15mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-1018"
+  },
+  {
+   "sku": "WCP-2576",
+   "type": "pulley",
+   "teeth": 12,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "12t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2576"
+  },
+  {
+   "sku": "WCP-2577",
+   "type": "pulley",
+   "teeth": 12,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "12t x 15mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2577"
+  },
+  {
+   "sku": "WCP-1801",
+   "type": "pulley",
+   "teeth": 14,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "14t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-1801"
+  },
+  {
+   "sku": "WCP-1803",
+   "type": "pulley",
+   "teeth": 14,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "14t x 15mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-1803"
+  },
+  {
+   "sku": "WCP-0562",
+   "type": "pulley",
+   "teeth": 15,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "15t x 15mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0562"
+  },
+  {
+   "sku": "WCP-1420",
+   "type": "pulley",
+   "teeth": 15,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "15t x 9mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-1420"
+  },
+  {
+   "sku": "WCP-2253",
+   "type": "pulley",
+   "teeth": 15,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "15t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2253"
+  },
+  {
+   "sku": "WCP-2258",
+   "type": "pulley",
+   "teeth": 15,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "15t x 15mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2258"
+  },
+  {
+   "sku": "WCP-1802",
+   "type": "pulley",
+   "teeth": 16,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "16t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-1802"
+  },
+  {
+   "sku": "WCP-1804",
+   "type": "pulley",
+   "teeth": 16,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "16t x 15mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-1804"
+  },
+  {
+   "sku": "WCP-0563",
+   "type": "pulley",
+   "teeth": 18,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "18t x 9mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0563"
+  },
+  {
+   "sku": "WCP-0991",
+   "type": "pulley",
+   "teeth": 18,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "18t x 15mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0991"
+  },
+  {
+   "sku": "WCP-1634",
+   "type": "pulley",
+   "teeth": 18,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "18t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-1634"
+  },
+  {
+   "sku": "WCP-1659",
+   "type": "pulley",
+   "teeth": 18,
+   "pitch": "HTD 5mm",
+   "bore": "8mm Key",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "18t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm Key Bore)",
+   "handle": "wcp-1659"
+  },
+  {
+   "sku": "WCP-1805",
+   "type": "pulley",
+   "teeth": 18,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "18t x 15mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-1805"
+  },
+  {
+   "sku": "WCP-1754",
+   "type": "pulley",
+   "teeth": 20,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "20t x 9mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-1754"
+  },
+  {
+   "sku": "WCP-1755",
+   "type": "pulley",
+   "teeth": 20,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "20t x 15mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-1755"
+  },
+  {
+   "sku": "WCP-2254",
+   "type": "pulley",
+   "teeth": 20,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "20t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2254"
+  },
+  {
+   "sku": "WCP-2259",
+   "type": "pulley",
+   "teeth": 20,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "20t x 15mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2259"
+  },
+  {
+   "sku": "WCP-0564",
+   "type": "pulley",
+   "teeth": 24,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "24t x 9mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0564"
+  },
+  {
+   "sku": "WCP-0992",
+   "type": "pulley",
+   "teeth": 24,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "24t x 15mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0992"
+  },
+  {
+   "sku": "WCP-1444",
+   "type": "pulley",
+   "teeth": 24,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "9mm",
+   "material": "Plastic",
+   "name": "24t x 9mm Wide Plastic Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-1444"
+  },
+  {
+   "sku": "WCP-1445",
+   "type": "pulley",
+   "teeth": 24,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "5/16in",
+   "material": "Plastic",
+   "name": "24t x 5/16\" Wide Plastic Pulley Slice (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-1445"
+  },
+  {
+   "sku": "WCP-2255",
+   "type": "pulley",
+   "teeth": 24,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "24t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2255"
+  },
+  {
+   "sku": "WCP-2260",
+   "type": "pulley",
+   "teeth": 24,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "24t x 15mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2260"
+  },
+  {
+   "sku": "WCP-0565",
+   "type": "pulley",
+   "teeth": 30,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "30t x 9mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0565"
+  },
+  {
+   "sku": "WCP-0993",
+   "type": "pulley",
+   "teeth": 30,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "30t x 15mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0993"
+  },
+  {
+   "sku": "WCP-2256",
+   "type": "pulley",
+   "teeth": 30,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "30t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2256"
+  },
+  {
+   "sku": "WCP-2261",
+   "type": "pulley",
+   "teeth": 30,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "30t x 15mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2261"
+  },
+  {
+   "sku": "WCP-0990",
+   "type": "pulley",
+   "teeth": 36,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "36t x 9mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0990"
+  },
+  {
+   "sku": "WCP-0994",
+   "type": "pulley",
+   "teeth": 36,
+   "pitch": "HTD 5mm",
+   "bore": "1/2in Hex",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "36t x 15mm Wide Aluminum Pulley (HTD 5mm, 1/2\" Hex Bore)",
+   "handle": "wcp-0994"
+  },
+  {
+   "sku": "WCP-2257",
+   "type": "pulley",
+   "teeth": 36,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "9mm",
+   "material": "Aluminum",
+   "name": "36t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2257"
+  },
+  {
+   "sku": "WCP-2262",
+   "type": "pulley",
+   "teeth": 36,
+   "pitch": "HTD 5mm",
+   "bore": "8mm SplineXS",
+   "width": "15mm",
+   "material": "Aluminum",
+   "name": "36t x 15mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)",
+   "handle": "wcp-2262"
+  },
+  {
+   "sku": "WCP-0394",
+   "type": "sprocket",
+   "teeth": 10,
+   "pitch": "#25",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "name": "10t Steel Hub Sprocket (#25 Chain, 8mm Key Bore)",
+   "handle": "wcp-0394"
+  },
+  {
+   "sku": "WCP-1019",
+   "type": "sprocket",
+   "teeth": 10,
+   "pitch": "#25",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "name": "10t Steel Double Hub Sprocket (#25 Chain, 8mm SplineXS Bore)",
+   "handle": "wcp-1019"
+  },
+  {
+   "sku": "WCP-1419",
+   "type": "sprocket",
+   "teeth": 10,
+   "pitch": "#25",
+   "bore": "8mm Key",
+   "material": "Steel",
+   "name": "10t Steel Double Hub Sprocket (#25 Chain, 8mm Key Bore)",
+   "handle": "wcp-1419"
+  },
+  {
+   "sku": "WCP-0576",
+   "type": "sprocket",
+   "teeth": 12,
+   "pitch": "#25",
+   "bore": "1/2in Rounded Hex",
+   "material": "Steel",
+   "name": "12t Steel Double Hub Sprocket (#25 Chain, 1/2\" Rounded Hex Bore)",
+   "handle": "wcp-0576"
+  },
+  {
+   "sku": "WCP-1020",
+   "type": "sprocket",
+   "teeth": 12,
+   "pitch": "#25",
+   "bore": "8mm SplineXS",
+   "material": "Steel",
+   "name": "12t Steel Double Hub Sprocket (#25 Chain, 8mm SplineXS Bore)",
+   "handle": "wcp-1020"
+  },
+  {
+   "sku": "WCP-0577",
+   "type": "sprocket",
+   "teeth": 14,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "14t Steel Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0577"
+  },
+  {
+   "sku": "217-2643",
+   "type": "sprocket",
+   "teeth": 16,
+   "pitch": "#25",
+   "bore": "1/2in Round",
+   "material": "Aluminum",
+   "name": "16t Aluminum Hub Sprocket (#25 Chain, 1/2\" ID)",
+   "handle": "217-2643"
+  },
+  {
+   "sku": "217-5833",
+   "type": "sprocket",
+   "teeth": 16,
+   "pitch": "#25",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "16t Aluminum Hub Sprocket (#25 Chain, 3/8\" Hex Bore)",
+   "handle": "217-5833"
+  },
+  {
+   "sku": "WCP-0087",
+   "type": "sprocket",
+   "teeth": 16,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "16t Aluminum Hub Double Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0087"
+  },
+  {
+   "sku": "WCP-0558",
+   "type": "sprocket",
+   "teeth": 16,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "16t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0558"
+  },
+  {
+   "sku": "WCP-0578",
+   "type": "sprocket",
+   "teeth": 16,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "16t Steel Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0578"
+  },
+  {
+   "sku": "WCP-0088",
+   "type": "sprocket",
+   "teeth": 17,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "17t Aluminum Hub Double Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0088"
+  },
+  {
+   "sku": "WCP-0579",
+   "type": "sprocket",
+   "teeth": 17,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "17t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0579"
+  },
+  {
+   "sku": "217-5834",
+   "type": "sprocket",
+   "teeth": 18,
+   "pitch": "#25",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "18t Aluminum Hub Sprocket (#25 Chain, 3/8\" Hex Bore)",
+   "handle": "217-5834"
+  },
+  {
+   "sku": "WCP-0089",
+   "type": "sprocket",
+   "teeth": 18,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "18t Aluminum Hub Double Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0089"
+  },
+  {
+   "sku": "WCP-0559",
+   "type": "sprocket",
+   "teeth": 18,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "18t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0559"
+  },
+  {
+   "sku": "WCP-0580",
+   "type": "sprocket",
+   "teeth": 20,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "20t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0580"
+  },
+  {
+   "sku": "217-5835",
+   "type": "sprocket",
+   "teeth": 22,
+   "pitch": "#25",
+   "bore": "3/8in Hex",
+   "material": "Aluminum",
+   "name": "22t Aluminum Hub Sprocket (#25 Chain, 3/8\" Hex Bore)",
+   "handle": "217-5835"
+  },
+  {
+   "sku": "WCP-0560",
+   "type": "sprocket",
+   "teeth": 22,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "22t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0560"
+  },
+  {
+   "sku": "WCP-0581",
+   "type": "sprocket",
+   "teeth": 24,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "24t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0581"
+  },
+  {
+   "sku": "WCP-0964",
+   "type": "sprocket",
+   "teeth": 24,
+   "pitch": "#25",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "24t Aluminum Plate Sprocket (#25 Chain, SplineXL Bore)",
+   "handle": "wcp-0964"
+  },
+  {
+   "sku": "WCP-2101",
+   "type": "sprocket",
+   "teeth": 26,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "26t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-2101"
+  },
+  {
+   "sku": "WCP-2102",
+   "type": "sprocket",
+   "teeth": 28,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "28t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-2102"
+  },
+  {
+   "sku": "WCP-0965",
+   "type": "sprocket",
+   "teeth": 30,
+   "pitch": "#25",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "30t Aluminum Plate Sprocket (#25 Chain, SplineXL Bore)",
+   "handle": "wcp-0965"
+  },
+  {
+   "sku": "WCP-2103",
+   "type": "sprocket",
+   "teeth": 30,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "30t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-2103"
+  },
+  {
+   "sku": "WCP-2104",
+   "type": "sprocket",
+   "teeth": 32,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "32t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-2104"
+  },
+  {
+   "sku": "WCP-2105",
+   "type": "sprocket",
+   "teeth": 34,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "34t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-2105"
+  },
+  {
+   "sku": "WCP-2106",
+   "type": "sprocket",
+   "teeth": 36,
+   "pitch": "#25",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "36t Aluminum Double Hub Sprocket (#25 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-2106"
+  },
+  {
+   "sku": "WCP-0969",
+   "type": "sprocket",
+   "teeth": 54,
+   "pitch": "#25",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "54t Aluminum Plate Sprocket (#25 Chain, SplineXL Bore)",
+   "handle": "wcp-0969"
+  },
+  {
+   "sku": "WCP-0971",
+   "type": "sprocket",
+   "teeth": 66,
+   "pitch": "#25",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "66t Aluminum Plate Sprocket (#25 Chain, SplineXL Bore)",
+   "handle": "wcp-0971"
+  },
+  {
+   "sku": "WCP-0972",
+   "type": "sprocket",
+   "teeth": 72,
+   "pitch": "#25",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "72t Aluminum Plate Sprocket (#25 Chain, SplineXL Bore)",
+   "handle": "wcp-0972"
+  },
+  {
+   "sku": "WCP-0976",
+   "type": "sprocket",
+   "teeth": 9,
+   "pitch": "#35",
+   "bore": "1/2in Rounded Hex",
+   "material": "Steel",
+   "name": "9t Steel Double Hub Sprocket (#35 Chain, 1/2\" Rounded Hex Bore)",
+   "handle": "wcp-0976"
+  },
+  {
+   "sku": "217-2659",
+   "type": "sprocket",
+   "teeth": 12,
+   "pitch": "#35",
+   "bore": "1/2in Round",
+   "material": "Aluminum",
+   "name": "12t Aluminum Hub Double Sprocket (#35 Chain, 1/2\" ID)",
+   "handle": "217-2659"
+  },
+  {
+   "sku": "217-2663",
+   "type": "sprocket",
+   "teeth": 12,
+   "pitch": "#35",
+   "bore": "1/2in Round",
+   "material": "Aluminum",
+   "name": "12t Aluminum Hub Sprocket (#35 Chain, 1/2\" ID)",
+   "handle": "217-2663"
+  },
+  {
+   "sku": "WCP-0756",
+   "type": "sprocket",
+   "teeth": 12,
+   "pitch": "#35",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "12t Aluminum Hub Sprocket (#35 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0756"
+  },
+  {
+   "sku": "WCP-0757",
+   "type": "sprocket",
+   "teeth": 12,
+   "pitch": "#35",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "12t Aluminum Hub Double Sprocket (#35 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0757"
+  },
+  {
+   "sku": "WCP-0759",
+   "type": "sprocket",
+   "teeth": 12,
+   "pitch": "#35",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "12t Steel Double Hub Sprocket (#35 Steel, 1/2\" Hex Bore)",
+   "handle": "wcp-0759"
+  },
+  {
+   "sku": "WCP-0973",
+   "type": "sprocket",
+   "teeth": 12,
+   "pitch": "#35",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "12t Aluminum Double Hub Sprocket (#35 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0973"
+  },
+  {
+   "sku": "WCP-0977",
+   "type": "sprocket",
+   "teeth": 12,
+   "pitch": "#35",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "12t Steel Double Hub Sprocket (#35 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0977"
+  },
+  {
+   "sku": "217-2657",
+   "type": "sprocket",
+   "teeth": 15,
+   "pitch": "#35",
+   "bore": "1/2in Round",
+   "material": "Aluminum",
+   "name": "15t Aluminum Hub Double Sprocket (#35 Chain, 1/2\" ID)",
+   "handle": "217-2657"
+  },
+  {
+   "sku": "217-2661",
+   "type": "sprocket",
+   "teeth": 15,
+   "pitch": "#35",
+   "bore": "1/2in Round",
+   "material": "Aluminum",
+   "name": "15t Aluminum Hub Sprocket (#35 Chain, 1/2\" ID)",
+   "handle": "217-2661"
+  },
+  {
+   "sku": "217-5850",
+   "type": "sprocket",
+   "teeth": 15,
+   "pitch": "#35",
+   "bore": "1/2in Round",
+   "material": "Steel",
+   "name": "15t Steel Double Hub Sprocket (#35 Steel, 1/2\" ID)",
+   "handle": "217-5850"
+  },
+  {
+   "sku": "WCP-0761",
+   "type": "sprocket",
+   "teeth": 15,
+   "pitch": "#35",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "15t Aluminum Hub Double Sprocket (#35 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0761"
+  },
+  {
+   "sku": "WCP-0763",
+   "type": "sprocket",
+   "teeth": 15,
+   "pitch": "#35",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "15t Steel Double Hub Sprocket (#35 Steel, 1/2\" Hex Bore)",
+   "handle": "wcp-0763"
+  },
+  {
+   "sku": "WCP-0974",
+   "type": "sprocket",
+   "teeth": 15,
+   "pitch": "#35",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "15t Aluminum Double Hub Sprocket (#35 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0974"
+  },
+  {
+   "sku": "WCP-0978",
+   "type": "sprocket",
+   "teeth": 15,
+   "pitch": "#35",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "15t Steel Double Hub Sprocket (#35 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0978"
+  },
+  {
+   "sku": "WCP-0975",
+   "type": "sprocket",
+   "teeth": 18,
+   "pitch": "#35",
+   "bore": "1/2in Hex",
+   "material": "Aluminum",
+   "name": "18t Aluminum Double Hub Sprocket (#35 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0975"
+  },
+  {
+   "sku": "WCP-0979",
+   "type": "sprocket",
+   "teeth": 18,
+   "pitch": "#35",
+   "bore": "1/2in Hex",
+   "material": "Steel",
+   "name": "18t Steel Double Hub Sprocket (#35 Chain, 1/2\" Hex Bore)",
+   "handle": "wcp-0979"
+  },
+  {
+   "sku": "WCP-0980",
+   "type": "sprocket",
+   "teeth": 18,
+   "pitch": "#35",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "18t Aluminum Plate Sprocket (#35 Chain, SplineXL Bore)",
+   "handle": "wcp-0980"
+  },
+  {
+   "sku": "WCP-0984",
+   "type": "sprocket",
+   "teeth": 42,
+   "pitch": "#35",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "42t Aluminum Plate Sprocket (#35 Chain, SplineXL Bore)",
+   "handle": "wcp-0984"
+  },
+  {
+   "sku": "WCP-0985",
+   "type": "sprocket",
+   "teeth": 48,
+   "pitch": "#35",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "48t Aluminum Plate Sprocket (#35 Chain, SplineXL Bore)",
+   "handle": "wcp-0985"
+  },
+  {
+   "sku": "WCP-0986",
+   "type": "sprocket",
+   "teeth": 54,
+   "pitch": "#35",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "54t Aluminum Plate Sprocket (#35 Chain, SplineXL Bore)",
+   "handle": "wcp-0986"
+  },
+  {
+   "sku": "WCP-0987",
+   "type": "sprocket",
+   "teeth": 60,
+   "pitch": "#35",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "60t Aluminum Plate Sprocket (#35 Chain, SplineXL Bore)",
+   "handle": "wcp-0987"
+  },
+  {
+   "sku": "WCP-0988",
+   "type": "sprocket",
+   "teeth": 66,
+   "pitch": "#35",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "66t Aluminum Plate Sprocket (#35 Chain, SplineXL Bore)",
+   "handle": "wcp-0988"
+  },
+  {
+   "sku": "WCP-0989",
+   "type": "sprocket",
+   "teeth": 72,
+   "pitch": "#35",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "72t Aluminum Plate Sprocket (#35 Chain, SplineXL Bore)",
+   "handle": "wcp-0989"
+  },
+  {
+   "sku": "WCP-1377",
+   "type": "sprocket",
+   "teeth": 84,
+   "pitch": "#35",
+   "bore": "SplineXL",
+   "material": "Aluminum",
+   "name": "84t Aluminum Plate Sprocket (#35 Chain, SplineXL Bore)",
+   "handle": "wcp-1377"
+  }
+ ]
+}
