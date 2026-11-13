@@ -2161,7 +2161,8 @@ time to come in  = travel ÷ (v_r − v_d)</div>
    Each stage is a gear pair, a belt (two pulleys), a chain (two sprockets) or, on the motor only, a PlanetaryX
    stack of 1–3 stages. Stage 1's driver sits on the motor (motor bore); every other gear, pulley or sprocket
    sits on a shaft (shaft bore). A planetary's output is a shaft, so the next stage starts on the shaft bore. */
-const RF_KINDS = { gear:'Gear', belt:'Belt', chain:'Chain', planetary:'PlanetaryX' };
+// What sets each stage's ratio: the tooth counts of its gears, its belt pulleys or its chain sprockets
+const RF_KINDS = { gear:'gears', belt:'pulleys', chain:'sprockets', planetary:'PlanetaryX' };
 // Every tooth count WCP sells for one type, pitch and bore (bore 'any' = all), inside a tooth range
 function rfTeeth(type, pitch, bore, lo, hi){
   return [...new Set(WCP_PARTS.filter(p => p.type === type && p.pitch === pitch && (bore === 'any' || p.bore === bore) && p.teeth >= lo && p.teeth <= hi).map(p => p.teeth))].sort((a, b) => a - b);
@@ -2179,8 +2180,9 @@ function rfStageOptions(v, k){
     out.push(...seen.values());
   };
   if (allow === 'any' || allow === 'gear') pair('gear', 'gear', v.gdp, v.gmin, v.gmax);
-  if (allow === 'any' || allow === 'belt') pair('belt', 'pulley', v.btype, v.pmin, v.pmax);
-  if (allow === 'any' || allow === 'chain') pair('chain', 'sprocket', v.ctype, v.cmin, v.cmax);
+  // 'both' searches each belt profile / chain size separately (a belt stage uses one profile on both pulleys)
+  if (allow === 'any' || allow === 'belt') (v.btype === 'both' ? ['HTD 5mm', 'GT2 3mm'] : [v.btype]).forEach(t => pair('belt', 'pulley', t, v.pmin, v.pmax));
+  if (allow === 'any' || allow === 'chain') (v.ctype === 'both' ? ['#25', '#35'] : [v.ctype]).forEach(t => pair('chain', 'sprocket', t, v.cmin, v.cmax));
   if (k === 1 && (allow === 'any' || allow === 'planetary')){
     const sets = WCP_PARTS.filter(p => p.type === 'planetary').map(p => p.ratio).sort((a, b) => a - b), seen = new Map();
     const add = stack => { const r = stack.reduce((x, y) => x*y, 1), key = String(r); if (!seen.has(key)) seen.set(key, { kind:'planetary', ratio:r, stack, label:stack.join('×') + ' PlanetaryX' }); };
@@ -2196,7 +2198,7 @@ function rfWindow(list, lo, hi){
   const out = []; for (let i = a; i < list.length && list[i].ratio <= hi; i++) out.push(list[i]);
   return out;
 }
-const rfKey = x => x.kind === 'planetary' ? 'p' + x.stack.join('') : x.kind[0] + String(x.a).padStart(3, '0') + '-' + String(x.b).padStart(3, '0');
+const rfKey = x => x.kind === 'planetary' ? 'p' + x.stack.join('') : x.kind[0] + x.pitch.replace(/\W/g, '') + '.' + String(x.a).padStart(3, '0') + '-' + String(x.b).padStart(3, '0');
 function rfSearch(v){
   const T = v.target, tol = v.tol/100, lo = T*(1 - tol), hi = T*(1 + tol), maxN = +v.stages;
   const L = [1, 2, 3].map(k => k <= maxN && (k === 1 || v['st' + k] !== 'none') ? rfStageOptions(v, k) : []);
@@ -2217,7 +2219,7 @@ function rfSearch(v){
 }
 const RFIND = {
   id:'rfind', group:'Power Transmission', title:'Ratio Finder',
-  lede:'Type the ratio you want; get 1–3 stage reductions built only from parts WCP sells in your bores: gears, belts, chain and PlanetaryX, in any mix you allow. Pick one for its parts, center distances and order list.',
+  lede:'Type the ratio you want; get 1–3 stage reductions built only from parts WCP sells in your bores: gears, belt pulleys, chain sprockets and PlanetaryX, in any mix you allow. Pick one for its parts, center distances and order list.',
   inputs:[
     {section:'Target'},
     {key:'target', label:'Target ratio', kind:'ratio', def:50},
@@ -2228,14 +2230,14 @@ const RFIND = {
     {key:'sbore', label:'Shaft bore (everything else)', type:'select', def:'1/2in Hex', options:boreOptions('gear', 'pulley', 'sprocket')},
     {section:'What each stage can be'},
     ...[1, 2, 3].map(k => ({key:'st'+k, label:`Stage ${k}`, type:'select', def:'any', showIf:v => +v.stages >= k,
-      options:[{value:'any', label:k === 1 ? 'Anything' : 'Gear, belt or chain'}, {value:'gear', label:'Gear'}, {value:'belt', label:'Belt'}, {value:'chain', label:'Chain'},
+      options:[{value:'any', label:k === 1 ? 'Anything' : 'Gears, pulleys or sprockets'}, {value:'gear', label:'Gears'}, {value:'belt', label:'Belt pulleys'}, {value:'chain', label:'Chain sprockets'},
         ...(k === 1 ? [{value:'planetary', label:'PlanetaryX'}] : [])]})),
     {section:'Parts and tooth ranges'},
     {key:'gdp', label:'Gear pitch', type:'select', def:'20 DP', options:[{value:'20 DP', label:'20 DP'}, {value:'32 DP', label:'32 DP'}]},
     {key:'gmin', label:'Gears, fewest teeth', kind:'teeth', def:10}, {key:'gmax', label:'Gears, most teeth', kind:'teeth', def:84},
-    {key:'btype', label:'Belt', type:'select', def:'HTD 5mm', options:[{value:'HTD 5mm', label:'HTD 5 mm'}, {value:'GT2 3mm', label:'GT2 3 mm'}]},
+    {key:'btype', label:'Belt pulleys', type:'select', def:'HTD 5mm', options:[{value:'HTD 5mm', label:'HTD 5 mm'}, {value:'GT2 3mm', label:'GT2 3 mm'}, {value:'both', label:'HTD and GT2'}]},
     {key:'pmin', label:'Pulleys, fewest teeth', kind:'teeth', def:12}, {key:'pmax', label:'Pulleys, most teeth', kind:'teeth', def:60},
-    {key:'ctype', label:'Chain', type:'select', def:'#25', options:[{value:'#25', label:'#25'}, {value:'#35', label:'#35'}]},
+    {key:'ctype', label:'Chain sprockets', type:'select', def:'both', options:[{value:'both', label:'#25 and #35'}, {value:'#25', label:'#25 only'}, {value:'#35', label:'#35 only'}]},
     {key:'cmin', label:'Sprockets, fewest teeth', kind:'teeth', def:10}, {key:'cmax', label:'Sprockets, most teeth', kind:'teeth', def:72},
     {key:'p_sol', type:'pick', def:''},
     ...[1, 2, 3].flatMap(k => [{key:`p_r${k}a`, type:'pick', def:''}, {key:`p_r${k}b`, type:'pick', def:''}]),
@@ -2245,6 +2247,8 @@ const RFIND = {
     if (!(v.target > 0)) return { bad:true, warnings:['The target ratio must be bigger than zero.'] };
     const s = rfSearch(v), sol = s.sols.find(x => x.key === v.p_sol) || s.sols[0] || null;
     if (!s.sols.length) warnings.push(`Nothing within ${fmtNum(v.tol,1)}% of ${fmtNum(v.target,2)} : 1 with these bores and stage types. Widen the tolerance, allow more stages or stage types, or try “Any” bore.`);
+    if ([v.st1, v.st2, v.st3].includes('chain') && v.sbore === '1/2in Hex')
+      warnings.push('WCP’s ½″ hex sprockets are small (#25 up to 36 teeth, #35 up to 18). Their bigger sprockets are SplineXL plate sprockets, so set the shaft bore to “Any” or SplineXL for big chain reductions.');
     if (s.capped) warnings.push('Lots of answers: showing the best of the first 20,000. Tighten the tolerance to see fewer.');
     // parts for the chosen answer
     const rows = [], extra = [];
@@ -2267,7 +2271,7 @@ const RFIND = {
   },
   renderOut(el, v, r){
     if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
-    const chip = x => `<span class="chip ${x.kind}">${x.kind === 'planetary' ? x.label : `${x.a}:${x.b} ${RF_KINDS[x.kind].toLowerCase()}`}</span>`;
+    const chip = x => `<span class="chip ${x.kind}">${x.kind === 'planetary' ? x.label : `${x.a}:${x.b} ${x.kind === 'gear' ? '' : x.pitch.replace('mm', ' mm') + ' '}${RF_KINDS[x.kind]}`}</span>`;
     const top = r.sols.slice(0, 40), sol = r.sol;
     const ansRow = s => `<tr class="${s === sol ? 'now' : ''}"><td class="mono" style="white-space:nowrap">${fmtNum(s.R,3)} : 1</td><td class="mono">${s.err >= 0 ? '+' : '−'}${fmtNum(Math.abs(s.err)*100,2)}%</td>
       <td>${s.st.map(chip).join(' → ')}</td><td><button class="btn" data-set='${JSON.stringify({ p_sol:s.key })}'>${s === sol ? 'Chosen' : 'Choose'}</button></td></tr>`;
@@ -2320,7 +2324,8 @@ const RFIND = {
   },
   docs(){ return `
     <div><h3>How it works</h3>
-      <div class="eq">stage ratio = driven teeth / driver teeth     (PlanetaryX: 3, 4 or 5 per stage, up to 3 stages)
+      <div class="eq">stage ratio = driven teeth / driver teeth     (gears, belt pulleys or chain sprockets; the belt or chain itself doesn't change it)
+              PlanetaryX: 3, 4 or 5 per stage, up to 3 stages
 total ratio = stage 1 × stage 2 × stage 3
 kept if     |total / target − 1| ≤ tolerance</div>
       <p>For each stage position the finder lists every tooth pair WCP sells in the bores that stage needs: the first driver on the <b>motor bore</b>, everything else on the <b>shaft bore</b>. It then searches 1 and 2 stage combinations, and 3 stages only when that gives fewer than 10 answers (for the last stage it looks up only the ratios that can still land inside your tolerance, so it stays fast). Every stage is a reduction, unless your target itself is below 1. Answers are sorted by fewest stages, then by how close they are, then by size. When two pairs give the same ratio it keeps the smaller one.</p>
@@ -2476,7 +2481,7 @@ const BELT = {
     {key:'round', label:'Round', type:'select', def:'nearest', showIf:v => v.mode === 'cc',
       options:[{value:'nearest', label:'Nearest'}, {value:'up', label:'Up (longer)'}, {value:'down', label:'Down (shorter)'}, {value:'wcp', label:'Nearest belt WCP sells'}],
       help:'“Nearest belt WCP sells” rounds to a belt length WCP actually stocks (belts only).'},
-    {key:'count', label:'Belt teeth / chain links', kind:'teeth', def:100, showIf:v => v.mode === 'count'},
+    {key:'count', label:'Belt length (teeth on the belt) or chain links', kind:'teeth', def:100, showIf:v => v.mode === 'count'},
     {key:'step', label:'Count step', kind:'teeth', def:1, help:'Chain: 2 keeps an even link count (no half link). Belts: use 5 if your supplier only stocks every 5 teeth.'},
     {key:'adder', label:'C-C adder', kind:'lenS', def:0, help:'Extra spacing added to the answer, if your team adds some for tension. 0 = exact.'},
     {section:'WCP parts'},
@@ -2538,7 +2543,7 @@ const BELT = {
     const delta = v.mode === 'cc' ? r.Cf - v.target : null;
     el.innerHTML = `
       <div class="tiles">
-        ${tile(g.chain ? 'Chain size' : 'Belt size', `${r.count} ${noun}`, 'primary')}
+        ${tile(g.chain ? 'Chain to order' : 'Belt to order', `${r.count} ${g.chain ? 'links' : 'teeth'}<div style="font-size:12px;font-weight:400;opacity:.75">${g.chain ? 'chain links' : 'teeth on the belt'}</div>`, 'primary')}
         ${tile('C-C distance', fmtK(r.Cf,'lenS'), 'primary')}
         ${delta !== null ? tile('Change from target', fmtSign(delta,'lenS') + ' ' + U('lenS')[0]) : ''}
         ${tile(g.chain ? 'Chain length' : 'Belt pitch length', fmtK(r.length,'lenS'))}
@@ -2548,9 +2553,9 @@ const BELT = {
       <div class="panels two">
         <figure class="panel"><figcaption>LAYOUT · pitch circles dashed, outside diameters solid</figcaption>${beltSVG(r)}</figure>
         <figure class="panel"><figcaption>NEARBY SIZES</figcaption>
-          <table class="dark"><tr><th>${g.chain ? 'Links' : 'Belt teeth'}</th><th>C-C</th>${v.mode === 'cc' ? '<th>vs target</th>' : ''}${r.sold.length ? '<th>WCP sells</th>' : ''}</tr>
+          <table class="dark"><tr><th>${g.chain ? 'Chain links' : 'Belt teeth (on the belt)'}</th><th>C-C</th>${v.mode === 'cc' ? '<th>vs target</th>' : ''}${r.sold.length ? '<th>WCP sells</th>' : ''}</tr>
           ${r.nearby.map(n => `<tr class="${n.now ? 'now' : ''}"><td>${n.n}${g.chain && n.n % 2 ? ' <span title="needs offset link">*</span>' : ''}</td>
-            <td class="mono">${fmtK(n.C,'lenS')}</td>${v.mode === 'cc' ? `<td class="mono">${fmtSign(n.C - v.target,'lenS')}</td>` : ''}${r.sold.length ? `<td>${n.sold ? '✓' : ''}</td>` : ''}</tr>`).join('')}
+            <td class="mono" style="white-space:nowrap">${fmtK(n.C,'lenS')}</td>${v.mode === 'cc' ? `<td class="mono" style="white-space:nowrap">${fmtSign(n.C - v.target,'lenS')}</td>` : ''}${r.sold.length ? `<td>${n.sold ? '✓' : ''}</td>` : ''}</tr>`).join('')}
           </table></figure>
       </div>
       <details class="adv card"><summary>Advanced details</summary>
@@ -3762,7 +3767,7 @@ const SWAP = {
       options:['c25','c35','gt2','htd5'].map(k => ({ value:k, label:DRIVES[k].label }))},
     {key:'cp1', label:'Pulley / sprocket 1', kind:'teeth', def:18, showIf:v => v.cur === 'belt'},
     {key:'cp2', label:'Pulley / sprocket 2', kind:'teeth', def:36, showIf:v => v.cur === 'belt'},
-    {key:'clinks', label:'Belt teeth / chain links', kind:'teeth', def:80, showIf:v => v.cur === 'belt'},
+    {key:'clinks', label:'Belt length (teeth on the belt) or chain links', kind:'teeth', def:80, showIf:v => v.cur === 'belt'},
     {key:'ccdev', label:'Max C-C deviation', kind:'lenS', def:0.254},
     {section:'New ratio'},
     {key:'ratio', label:'Target ratio', kind:'ratio', def:2},
@@ -3801,7 +3806,7 @@ const SWAP = {
       <div class="tiles">${tile('Center distance', fmtK(r.cc,'lenS'), 'primary')}${tile('Options found', String(r.out.length), 'primary')}</div>
       ${warnBox(r.warnings)}
       <figure class="panel"><figcaption>OPTIONS · closest C-C first${r.out.length > 80 ? ' (first 80)' : ''}</figcaption>
-        <table class="dark"><tr><th>Type</th><th>Driver</th><th>Driven</th><th>Ratio</th><th>C-C</th><th>Off by</th><th>Belt teeth / links</th></tr>
+        <table class="dark"><tr><th>Type</th><th>Driver</th><th>Driven</th><th>Ratio</th><th>C-C</th><th>Off by</th><th>Belt teeth (on the belt) / chain links</th></tr>
         ${rows.map(o => `<tr><td>${o.f.label}</td><td class="mono">${o.A}</td><td class="mono">${o.B}</td><td class="mono">${o.R.toFixed(2)} : 1</td>
           <td class="mono">${fmtK(o.c,'lenS')}</td><td class="mono">${fmtSign(o.c - r.cc,'lenS')}</td><td class="mono">${o.len ?? ''}${o.len && o.f.kind.startsWith('c') && o.len % 2 ? ' *' : ''}</td></tr>`).join('')}
         </table>
