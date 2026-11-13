@@ -169,8 +169,8 @@ ReCalc (reca.lc) is inspiration only: build our own versions, don't reuse its co
 - Reuse the Arm engine without gravity changing with angle. Add cascade and continuous rigging, a spool or sprocket drum, mounting angle, lowering as well as raising, and the same Step 3 software hand-off.
 
 ### 21. Motor data check
-- **Done (v20):** Kraken X60, X44 (both with FOC) and Minion, against CTRE's Motor Testing Lab (motors.ctr-electronics.com/dyno/dynometer-testing/). Speed, stall torque and stall current already matched; free currents now come from the dyno CSVs. Minion FOC renamed Minion (Adv Hall, Pro): the Talon FXS has no FOC.
-- **Done (v21):** rule: CTRE's dyno numbers wherever CTRE has tested the motor, otherwise the vendor's page. NEO 1.1 and Vortex moved to CTRE's dyno; NEO 550 and NEO 2.0 checked against REV's pages (REV publishes no NEO 2.0 free current, so it keeps 1.8 A). Every motor has a source (`MOTOR_SRC`), shown in Motor Curves' docs.
+- **Done (v20):** Kraken X60, X44 (both with FOC) and Minion, against CTRE's Motor Testing Lab (motors.ctr-electronics.com/dyno/dynometer-testing/). Speed, stall torque and stall current already matched; free currents now come from the dyno CSVs. Minion FOC renamed Minion (Adv Hall): the Talon FXS has no FOC.
+- **Done (v21):** rule: CTRE's dyno numbers wherever CTRE has tested the motor, otherwise the vendor's page. NEO 1.1 and Vortex moved to CTRE's dyno; NEO 550 and NEO 2.0 checked against REV's pages (NEO 2.0 from its user guide, which gives the free current). Every motor has a source (`MOTOR_SRC`), shown in Motor Curves' docs.
 - **Done (v21):** legacy motors and motors not legal in FRC (2026 Game Manual, R501) removed; Redline, CIM, Snowblower and NeveRest checked against AndyMark's pages (CIM and NeveRest updated). Old links naming a removed motor open it as Custom with the link's numbers. Every motor in the list now has a checked source.
 - When a new season's manual comes out, check R501 again; recheck CTRE's lab for new dates.
 - **Maybe:** weight, power density and kT in a motor spec table; FTC motors.

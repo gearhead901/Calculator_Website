@@ -25,7 +25,8 @@
                                  v19 Motor Curves: the classic chart (torque, current, power, efficiency vs speed), inputs reordered, Kraken X44 as motor 2;
                                  v20 Kraken and Minion data checked against CTRE's Motor Testing Lab: new free currents, Minion FOC renamed Minion (Adv Hall, Pro);
                                  v21 NEO 1.1 and Vortex use CTRE's dyno numbers too; every motor shows where its numbers come from (Motor Curves);
-                                 legacy and non-legal motors removed; CIM and NeveRest from AndyMark's pages)
+                                 legacy and non-legal motors removed; CIM and NeveRest from AndyMark's pages;
+                                 v22 Motor Curves summary: stall torque and stall current; speeds in rpm and rps; Minion (Adv Hall) label; NEO 2.0 sourced from REV's user guide, which gives its free current)
   ----------------------------------------------------------------
   One self-contained file: open it in any browser, no build step.
   Layout:   top bar (units / copy link / reset) + left menu + calculator page.
@@ -142,6 +143,8 @@
 
   /* ---------- docs ---------- */
   .docs{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .docs.one{grid-template-columns:1fr}      /* calculators with docsOneCol: sections stacked, not zig-zagging */
+  .docs.one p{max-width:88ch}
   .docs h3{margin:0 0 8px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
   .code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.6;white-space:pre;overflow-x:auto;padding:4px 2px;color:#e6eaf0}
   .docs .eq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:#f3f2ec;border-radius:8px;padding:10px 12px;line-height:1.8;white-space:pre-wrap}
@@ -1093,7 +1096,7 @@ function drawRegion(cv, v, r){
 const MOTOR_SRC = {
   ctre:   { label:'CTRE dyno', url:'https://motors.ctr-electronics.com/dyno/dynometer-testing/', checked:'2026-11-13' },
   neo550: { label:'REV', url:'https://www.revrobotics.com/rev-21-1651/', checked:'2026-11-13' },
-  neo2:   { label:'REV (free current not published; 1.8 A is the old NEO spec value)', url:'https://www.revrobotics.com/rev-21-1653/', checked:'2026-11-13' },
+  neo2:   { label:'REV user guide', url:'https://docs.revrobotics.com/brushless/neo/2.0', checked:'2026-11-13' },
   amRed:  { label:'AndyMark', url:'https://andymark.com/products/andymark-775-redline-motor', checked:'2026-11-13' },
   amCim:  { label:'AndyMark', url:'https://andymark.com/products/2-5-in-cim-motor', checked:'2026-11-13' },
   amSnow: { label:'AndyMark', url:'https://andymark.com/products/snow-blower-motor-with-1-2-in-hex-output', checked:'2026-11-13' },
@@ -1104,14 +1107,14 @@ const MOTOR_DB = Object.fromEntries([
   ['krakenx44','Kraken X44',7758,4.11,3.16,279.1,'ctre'],     ['krakenx44foc','Kraken X44 FOC',7368,5.01,3.23,329.2,'ctre'],
   ['neo','NEO 1.1',5907,4.2,1.78,216.3,'ctre'],               ['neo2','NEO 2.0',5676,3.75,1.8,150,'neo2'],
   ['vortex','NEO Vortex',6826,5.96,5.43,391.1,'ctre'],        ['neo550','NEO 550',11000,0.97,1.4,100,'neo550'],
-  ['minion','Minion',7704,3.17,2.21,211.6,'ctre'],            ['minionfoc','Minion (Adv Hall, Pro)',7644,3.2,2.38,207.2,'ctre'],
+  ['minion','Minion',7704,3.17,2.21,211.6,'ctre'],            ['minionfoc','Minion (Adv Hall)',7644,3.2,2.38,207.2,'ctre'],
   ['redline','Redline',21020,0.7,3.8,130,'amRed'],          ['cim','CIM',5310,2.425,2.7,133,'amCim'],
   ['snowblower','Snowblower Motor',100,7.91,5,24,'amSnow'],  ['neverest','NeveRest',6000,0.062,0.4,11.5,'amNev'],
 ].map(([k,label,rpm,ts,iF,iS,src]) => [k, { label, rpm, ts, if:iF, is:iS, src }]));
 // The motor list as a table with its sources (shown in Motor Curves' docs)
-const motorSourceTable = () => `<table><tr><th>Motor</th><th>Free speed (rpm)</th><th>Stall torque (N·m)</th><th>Free current (A)</th><th>Stall current (A)</th><th>Source</th></tr>
+const motorSourceTable = () => `<table><tr><th>Motor</th><th>Free speed (rpm)</th><th>Free speed (rps)</th><th>Stall torque (N·m)</th><th>Free current (A)</th><th>Stall current (A)</th><th>Source</th></tr>
   ${Object.values(MOTOR_DB).map(m => { const s = MOTOR_SRC[m.src];
-    return `<tr><td>${m.label}</td><td class="mono" style="white-space:nowrap">${m.rpm}</td><td class="mono">${m.ts}</td><td class="mono">${m.if}</td><td class="mono">${m.is}</td>
+    return `<tr><td>${m.label}</td><td class="mono" style="white-space:nowrap">${m.rpm}</td><td class="mono">${fmtNum(m.rpm/60,1)}</td><td class="mono">${m.ts}</td><td class="mono">${m.if}</td><td class="mono">${m.is}</td>
       <td><a href="${s.url}" target="_blank" rel="noopener">${s.label}</a></td></tr>`; }).join('')}</table>`;
 const MOTORS = MOTOR_DB;   // the Gear Ratio calculator only needs .rpm
 const motorOptions = (extra = []) => [...Object.entries(MOTOR_DB).map(([v,m]) => ({value:v, label:m.label})), ...extra];
@@ -3705,7 +3708,7 @@ function mcCurve(v, p){
     const rpm = wf*s/G * (1 - T/(Ts*n*G*s)), amps = If*n*s + (Is - If)*T/(Ts*G), watts = rpm*T*Math.PI/30;
     return { rpm, amps, watts, eff:watts/(v[p+'volt']*amps)*100 };
   };
-  return { label:MOTOR_DB[v[p+'motor']]?.label || 'Custom', maxT, at, freeRpm:wf*s/G };
+  return { label:MOTOR_DB[v[p+'motor']]?.label || 'Custom', maxT, at, freeRpm:wf*s/G, limited:Imax < Is*s };
 }
 // The classic motor-sheet chart: output speed along the bottom; torque, current, power and efficiency each on their
 // own axis (two on the left, two on the right), coloured like their line. Every axis is split into the same 5 steps,
@@ -3716,7 +3719,7 @@ function mcClassic(cv, curves){
   const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
   cv.width = W*dpr; cv.height = H*dpr;
   const g = cv.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0);
-  const N = 5, m = { l:96, r:96, t:24, b:38 };
+  const N = 5, m = { l:96, r:96, t:24, b:58 };
   g.fillStyle = COL.panel; g.fillRect(0,0,W,H);
   g.font = '11px -apple-system,Segoe UI,sans-serif'; g.lineWidth = 1;
   const step = top => { const raw = (top > 0 ? top : 1)/N, mag = 10**Math.floor(Math.log10(raw));
@@ -3737,10 +3740,16 @@ function mcClassic(cv, curves){
     axes.forEach(a => { g.fillStyle = a.col; g.textAlign = a.align; g.fillText(String(+(a.st*i).toPrecision(4)), a.x, py + 4); });
   }
   axes.forEach(a => { g.fillStyle = a.col; g.textAlign = a.align; g.fillText(a.unit, a.x, m.t - 10); });
+  // speed in rpm (grid lines) and, on a second row, in rotations per second (Phoenix 6's unit) with short tick marks
   niceTicks(0, xMax).forEach(t => { const px = X(t);
     g.strokeStyle = COL.grid; g.beginPath(); g.moveTo(px, m.t); g.lineTo(px, H - m.b); g.stroke();
     g.fillStyle = COL.text; g.textAlign = 'center'; g.fillText(String(t), px, H - m.b + 14); });
-  g.fillStyle = COL.text; g.textAlign = 'center'; g.fillText('output speed (rpm)', m.l + (W - m.l - m.r)/2, H - 6);
+  niceTicks(0, xMax/60).forEach(t => { const px = X(t*60);
+    g.strokeStyle = COL.white; g.beginPath(); g.moveTo(px, H - m.b + 19); g.lineTo(px, H - m.b + 23); g.stroke();
+    g.fillStyle = COL.white; g.textAlign = 'center'; g.fillText(String(t), px, H - m.b + 34); });
+  g.textAlign = 'right'; g.fillStyle = COL.text; g.fillText('rpm', m.l - 8, H - m.b + 14);
+  g.fillStyle = COL.white; g.fillText('rps', m.l - 8, H - m.b + 34);
+  g.fillStyle = COL.text; g.textAlign = 'center'; g.fillText('output speed', m.l + (W - m.l - m.r)/2, H - 6);
   sets.forEach((set, j) => axes.forEach(a => { g.strokeStyle = a.col; g.lineWidth = 2.5; g.setLineDash(curves.length > 1 ? MC_DASH[MC.indexOf(curves[j].p)] : []);
     g.beginPath(); set.forEach((q, i) => { const px = X(q[1].rpm), py = Y(a, get[a.k](q)); i ? g.lineTo(px, py) : g.moveTo(px, py); }); g.stroke(); }));
   g.setLineDash([]);
@@ -3748,7 +3757,7 @@ function mcClassic(cv, curves){
 // Legend entry showing a line style (solid / dashed / dotted) for one motor set
 const mcDashKey = (i, label) => `<span><b style="display:inline-block;width:26px;height:0;margin-right:6px;vertical-align:middle;border-top:2.5px ${['solid','dashed','dotted'][i]} ${COL.white}"></b>${label}</span>`;
 const MCURVE = {
-  id:'mcurve', group:'Power Transmission', title:'Motor Curves',
+  id:'mcurve', group:'Power Transmission', title:'Motor Curves', docsOneCol:true,
   lede:'The classic motor chart — torque, current, power and efficiency against speed — with up to three motor sets on the same axes, each with its own motor count, gearing, voltage and current limit.',
   inputs:[...mcInputs('a','krakenx60',0), ...mcInputs('b','krakenx44',1), ...mcInputs('c','none',2)],
   onChange(key, v){ return MC.some(p => fillMotor(key, v, p)); },
@@ -3768,9 +3777,9 @@ const MCURVE = {
     const leg = legend(r.curves.map(c => [`${MC.indexOf(c.p)+1}: ${v[c.p+'n']}× ${c.label} @ ${v[c.p+'ratio']}:1`, MC_COL[MC.indexOf(c.p)]]));
     el.innerHTML = `
       <figure class="panel" style="margin-bottom:12px"><figcaption>SUMMARY</figcaption>
-        <table class="dark"><tr><th>#</th><th>Motor</th><th>Free speed</th><th>Max torque</th><th>Peak power</th><th>Peak efficiency</th></tr>
+        <table class="dark"><tr><th>#</th><th>Motor</th><th>Free speed</th><th>Stall torque</th><th>Stall current</th><th>Peak power</th><th>Peak efficiency</th></tr>
         ${r.curves.map(c => `<tr><td><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${MC_COL[MC.indexOf(c.p)]}"></i> ${MC.indexOf(c.p)+1}</td><td>${v[c.p+'n']}× ${c.label}</td>
-          <td class="mono">${fmtNum(c.freeRpm,0)} rpm</td><td class="mono">${fmtK(c.maxT,'torque')}</td><td class="mono">${fmtNum(c.peakW,0)} W</td><td class="mono">${fmtNum(c.peakEff,1)} %</td></tr>`).join('')}
+          <td class="mono">${fmtNum(c.freeRpm,0)} rpm · ${fmtNum(c.freeRpm/60,1)} rps</td><td class="mono">${fmtK(c.maxT,'torque')}</td><td class="mono">${fmtNum(c.at(c.maxT).amps,0)} A${c.limited ? ' (limit)' : ''}</td><td class="mono">${fmtNum(c.peakW,0)} W</td><td class="mono">${fmtNum(c.peakEff,1)} %</td></tr>`).join('')}
         </table></figure>
       <figure class="panel" style="margin-bottom:12px"><figcaption>TORQUE, CURRENT, POWER, EFFICIENCY vs OUTPUT SPEED</figcaption><canvas id="mcClassicAll" style="height:420px"></canvas>
         ${axLeg}${r.curves.length > 1 ? `<div class="legend">${r.curves.map(c => mcDashKey(MC.indexOf(c.p), `${MC.indexOf(c.p)+1}: ${v[c.p+'n']}× ${c.label} @ ${v[c.p+'ratio']}:1`)).join('')}</div>` : ''}</figure>
@@ -3801,8 +3810,9 @@ const MCURVE = {
 current = n·I_f·V/12 + (I_s − I_f) · T / (T_s·G)
 power   = speed · T        efficiency = power / (V · current)
 max T   = T_s · (I_max − I_f·V/12)/(I_s − I_f) · n · G</div>
+      <p><b>rpm and rps.</b> Speeds here are shown both ways: rps (rotations per second) = rpm ÷ 60. CTRE's Phoenix 6 works in rotations per second (velocity readings, Motion Magic cruise velocity and the kV gain are all per rot/s), and top teams' code follows it — 254's 2024 shooter constants are all in rps (e.g. 120 rot/s, about 7200 rpm). Mechanical designers have long thought in rpm; this page is the place to get used to both.</p>
       <p>The first chart is the one on a motor's data sheet: as the load slows the motor, torque and current rise in straight lines, power is a hump that peaks at half the free speed, and efficiency peaks early, close to free speed. Torque is at the output shaft (after the gear ratio) and current is the total for all the motors in the set. Every motor set is drawn on the same axes: motor 1 solid, motor 2 dashed, motor 3 dotted.</p>
-      <p>Each curve stops at the most torque that motor set can make — at stall, or sooner if you set a current limit. Peak power is always at half the stall torque.</p></div>
+      <p>Each curve stops at the most torque that motor set can make — at stall, or sooner if you set a current limit. Peak power is always at half the stall torque. In the summary, stall torque and stall current are for the whole motor set at the output; with a current limit they are the torque and current where the limit stops the curve, marked “(limit)”.</p></div>
     <div><h3>Motor data and sources</h3>
       <p>All values at 12 V, checked against each source on 2026-11-13. The list holds only motors that are legal in FRC (2026 Game Manual, R501) and still sold; for anything else, pick Custom and type its numbers. Where CTRE's Motor Testing Lab has measured a motor we use its dyno numbers, so motors from different vendors are compared on the same test rig; otherwise the vendor's own product page. CTRE's published curves are straight lines from free speed to stall, and free current is read from the zero-torque end of its raw data. Vendor stall figures can be lower than CTRE's (the NEO Vortex is 3.6 N·m on REV's page, 5.96 N·m on CTRE's dyno).</p>
       ${motorSourceTable()}</div>
@@ -4899,7 +4909,7 @@ function renderPage(){
       <div class="card form" id="form"></div>
       <div id="out"></div>
     </div>
-    <section class="docs card">${calc.docs()}</section>
+    <section class="docs card${calc.docsOneCol ? ' one' : ''}">${calc.docs()}</section>
     <footer>Prototype v{{VERSION}} · every formula is shown so you can check it by hand · values are starting points, not shop data.</footer>`;
   renderSidebar(); renderForm(); update();
   document.querySelectorAll('#unitSeg button').forEach(b => b.classList.toggle('on', b.dataset.u === state.units));
