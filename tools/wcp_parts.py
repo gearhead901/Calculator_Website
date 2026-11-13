@@ -55,11 +55,27 @@ def width_of(title):
     m = re.search(r'x\s*([\d./]+)\s*("|mm)\s*Wide', title)
     return None if not m else m.group(1) + ('in' if m.group(2) == '"' else 'mm')
 
+def wheel_of(title):
+    """Intake / roller wheels, e.g. '4" OD x 1" Wide Straight Flex Wheel (1/2" Hex, 45A)'. od in inches."""
+    m = re.match(r'^(?:(\d+)T x )?([\d.]+)"\s*OD x ([\d./]+)"\s*(?:Wide|WD) (.*?)\s*Wheel \(([^,()]+)(?:,\s*(\d+)A)?\)\s*$', title)
+    if not m: return None
+    style = m.group(4).strip() or 'Flex'
+    if m.group(1): style = f'{style} {m.group(1)}T'   # WCP's own label (e.g. 6T star)
+    w = {'type': 'wheel', 'od': float(m.group(2)), 'width': m.group(3) + 'in', 'style': style,
+         'bore': m.group(5).replace(' Bore', '').replace('"', 'in').strip()}
+    if m.group(6): w['durometer'] = int(m.group(6))
+    return w
+
 def parse(products):
     parts, skipped = [], Counter()
     for p in products:
         t = p['title'].strip(); tl = t.lower()
         if 'bundle' in tl or re.search(r'\bkit\b', tl): skipped['bundle or kit'] += 1; continue
+        w = wheel_of(t)
+        if w:
+            for v in p['variants']:
+                if v.get('sku'): parts.append(dict(w, sku=v['sku'].strip(), name=t, handle=p['handle']))
+            continue
         m = re.match(r'^(\d+)t\b', t)
         if not m: continue
         part = {'teeth': int(m.group(1)), 'name': t, 'handle': p['handle'], 'bore': bore_of(t), 'width': width_of(t)}
@@ -90,7 +106,7 @@ def parse(products):
             q = dict(part, sku=v['sku'].strip())
             if v.get('title') and v['title'] != 'Default Title': q['option'] = v['title']
             parts.append({k: q[k] for k in ['sku', 'type', 'teeth', 'pitch', 'bore', 'width', 'material', 'cdTeeth', 'option', 'name', 'handle'] if q.get(k) is not None})
-    parts.sort(key=lambda x: (x['type'], x['pitch'], x['teeth'], x['sku']))
+    parts.sort(key=lambda x: (x['type'], x.get('pitch', ''), x.get('teeth', 0), x.get('od', 0), x['sku']))
     return parts, skipped
 
 def main():
@@ -102,7 +118,7 @@ def main():
     out = {'vendor': 'WCP', 'source': 'https://wcproducts.com/products.json', 'date': datetime.date.today().isoformat(),
            'products_read': len(products), 'parts': parts}
     json.dump(out, open(OUT, 'w', encoding='utf-8', newline='\n'), indent=1, ensure_ascii=False)
-    c = Counter((x['type'], x['pitch']) for x in parts)
+    c = Counter((x['type'], x.get('pitch', '')) for x in parts)
     print(f'{len(parts)} parts from {len(products)} products -> {os.path.relpath(OUT, ROOT)}')
     for k, n in sorted(c.items()): print(f'  {k[0]:9} {k[1]:8} {n}')
     print('  no bore:', [x['sku'] for x in parts if x['type'] != 'belt' and not x.get('bore')])

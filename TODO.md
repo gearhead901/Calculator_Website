@@ -138,8 +138,10 @@ ReCalc (reca.lc) is inspiration only: build our own versions, don't reuse its co
 - **Hand-off:** exit speed to Shot Trajectory, and Shot Trajectory's required speed back here, so shooter and mechanism are designed together.
 - **Settle:** shooter type (single wheel + hood, two wheels, wheel over roller), the ball-exit speed model (surface speed × a measured ratio) and how the ball's compression and slip are treated.
 
-### 17. Intake
-- **Want:** roller surface speed from drivetrain speed (the common "rollers at about 2× drive speed" rule, with the reason shown), presets from swerve module speeds, the ratio every motor needs, and WCP wheels and rollers that fit.
+### 17. Intake: first version done in v17
+- **Done:** drivetrain speed from swerve presets (SDS MK4i L1–L3) or typed in, roller target from the 2× rule, the ratio and pulling force for every motor, time to bring a piece in, and WCP flex wheels (added to the parts tool) with an order list.
+- **Still open:** more module presets (check each against the vendor), how the piece compresses and grips, and two-roller intakes.
+- **Original notes:** roller surface speed from drivetrain speed (the common "rollers at about 2× drive speed" rule, with the reason shown), presets from swerve module speeds, the ratio every motor needs, and WCP wheels and rollers that fit.
 
 ### 18. Ratio Finder (upgrade of Gearbox Options)
 - **Want:** 1–3 stages mixing gear, belt, chain and planetary, built from our WCP parts list, with bore filters per stage (e.g. motor pinion bore, then ½" hex), tooth ranges, allowed stage types per stage, and the order list from v15.
