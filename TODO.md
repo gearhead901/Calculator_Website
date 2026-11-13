@@ -169,7 +169,9 @@ ReCalc (reca.lc) is inspiration only: build our own versions, don't reuse its co
 - Reuse the Arm engine without gravity changing with angle. Add cascade and continuous rigging, a spool or sprocket drum, mounting angle, lowering as well as raising, and the same Step 3 software hand-off.
 
 ### 21. Motor data check
-- Our motor numbers (from ambcalc's list) differ from newer published ones in places, e.g. NEO Vortex stall torque. Recheck each motor against the vendor's current spec sheet and record the source.
+- **Done (v20):** Kraken X60, X44 (both with FOC) and Minion, against CTRE's Motor Testing Lab (motors.ctr-electronics.com/dyno/dynometer-testing/). Speed, stall torque and stall current already matched; free currents now come from the dyno CSVs. Minion FOC renamed Minion (Adv Hall, Pro): the Talon FXS has no FOC.
+- **Next:** REV (NEO 1.1, NEO 2.0, Vortex, NEO 550). CTRE's lab also measured NEO 1.1 and Vortex, and its numbers are far from REV's spec sheet (Vortex 5.96 N·m / 391 A vs our 3.6 N·m / 211 A), so decide which to trust. Then VEX (775pro, CIM) and AndyMark; mark the rest unverified or drop them.
+- Record the source in the motor table for each motor as it's checked.
 - **Maybe:** weight, power density and kT in a motor spec table; FTC motors.
 
 ## Windows laptop setup (do when back at the laptop)

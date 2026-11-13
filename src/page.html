@@ -22,7 +22,8 @@
                                  v16 adds the Flywheel calculator: the shot as a planetary gearbox, headroom, spin-up, recovery;
                                  v17 adds the Intake calculator, and WCP wheels to the parts list;
                                  v18 adds the Ratio Finder: 1–3 stages of WCP gears, belts, chain and PlanetaryX;
-                                 v19 Motor Curves: the classic chart (torque, current, power, efficiency vs speed), inputs reordered, Kraken X44 as motor 2)
+                                 v19 Motor Curves: the classic chart (torque, current, power, efficiency vs speed), inputs reordered, Kraken X44 as motor 2;
+                                 v20 Kraken and Minion data checked against CTRE's Motor Testing Lab: new free currents, Minion FOC renamed Minion (Adv Hall, Pro))
   ----------------------------------------------------------------
   One self-contained file: open it in any browser, no build step.
   Layout:   top bar (units / copy link / reset) + left menu + calculator page.
@@ -1071,16 +1072,20 @@ function drawRegion(cv, v, r){
 }
 
 /* ---------- 4c. Gear ratio ---------- */
-/* Shared motor list — the same spec-sheet numbers ambcalc.com uses (ref/motors.json, v1.3.1), at 12 V:
-   rpm = free speed, ts = stall torque (N·m), if = free current (A), is = stall current (A).
-   Discontinued VEXpro motors (BAG, Mini CIM) and the Falcon 500 are left out.
-   Check the vendor's current spec sheet before relying on them. */
+/* Shared motor list at 12 V: rpm = free speed, ts = stall torque (N·m), if = free current (A), is = stall current (A).
+   Kraken and Minion: CTRE Motor Testing Lab dyno data, motors.ctr-electronics.com/dyno/dynometer-testing/
+   (table for speed, stall torque and stall current; free current is the zero-torque row of each motor's raw CSV).
+   Checked 2026-11-13; CTRE's dates: X60 01/08/2024, X44 09/26/2025, Minion 9/12/2025.
+   The Minion runs on a Talon FXS, which has no FOC; "Adv Hall" is the Phoenix Pro Advanced Hall Support setting
+   (CommutationConfigs.AdvancedHallSupport, up to 2 points more peak efficiency). The key stays 'minionfoc' so old links work.
+   The rest: ambcalc.com's list (ref/motors.json, v1.3.1), not yet checked against the vendors (TODO #21).
+   Discontinued VEXpro motors (BAG, Mini CIM) and the Falcon 500 are left out. */
 const MOTOR_DB = Object.fromEntries([
-  ['krakenx60','Kraken X60',6065,7.16,2,374.4],      ['krakenx60foc','Kraken X60 FOC',5785,9.36,2,476.1],
-  ['krakenx44','Kraken X44',7758,4.11,1.4,279.1],    ['krakenx44foc','Kraken X44 FOC',7368,5.01,1.4,329.2],
+  ['krakenx60','Kraken X60',6065,7.16,2.83,374.4],   ['krakenx60foc','Kraken X60 FOC',5785,9.36,3.5,476.1],
+  ['krakenx44','Kraken X44',7758,4.11,3.16,279.1],   ['krakenx44foc','Kraken X44 FOC',7368,5.01,3.23,329.2],
   ['neo','NEO 1.1',5676,2.6,1.8,105],                ['neo2','NEO 2.0',5676,3.75,1.8,150],
   ['vortex','NEO Vortex',6784,3.6,3.615,211],        ['neo550','NEO 550',11000,0.97,1.4,100],
-  ['minion','Minion',7704,3.17,4,211.6],             ['minionfoc','Minion FOC',7644,3.2,4,207.2],
+  ['minion','Minion',7704,3.17,2.21,211.6],          ['minionfoc','Minion (Adv Hall, Pro)',7644,3.2,2.38,207.2],
   ['pulsar775','Pulsar 775',7500,3.1,2.6,188.7],     ['pro775','775pro',18730,0.71,0.7,134],
   ['redline','Redline',21020,0.7,3.8,130],           ['cim','CIM',5330,2.41,2.7,131],
   ['am775','AM 775',5800,0.28,1.6,18],               ['am9015','AM 9015',14270,0.36,3.7,71],
@@ -2651,8 +2656,10 @@ const G0 = 9.80665;   // gravity, m/s²
    sites and ambcalc's displayed numbers copied here. ambcalc rounds what it shows, so the tolerance is half its last digit. */
 const amb = (name, expected, got, unit, tol) => ({ name:'<b>ambcalc.com</b> · ' + name, expected, got, unit, tol });
 const LB = 4.448/G0, FT = 0.3048;      // ambcalc's "lbs" force → kg of weight; feet → m
+// ambcalc's Kraken X60 free current. Our list uses CTRE's dyno value (2.83 A), so checks against ambcalc's answers put this back.
+const AMB_X60_IF = 2;
 const AMB_CHECKS = {
-  mech:() => { const v = { ...defaultsFor(MECH), volt:10, load:20*LB }, a = mechAt(v, 9);
+  mech:() => { const v = { ...defaultsFor(MECH), if:AMB_X60_IF, volt:10, load:20*LB }, a = mechAt(v, 9);
     return [ amb('2× Kraken X60, 10 V, ¾ in, 20 lb, 80 %, 9:1 — free speed', 9.36, a.freeRpm/60, 'rev/s', 0.0051),
       amb('… loaded speed', 9.18, a.loadRpm/60, 'rev/s', 0.0051), amb('… loaded linear speed', 3.6, a.loadLin/FT, 'ft/s', 0.0051),
       amb('… current per motor', 7.79, a.I, 'A', 0.0051), amb('… stall load', 1013.99, a.stallMass/LB, 'lbf', 0.0051),
@@ -2661,7 +2668,7 @@ const AMB_CHECKS = {
   startup:() => { const v = { ...defaultsFor(STARTUP), mass:20*0.4535, load:20*LB };
     return [ amb('2× Kraken X60, 60 A, ¾ in, 20 lb, 4 ft — at 20:1', 2.03, startupSim(v, 20).time, 's', 0.0051),
       amb('… at 5:1', 0.54, startupSim(v, 5).time, 's', 0.0051), amb('… at 20:1, braking to a stop', 2.03, startupSim({ ...v, stop:'stopped' }, 20).time, 's', 0.0051) ]; },
-  drive:() => { const v = { ...defaultsFor(DRIVE), weight:154*0.453592 }, a = driveSim(v, 6.75);
+  drive:() => { const v = { ...defaultsFor(DRIVE), if:AMB_X60_IF, weight:154*0.453592 }, a = driveSim(v, 6.75);
     return [ amb('4× Kraken X60, 154 lb, 4 in, 6.75:1 — free speed', 15.68, a.freeSpeed/FT, 'ft/s', 0.0051),
       amb('… pushing current', 85.7, a.pushCurrent, 'A', 0.051), amb('… 20 ft sprint, predictive brake', 2.6, a.time, 's', 0.0051),
       amb('… no stop', 1.8, driveSim({ ...v, stopT:'none' }, 6.75).time, 's', 0.0051),
@@ -2688,7 +2695,7 @@ const AMB_CHECKS = {
       amb('… with drag + 10 rev/s backspin (ambcalc’s air density, 1.2754 kg/m³)', 10.478, b.out.hf/FT, 'ft', 0.03), amb('… distance where it falls to 8 ft (drag)', 18.224, h.out.dist/FT, 'ft', 0.05),
       amb('Launch for 12 ft, 8 ft, −40°: speed', 25.13, l.v0/FT, 'ft/s', 0.0051), amb('… angle', 61.47, l.th0*180/Math.PI, '°', 0.0051) ]; },
   mcurve:() => { const k = MOTOR_DB.krakenx60, n = MOTOR_DB.vortex;
-    const v = { afs:k.rpm, ats:k.ts, aif:k.if, ais:k.is, avolt:12, ailim:0, an:1, aratio:1, bfs:n.rpm, bts:n.ts, bif:n.if, bis:n.is, bvolt:10, bilim:0, bn:2, bratio:3 };
+    const v = { afs:k.rpm, ats:k.ts, aif:AMB_X60_IF, ais:k.is, avolt:12, ailim:0, an:1, aratio:1, bfs:n.rpm, bts:n.ts, bif:n.if, bis:n.is, bvolt:10, bilim:0, bn:2, bratio:3 };
     const A = mcCurve(v,'a').at(3.6), B = mcCurve(v,'b').at(10.8);
     return [ amb('Kraken X60 at 3.6 N·m — speed', 3015.559, A.rpm, 'rpm', 0.0011), amb('… current', 189.24, A.amps, 'A', 0.0011),
       amb('2× Vortex, 10 V, 3:1 at 10.8 N·m — current', 213.41, B.amps, 'A', 0.0011), amb('… power', 852.503, B.watts, 'W', 0.0011), amb('… efficiency', 39.947, B.eff, '%', 0.0011) ]; },
