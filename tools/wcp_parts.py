@@ -6,6 +6,7 @@ part's details from its product name, which WCP writes in a fixed pattern, e.g.
     30t x 9mm Wide Aluminum Pulley (HTD 5mm, 8mm SplineXS Bore)
     36t Aluminum Double Hub Sprocket (#25 Chain, 1/2" Hex Bore)
     44t x 15mm Wide Timing Belt (HTD 5mm)
+Also intake wheels (diameter, width, bore, durometer) and PlanetaryX stages (3:1, 4:1, 5:1 gear sets).
 Bundles, kits and bevel gears are left out. Chain is sold by length, so it isn't a "part" here.
 
 Run it again each season to refresh the list:
@@ -71,6 +72,11 @@ def parse(products):
     for p in products:
         t = p['title'].strip(); tl = t.lower()
         if 'bundle' in tl or re.search(r'\bkit\b', tl): skipped['bundle or kit'] += 1; continue
+        pl = re.match(r'^(\d+):1 PlanetaryX Gear Set$', t)    # one PlanetaryX stage
+        if pl:
+            for v in p['variants']:
+                if v.get('sku'): parts.append({'type': 'planetary', 'ratio': int(pl.group(1)), 'system': 'PlanetaryX', 'sku': v['sku'].strip(), 'name': t, 'handle': p['handle']})
+            continue
         w = wheel_of(t)
         if w:
             for v in p['variants']:
@@ -106,7 +112,7 @@ def parse(products):
             q = dict(part, sku=v['sku'].strip())
             if v.get('title') and v['title'] != 'Default Title': q['option'] = v['title']
             parts.append({k: q[k] for k in ['sku', 'type', 'teeth', 'pitch', 'bore', 'width', 'material', 'cdTeeth', 'option', 'name', 'handle'] if q.get(k) is not None})
-    parts.sort(key=lambda x: (x['type'], x.get('pitch', ''), x.get('teeth', 0), x.get('od', 0), x['sku']))
+    parts.sort(key=lambda x: (x['type'], x.get('pitch', ''), x.get('teeth', 0), x.get('od', 0), x.get('ratio', 0), x['sku']))
     return parts, skipped
 
 def main():
@@ -121,7 +127,7 @@ def main():
     c = Counter((x['type'], x.get('pitch', '')) for x in parts)
     print(f'{len(parts)} parts from {len(products)} products -> {os.path.relpath(OUT, ROOT)}')
     for k, n in sorted(c.items()): print(f'  {k[0]:9} {k[1]:8} {n}')
-    print('  no bore:', [x['sku'] for x in parts if x['type'] != 'belt' and not x.get('bore')])
+    print('  no bore:', [x['sku'] for x in parts if x['type'] not in ('belt', 'planetary') and not x.get('bore')])
     print('  skipped:', dict(skipped))
 
 if __name__ == '__main__':

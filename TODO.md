@@ -143,8 +143,10 @@ ReCalc (reca.lc) is inspiration only: build our own versions, don't reuse its co
 - **Still open:** more module presets (check each against the vendor), how the piece compresses and grips, and two-roller intakes.
 - **Original notes:** roller surface speed from drivetrain speed (the common "rollers at about 2× drive speed" rule, with the reason shown), presets from swerve module speeds, the ratio every motor needs, and WCP wheels and rollers that fit.
 
-### 18. Ratio Finder (upgrade of Gearbox Options)
-- **Want:** 1–3 stages mixing gear, belt, chain and planetary, built from our WCP parts list, with bore filters per stage (e.g. motor pinion bore, then ½" hex), tooth ranges, allowed stage types per stage, and the order list from v15.
+### 18. Ratio Finder: first version done in v18
+- **Done:** 1–3 stages of WCP gears, belts, chain and PlanetaryX (stage 1 only); motor and shaft bores; tooth ranges; allowed type per stage; a third stage only when 1–2 stages give fewer than 10 answers; reductions only (unless the target is below 1); chosen answer's parts, gear center distances, links to C-C and an order list. PlanetaryX gear sets were added to the parts tool.
+- **Still open:** retire or merge the older Gearbox Options; other planetaries (MAXPlanetary) and vendors; a size or weight score the team agrees on for ranking.
+- **Original notes:** 1–3 stages mixing gear, belt, chain and planetary, built from our WCP parts list, with bore filters per stage (e.g. motor pinion bore, then ½" hex), tooth ranges, allowed stage types per stage, and the order list from v15.
 
 ### 19. Power budget: battery sag with several systems at once
 - **Problem:** battery sag in one calculator assumes that system has the battery to itself. On a robot the drivetrain, shooter, intake and arm draw from it together, so the real voltage is lower than any single calculator shows.

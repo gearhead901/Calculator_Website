@@ -4288,6 +4288,30 @@
    "handle": "wcp-0749"
   },
   {
+   "type": "planetary",
+   "ratio": 3,
+   "system": "PlanetaryX",
+   "sku": "WCP-1473",
+   "name": "3:1 PlanetaryX Gear Set",
+   "handle": "wcp-1473"
+  },
+  {
+   "type": "planetary",
+   "ratio": 4,
+   "system": "PlanetaryX",
+   "sku": "WCP-1474",
+   "name": "4:1 PlanetaryX Gear Set",
+   "handle": "wcp-1474"
+  },
+  {
+   "type": "planetary",
+   "ratio": 5,
+   "system": "PlanetaryX",
+   "sku": "WCP-1475",
+   "name": "5:1 PlanetaryX Gear Set",
+   "handle": "wcp-1475"
+  },
+  {
    "sku": "WCP-0614",
    "type": "pulley",
    "teeth": 12,
