@@ -23,7 +23,9 @@
                                  v17 adds the Intake calculator, and WCP wheels to the parts list;
                                  v18 adds the Ratio Finder: 1–3 stages of WCP gears, belts, chain and PlanetaryX;
                                  v19 Motor Curves: the classic chart (torque, current, power, efficiency vs speed), inputs reordered, Kraken X44 as motor 2;
-                                 v20 Kraken and Minion data checked against CTRE's Motor Testing Lab: new free currents, Minion FOC renamed Minion (Adv Hall, Pro))
+                                 v20 Kraken and Minion data checked against CTRE's Motor Testing Lab: new free currents, Minion FOC renamed Minion (Adv Hall, Pro);
+                                 v21 NEO 1.1 and Vortex use CTRE's dyno numbers too; every motor shows where its numbers come from (Motor Curves);
+                                 legacy and non-legal motors removed; CIM and NeveRest from AndyMark's pages)
   ----------------------------------------------------------------
   One self-contained file: open it in any browser, no build step.
   Layout:   top bar (units / copy link / reset) + left menu + calculator page.
@@ -274,7 +276,13 @@ function readHash(){
     if (!i.key || !q.has(i.key)) return;
     const raw = q.get(i.key);
     if (i.type === 'check') vals[i.key] = raw === '1';
-    else if (i.type === 'select' || i.type === 'pick') vals[i.key] = raw;
+    // A dropdown value that's no longer offered (e.g. a motor since removed from the list): use Custom if there is one,
+    // so the numbers saved in the link are kept, otherwise keep the default.
+    else if (i.type === 'select'){
+      const opts = Array.isArray(i.options) ? i.options.map(o => String(o.value)) : null;
+      if (!opts || opts.includes(raw)) vals[i.key] = raw; else if (opts.includes('custom')) vals[i.key] = 'custom';
+    }
+    else if (i.type === 'pick') vals[i.key] = raw;
     else if (Number.isFinite(parseFloat(raw))) vals[i.key] = parseFloat(raw);
   });
 }
@@ -1072,29 +1080,39 @@ function drawRegion(cv, v, r){
 }
 
 /* ---------- 4c. Gear ratio ---------- */
-/* Shared motor list at 12 V: rpm = free speed, ts = stall torque (N·m), if = free current (A), is = stall current (A).
-   Kraken and Minion: CTRE Motor Testing Lab dyno data, motors.ctr-electronics.com/dyno/dynometer-testing/
-   (table for speed, stall torque and stall current; free current is the zero-torque row of each motor's raw CSV).
-   Checked 2026-11-13; CTRE's dates: X60 01/08/2024, X44 09/26/2025, Minion 9/12/2025.
-   The Minion runs on a Talon FXS, which has no FOC; "Adv Hall" is the Phoenix Pro Advanced Hall Support setting
-   (CommutationConfigs.AdvancedHallSupport, up to 2 points more peak efficiency). The key stays 'minionfoc' so old links work.
-   The rest: ambcalc.com's list (ref/motors.json, v1.3.1), not yet checked against the vendors (TODO #21).
-   Discontinued VEXpro motors (BAG, Mini CIM) and the Falcon 500 are left out. */
+/* Shared motor list at 12 V: rpm = free speed, ts = stall torque (N·m), if = free current (A), is = stall current (A),
+   src = where the numbers come from (MOTOR_SRC). Rule: CTRE's dyno data wherever CTRE has tested the motor (all on
+   one rig, so motors compare fairly), otherwise the vendor's own product page. Motor Curves shows this table with sources.
+   - ctre: CTRE Motor Testing Lab table (speed, stall torque, stall current); free current is the zero-torque row of each
+     motor's raw CSV. CTRE's dates: X60 01/08/2024, X44 09/26/2025, Minion 9/12/2025, NEO 1.1 and Vortex 01/08/2024.
+   - The Minion runs on a Talon FXS, which has no FOC; "Adv Hall" is the Phoenix Pro Advanced Hall Support setting
+     (CommutationConfigs.AdvancedHallSupport). The key stays 'minionfoc' so old links work.
+   - Only motors that are FRC-legal (2026 Game Manual, R501 Table 8-1) and still sold with a published spec. Legacy
+     motors (775pro, BAG, Mini CIM, Falcon 500, 9015, BaneBots, Pulsar 775, KOP window/seat motors...) are left out;
+     use Custom for those. */
+const MOTOR_SRC = {
+  ctre:   { label:'CTRE dyno', url:'https://motors.ctr-electronics.com/dyno/dynometer-testing/', checked:'2026-11-13' },
+  neo550: { label:'REV', url:'https://www.revrobotics.com/rev-21-1651/', checked:'2026-11-13' },
+  neo2:   { label:'REV (free current not published; 1.8 A is the old NEO spec value)', url:'https://www.revrobotics.com/rev-21-1653/', checked:'2026-11-13' },
+  amRed:  { label:'AndyMark', url:'https://andymark.com/products/andymark-775-redline-motor', checked:'2026-11-13' },
+  amCim:  { label:'AndyMark', url:'https://andymark.com/products/2-5-in-cim-motor', checked:'2026-11-13' },
+  amSnow: { label:'AndyMark', url:'https://andymark.com/products/snow-blower-motor-with-1-2-in-hex-output', checked:'2026-11-13' },
+  amNev:  { label:'AndyMark', url:'https://andymark.com/products/neverest-series-motor-only', checked:'2026-11-13' },
+};
 const MOTOR_DB = Object.fromEntries([
-  ['krakenx60','Kraken X60',6065,7.16,2.83,374.4],   ['krakenx60foc','Kraken X60 FOC',5785,9.36,3.5,476.1],
-  ['krakenx44','Kraken X44',7758,4.11,3.16,279.1],   ['krakenx44foc','Kraken X44 FOC',7368,5.01,3.23,329.2],
-  ['neo','NEO 1.1',5676,2.6,1.8,105],                ['neo2','NEO 2.0',5676,3.75,1.8,150],
-  ['vortex','NEO Vortex',6784,3.6,3.615,211],        ['neo550','NEO 550',11000,0.97,1.4,100],
-  ['minion','Minion',7704,3.17,2.21,211.6],          ['minionfoc','Minion (Adv Hall, Pro)',7644,3.2,2.38,207.2],
-  ['pulsar775','Pulsar 775',7500,3.1,2.6,188.7],     ['pro775','775pro',18730,0.71,0.7,134],
-  ['redline','Redline',21020,0.7,3.8,130],           ['cim','CIM',5330,2.41,2.7,131],
-  ['am775','AM 775',5800,0.28,1.6,18],               ['am9015','AM 9015',14270,0.36,3.7,71],
-  ['rs775','BB RS-775',13050,0.72,2.7,97],           ['rs550','BB RS-550',19000,0.38,0.4,84],
-  ['johnson','Johnson Motor',410,4.4,0,26],          ['snowblower','Snowblower Motor',100,7.91,5,24],
-  ['neverest','NeveRest',5480,0.173,0.4,9.8],        ['throttle','Throttle Motor',5300,0.13,1,7],
-  ['bosch','Bosch Motor',24,22,3,12],                ['dynamo','Dynamo',3084,0.32,0.28,6.5],
-  ['window','Window Motor',90,9.24,1.5,16.25],
-].map(([k,label,rpm,ts,iF,iS]) => [k, { label, rpm, ts, if:iF, is:iS }]));
+  ['krakenx60','Kraken X60',6065,7.16,2.83,374.4,'ctre'],     ['krakenx60foc','Kraken X60 FOC',5785,9.36,3.5,476.1,'ctre'],
+  ['krakenx44','Kraken X44',7758,4.11,3.16,279.1,'ctre'],     ['krakenx44foc','Kraken X44 FOC',7368,5.01,3.23,329.2,'ctre'],
+  ['neo','NEO 1.1',5907,4.2,1.78,216.3,'ctre'],               ['neo2','NEO 2.0',5676,3.75,1.8,150,'neo2'],
+  ['vortex','NEO Vortex',6826,5.96,5.43,391.1,'ctre'],        ['neo550','NEO 550',11000,0.97,1.4,100,'neo550'],
+  ['minion','Minion',7704,3.17,2.21,211.6,'ctre'],            ['minionfoc','Minion (Adv Hall, Pro)',7644,3.2,2.38,207.2,'ctre'],
+  ['redline','Redline',21020,0.7,3.8,130,'amRed'],          ['cim','CIM',5310,2.425,2.7,133,'amCim'],
+  ['snowblower','Snowblower Motor',100,7.91,5,24,'amSnow'],  ['neverest','NeveRest',6000,0.062,0.4,11.5,'amNev'],
+].map(([k,label,rpm,ts,iF,iS,src]) => [k, { label, rpm, ts, if:iF, is:iS, src }]));
+// The motor list as a table with its sources (shown in Motor Curves' docs)
+const motorSourceTable = () => `<table><tr><th>Motor</th><th>Free speed (rpm)</th><th>Stall torque (N·m)</th><th>Free current (A)</th><th>Stall current (A)</th><th>Source</th></tr>
+  ${Object.values(MOTOR_DB).map(m => { const s = MOTOR_SRC[m.src];
+    return `<tr><td>${m.label}</td><td class="mono" style="white-space:nowrap">${m.rpm}</td><td class="mono">${m.ts}</td><td class="mono">${m.if}</td><td class="mono">${m.is}</td>
+      <td><a href="${s.url}" target="_blank" rel="noopener">${s.label}</a></td></tr>`; }).join('')}</table>`;
 const MOTORS = MOTOR_DB;   // the Gear Ratio calculator only needs .rpm
 const motorOptions = (extra = []) => [...Object.entries(MOTOR_DB).map(([v,m]) => ({value:v, label:m.label})), ...extra];
 // The five inputs every motor-driven calculator shares: motor + its spec-sheet numbers (p = key prefix)
@@ -2658,6 +2676,8 @@ const amb = (name, expected, got, unit, tol) => ({ name:'<b>ambcalc.com</b> · '
 const LB = 4.448/G0, FT = 0.3048;      // ambcalc's "lbs" force → kg of weight; feet → m
 // ambcalc's Kraken X60 free current. Our list uses CTRE's dyno value (2.83 A), so checks against ambcalc's answers put this back.
 const AMB_X60_IF = 2;
+// ambcalc's NEO Vortex (REV's spec sheet); our list uses CTRE's dyno numbers.
+const AMB_VORTEX = { rpm:6784, ts:3.6, if:3.615, is:211 };
 const AMB_CHECKS = {
   mech:() => { const v = { ...defaultsFor(MECH), if:AMB_X60_IF, volt:10, load:20*LB }, a = mechAt(v, 9);
     return [ amb('2× Kraken X60, 10 V, ¾ in, 20 lb, 80 %, 9:1 — free speed', 9.36, a.freeRpm/60, 'rev/s', 0.0051),
@@ -2694,7 +2714,7 @@ const AMB_CHECKS = {
     return [ amb('2 ft, 30 ft/s, 50°: height at 12 ft (ambcalc g = 9.8)', 10.058, a.out.hf/FT, 'ft', 0.03),
       amb('… with drag + 10 rev/s backspin (ambcalc’s air density, 1.2754 kg/m³)', 10.478, b.out.hf/FT, 'ft', 0.03), amb('… distance where it falls to 8 ft (drag)', 18.224, h.out.dist/FT, 'ft', 0.05),
       amb('Launch for 12 ft, 8 ft, −40°: speed', 25.13, l.v0/FT, 'ft/s', 0.0051), amb('… angle', 61.47, l.th0*180/Math.PI, '°', 0.0051) ]; },
-  mcurve:() => { const k = MOTOR_DB.krakenx60, n = MOTOR_DB.vortex;
+  mcurve:() => { const k = MOTOR_DB.krakenx60, n = AMB_VORTEX;
     const v = { afs:k.rpm, ats:k.ts, aif:AMB_X60_IF, ais:k.is, avolt:12, ailim:0, an:1, aratio:1, bfs:n.rpm, bts:n.ts, bif:n.if, bis:n.is, bvolt:10, bilim:0, bn:2, bratio:3 };
     const A = mcCurve(v,'a').at(3.6), B = mcCurve(v,'b').at(10.8);
     return [ amb('Kraken X60 at 3.6 N·m — speed', 3015.559, A.rpm, 'rpm', 0.0011), amb('… current', 189.24, A.amps, 'A', 0.0011),
@@ -3783,6 +3803,9 @@ power   = speed · T        efficiency = power / (V · current)
 max T   = T_s · (I_max − I_f·V/12)/(I_s − I_f) · n · G</div>
       <p>The first chart is the one on a motor's data sheet: as the load slows the motor, torque and current rise in straight lines, power is a hump that peaks at half the free speed, and efficiency peaks early, close to free speed. Torque is at the output shaft (after the gear ratio) and current is the total for all the motors in the set. Every motor set is drawn on the same axes: motor 1 solid, motor 2 dashed, motor 3 dotted.</p>
       <p>Each curve stops at the most torque that motor set can make — at stall, or sooner if you set a current limit. Peak power is always at half the stall torque.</p></div>
+    <div><h3>Motor data and sources</h3>
+      <p>All values at 12 V, checked against each source on 2026-11-13. The list holds only motors that are legal in FRC (2026 Game Manual, R501) and still sold; for anything else, pick Custom and type its numbers. Where CTRE's Motor Testing Lab has measured a motor we use its dyno numbers, so motors from different vendors are compared on the same test rig; otherwise the vendor's own product page. CTRE's published curves are straight lines from free speed to stall, and free current is read from the zero-torque end of its raw data. Vendor stall figures can be lower than CTRE's (the NEO Vortex is 3.6 N·m on REV's page, 5.96 N·m on CTRE's dyno).</p>
+      ${motorSourceTable()}</div>
     <div><h3>Validation</h3>${validationTable(this)}</div>`; }
 };
 
