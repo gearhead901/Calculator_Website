@@ -21,7 +21,8 @@
                                  v15 adds WCP part numbers and an order list to Gear Ratio and Chain & Belt C-C (data/wcp_parts.json, made by tools/wcp_parts.py);
                                  v16 adds the Flywheel calculator: the shot as a planetary gearbox, headroom, spin-up, recovery;
                                  v17 adds the Intake calculator, and WCP wheels to the parts list;
-                                 v18 adds the Ratio Finder: 1–3 stages of WCP gears, belts, chain and PlanetaryX)
+                                 v18 adds the Ratio Finder: 1–3 stages of WCP gears, belts, chain and PlanetaryX;
+                                 v19 Motor Curves: the classic chart (torque, current, power, efficiency vs speed), inputs reordered, Kraken X44 as motor 2)
   ----------------------------------------------------------------
   One self-contained file: open it in any browser, no build step.
   Layout:   top bar (units / copy link / reset) + left menu + calculator page.
@@ -3660,10 +3661,10 @@ const mcInputs = (p, def, i) => {
     {key:p+'ts', label:'Stall torque', kind:'torque', def:m.ts, showIf:custom},
     {key:p+'if', label:'Free current', kind:'amp', def:m.if, showIf:custom},
     {key:p+'is', label:'Stall current', kind:'amp', def:m.is, showIf:custom},
+    {key:p+'n', label:'Qty of motors', kind:'count', def:1, showIf:used},
+    {key:p+'ratio', label:'Gear ratio', kind:'ratio', def:1, showIf:used},
     {key:p+'volt', label:'Voltage', kind:'volt', def:12, showIf:used},
     {key:p+'ilim', label:'Current limit / motor', kind:'amp', def:0, showIf:used, help:i ? undefined : '0 = no limit.'},
-    {key:p+'n', label:'How many', kind:'count', def:1, showIf:used},
-    {key:p+'ratio', label:'Gear ratio', kind:'ratio', def:1, showIf:used},
   ];
 };
 // One motor (set) as a function of OUTPUT torque T (N·m). Matches ambcalc.com/motor_curves.
@@ -3679,10 +3680,50 @@ function mcCurve(v, p){
   };
   return { label:MOTOR_DB[v[p+'motor']]?.label || 'Custom', maxT, at, freeRpm:wf*s/G };
 }
+// The classic motor-sheet chart: output speed along the bottom; torque, current, power and efficiency each on their
+// own axis (two on the left, two on the right), coloured like their line. Every axis is split into the same 5 steps,
+// so the grid lines work for all four. Given several motor sets, they share the axes: motor 1 solid, 2 dashed, 3 dotted.
+const MC_AXES = [['T','torque',COL.blue], ['amps','current (A)',COL.red], ['watts','power (W)',COL.orange], ['eff','efficiency (%)',COL.green]];
+const MC_DASH = [[], [8,5], [2,4]];
+function mcClassic(cv, curves){
+  const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+  cv.width = W*dpr; cv.height = H*dpr;
+  const g = cv.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0);
+  const N = 5, m = { l:96, r:96, t:24, b:38 };
+  g.fillStyle = COL.panel; g.fillRect(0,0,W,H);
+  g.font = '11px -apple-system,Segoe UI,sans-serif'; g.lineWidth = 1;
+  const step = top => { const raw = (top > 0 ? top : 1)/N, mag = 10**Math.floor(Math.log10(raw));
+    return [1,2,2.5,5,10].map(f => f*mag).find(st => st >= raw*(1 - 1e-9)); };
+  const fT = U('torque')[1], sets = curves.map(c => c.pts.filter(q => Number.isFinite(q[1].rpm))), pts = sets.flat();
+  const xMax = Math.max(...curves.map(c => c.freeRpm));
+  const get = { T:q => q[0]/fT, amps:q => q[1].amps, watts:q => q[1].watts, eff:q => q[1].eff };
+  const axes = MC_AXES.map(([k, name, col], i) => {
+    const st = k === 'eff' ? 20 : step(Math.max(...pts.map(get[k]).filter(Number.isFinite)));
+    return { k, col, st, top:st*N, unit:k === 'T' ? U('torque')[0] : name.match(/\((.*)\)/)[1],
+             x:[m.l - 8, m.l - 52, W - m.r + 8, W - m.r + 52][i], align:i < 2 ? 'right' : 'left' };
+  });
+  const X = rpm => m.l + rpm/xMax*(W - m.l - m.r);
+  const Y = (a, val) => H - m.b - val/a.top*(H - m.t - m.b);
+  for (let i = 0; i <= N; i++){
+    const py = Y(axes[0], axes[0].st*i);
+    g.strokeStyle = COL.grid; g.beginPath(); g.moveTo(m.l, py); g.lineTo(W - m.r, py); g.stroke();
+    axes.forEach(a => { g.fillStyle = a.col; g.textAlign = a.align; g.fillText(String(+(a.st*i).toPrecision(4)), a.x, py + 4); });
+  }
+  axes.forEach(a => { g.fillStyle = a.col; g.textAlign = a.align; g.fillText(a.unit, a.x, m.t - 10); });
+  niceTicks(0, xMax).forEach(t => { const px = X(t);
+    g.strokeStyle = COL.grid; g.beginPath(); g.moveTo(px, m.t); g.lineTo(px, H - m.b); g.stroke();
+    g.fillStyle = COL.text; g.textAlign = 'center'; g.fillText(String(t), px, H - m.b + 14); });
+  g.fillStyle = COL.text; g.textAlign = 'center'; g.fillText('output speed (rpm)', m.l + (W - m.l - m.r)/2, H - 6);
+  sets.forEach((set, j) => axes.forEach(a => { g.strokeStyle = a.col; g.lineWidth = 2.5; g.setLineDash(curves.length > 1 ? MC_DASH[MC.indexOf(curves[j].p)] : []);
+    g.beginPath(); set.forEach((q, i) => { const px = X(q[1].rpm), py = Y(a, get[a.k](q)); i ? g.lineTo(px, py) : g.moveTo(px, py); }); g.stroke(); }));
+  g.setLineDash([]);
+}
+// Legend entry showing a line style (solid / dashed / dotted) for one motor set
+const mcDashKey = (i, label) => `<span><b style="display:inline-block;width:26px;height:0;margin-right:6px;vertical-align:middle;border-top:2.5px ${['solid','dashed','dotted'][i]} ${COL.white}"></b>${label}</span>`;
 const MCURVE = {
   id:'mcurve', group:'Power Transmission', title:'Motor Curves',
-  lede:'Speed, current, power and efficiency against output torque for up to three motors — with voltage, current limits, motor count and gearing — on the same axes.',
-  inputs:[...mcInputs('a','krakenx60',0), ...mcInputs('b','vortex',1), ...mcInputs('c','none',2)],
+  lede:'The classic motor chart — torque, current, power and efficiency against speed — with up to three motor sets on the same axes, each with its own motor count, gearing, voltage and current limit.',
+  inputs:[...mcInputs('a','krakenx60',0), ...mcInputs('b','krakenx44',1), ...mcInputs('c','none',2)],
   onChange(key, v){ return MC.some(p => fillMotor(key, v, p)); },
   compute(v){
     const used = MC.filter((p,i) => i === 0 || v[p+'motor'] !== 'none');
@@ -3696,6 +3737,7 @@ const MCURVE = {
   },
   renderOut(el, v, r){
     if (r.bad){ el.innerHTML = warnBox(r.warnings); return; }
+    const axLeg = legend(MC_AXES.map(([k, name, col]) => [k === 'T' ? `torque (${U('torque')[0]})` : name, col]));
     const leg = legend(r.curves.map(c => [`${MC.indexOf(c.p)+1}: ${v[c.p+'n']}× ${c.label} @ ${v[c.p+'ratio']}:1`, MC_COL[MC.indexOf(c.p)]]));
     el.innerHTML = `
       <figure class="panel" style="margin-bottom:12px"><figcaption>SUMMARY</figcaption>
@@ -3703,10 +3745,13 @@ const MCURVE = {
         ${r.curves.map(c => `<tr><td><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${MC_COL[MC.indexOf(c.p)]}"></i> ${MC.indexOf(c.p)+1}</td><td>${v[c.p+'n']}× ${c.label}</td>
           <td class="mono">${fmtNum(c.freeRpm,0)} rpm</td><td class="mono">${fmtK(c.maxT,'torque')}</td><td class="mono">${fmtNum(c.peakW,0)} W</td><td class="mono">${fmtNum(c.peakEff,1)} %</td></tr>`).join('')}
         </table></figure>
+      <figure class="panel" style="margin-bottom:12px"><figcaption>TORQUE, CURRENT, POWER, EFFICIENCY vs OUTPUT SPEED</figcaption><canvas id="mcClassicAll" style="height:420px"></canvas>
+        ${axLeg}${r.curves.length > 1 ? `<div class="legend">${r.curves.map(c => mcDashKey(MC.indexOf(c.p), `${MC.indexOf(c.p)+1}: ${v[c.p+'n']}× ${c.label} @ ${v[c.p+'ratio']}:1`)).join('')}</div>` : ''}</figure>
       <div class="panels two">
         ${[['mcSpeed','SPEED (rpm)'],['mcAmps','TOTAL CURRENT (A)'],['mcPower','POWER (W)'],['mcEff','EFFICIENCY (%)']].map(([id,cap]) =>
           `<figure class="panel"><figcaption>${cap} vs OUTPUT TORQUE</figcaption><canvas id="${id}"></canvas>${leg}</figure>`).join('')}
       </div>`;
+    const all = document.getElementById('mcClassicAll'); if (all) mcClassic(all, r.curves);
     [['mcSpeed','rpm'],['mcAmps','amps'],['mcPower','watts'],['mcEff','eff']].forEach(([id, k]) => {
       const cv = document.getElementById(id); if (!cv) return;
       const yr = range(r.curves.flatMap(c => c.pts.map(q => q[1][k])));
@@ -3729,6 +3774,7 @@ const MCURVE = {
 current = n·I_f·V/12 + (I_s − I_f) · T / (T_s·G)
 power   = speed · T        efficiency = power / (V · current)
 max T   = T_s · (I_max − I_f·V/12)/(I_s − I_f) · n · G</div>
+      <p>The first chart is the one on a motor's data sheet: as the load slows the motor, torque and current rise in straight lines, power is a hump that peaks at half the free speed, and efficiency peaks early, close to free speed. Torque is at the output shaft (after the gear ratio) and current is the total for all the motors in the set. Every motor set is drawn on the same axes: motor 1 solid, motor 2 dashed, motor 3 dotted.</p>
       <p>Each curve stops at the most torque that motor set can make — at stall, or sooner if you set a current limit. Peak power is always at half the stall torque.</p></div>
     <div><h3>Validation</h3>${validationTable(this)}</div>`; }
 };
