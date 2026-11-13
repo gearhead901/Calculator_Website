@@ -127,5 +127,46 @@ Ideas and open work, roughly in priority order. Nothing here is being worked on 
 - Rank them by deflection, weight and stiffness-to-weight.
 - Add **rounded hex** (the generic name; don't use the VEX trade name) as a section shape here and in Column Buckling. Its dimensions need looking up.
 
+## New calculators and features (from comparing with ReCalc)
+ReCalc (reca.lc) is inspiration only: build our own versions, don't reuse its code or data. Order agreed: 16, 17 and 18 now; 20 after we're happy with Arm; 19 is a design to settle first.
+
+### 16. Flywheel: first version done in v16
+- **Done:** planetary model (wheel = sun, hood or second wheel = ring, ball = planet), exit speed ratio for measured slip, set point, headroom, spin-up, recovery, speed lost per shot, ball spin and energy, links both ways with Shot Trajectory.
+- **Still open:** the hood’s geometry setting the launch angle (exit along the tangent where the hood ends); a separate inertia and motor for a second wheel; supply current for the power budget (#19).
+- **Original notes:**
+- **Want:** spin-up time from rest, recovery time between shots, speed lost per shot, ball exit speed and spin, energy given to the ball, plus the flywheel's inertia (from wheels, extra flywheel mass, rollers and shafts, like Arm's per-stage inertia).
+- **Hand-off:** exit speed to Shot Trajectory, and Shot Trajectory's required speed back here, so shooter and mechanism are designed together.
+- **Settle:** shooter type (single wheel + hood, two wheels, wheel over roller), the ball-exit speed model (surface speed × a measured ratio) and how the ball's compression and slip are treated.
+
+### 17. Intake
+- **Want:** roller surface speed from drivetrain speed (the common "rollers at about 2× drive speed" rule, with the reason shown), presets from swerve module speeds, the ratio every motor needs, and WCP wheels and rollers that fit.
+
+### 18. Ratio Finder (upgrade of Gearbox Options)
+- **Want:** 1–3 stages mixing gear, belt, chain and planetary, built from our WCP parts list, with bore filters per stage (e.g. motor pinion bore, then ½" hex), tooth ranges, allowed stage types per stage, and the order list from v15.
+
+### 19. Power budget: battery sag with several systems at once
+- **Problem:** battery sag in one calculator assumes that system has the battery to itself. On a robot the drivetrain, shooter, intake and arm draw from it together, so the real voltage is lower than any single calculator shows.
+- **Idea, a power budget sheet:** each calculator gets "Add to power budget". It sends that system's **supply current** (peak, how long it lasts, and the full current-vs-time curve when there is one), motor count and current limits. The power budget page lists the systems and lets you build **scenarios** (e.g. "sprint + spin up shooter", "climb", "intake while driving") with a start time for each. It adds the supply currents and works out:
+  - battery voltage over time: V = V_rest − R·ΣI (R = battery + wiring, like Drivetrain). Solve it together with the motors, because lower voltage changes their current;
+  - the lowest voltage against the brownout threshold;
+  - the main breaker and each branch breaker against their trip curves (they carry overloads for a while, so time matters, not just the peak);
+  - energy used per match (Ah) and an estimate of the battery's state.
+- **Stator vs supply current:** must be explained on the page. A motor stalled or turning slowly draws a high stator (motor) current but a low supply (battery) current, roughly I_supply ≈ I_stator × (applied voltage / battery voltage). Only supply current sags the battery.
+- **Mitigations to suggest (from CTRE's guidance; check every number against the current Phoenix 6 docs before using it):**
+  - a supply current limit per mechanism, and a lower supply limit after a set time;
+  - stator limits for torque, heat and wheel slip;
+  - staggering starts (don't spin up the shooter during a sprint);
+  - giving the drivetrain priority;
+  - voltage-compensated control so mechanisms behave the same as the battery sags.
+- **Settle:** worst case "all peaks at once" vs time-aligned scenarios (offer both); where the data lives (in the link and in the browser); which calculators send data first (Drivetrain, Arm, Mechanism Startup, then Flywheel, Intake and Elevator); and whether the budget's voltage is sent back to each calculator to re-run its simulation.
+- **Replaces** the earlier idea of adding a supply limit and battery sag separately in every calculator.
+
+### 20. Elevator / linear mechanism (after Arm is settled)
+- Reuse the Arm engine without gravity changing with angle. Add cascade and continuous rigging, a spool or sprocket drum, mounting angle, lowering as well as raising, and the same Step 3 software hand-off.
+
+### 21. Motor data check
+- Our motor numbers (from ambcalc's list) differ from newer published ones in places, e.g. NEO Vortex stall torque. Recheck each motor against the vendor's current spec sheet and record the source.
+- **Maybe:** weight, power density and kT in a motor spec table; FTC motors.
+
 ## Other open items
 - **Friend as collaborator:** add the software-engineer friend to the GitHub repo for code review (see CLAUDE.md).
