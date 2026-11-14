@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch *)",
+      "Bash(git fetch)",
+      "Bash(node tests/run_all.mjs)",
+      "Bash(node tests/run_all.mjs *)",
+      "Bash(python build/build.py * --check)",
+      "Bash(python tests/run_bolted_joint_tests.py)",
+      "mcp__Claude_Browser__get_page_text",
+      "mcp__Claude_Browser__find",
+      "mcp__Claude_Browser__read_page",
+      "mcp__Claude_Browser__tabs_context",
+      "mcp__fe798e17-8a33-433a-b1f3-b836365cd0d4__get_values",
+      "mcp__fe798e17-8a33-433a-b1f3-b836365cd0d4__get_spreadsheet"
+    ]
+  }
+}

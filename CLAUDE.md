@@ -6,6 +6,8 @@ Prototype calculator website. The prototypes are single, self-contained HTML fil
 
 From v19 on, versions are assembled from `src/` by `python build/build.py NN` (writes `prototype/calc_prototype_vNN.html`; `--check` compares a rebuild with an existing file). `src/page.html` is the page; calculators that have moved to their own folder (so far only **Arm**, in `src/arm/`) are pulled in where `/*@include arm@*/` appears, and `{{VERSION}}` becomes the version number. To change Arm, edit `src/arm/*.js`; to change anything else, edit `src/page.html`. Add a line to the version history comment at the top of `src/page.html` for each new version. Never edit the generated files in `prototype/` by hand. The Style Lab (`design/style_lab.html`) is separate and still built by `build/make_lab.py`.
 
+**Before each commit, run `node tests/run_all.mjs`.** It needs only Node.js, no browser. It tests `src/` (built in memory): every calculator's Validation table, plus the bolted joint and thread stripping cases in `tests/`. It exits with 1 if anything fails, and it notes when the newest `prototype/` file is behind `src/`. Pass a file path to test one page instead, and `--verbose` to list every check. `tests/run_bolted_joint_tests.py` still runs the bolt cases alone, including on a Mac without Node.
+
 Versions up to v18 were made by patch scripts (`build/make_vNN.py`), kept as a record. See `build/README.md`.
 
 Files use LF line endings on every computer (`.gitattributes`). On Windows, write scripts as files rather than inline shell commands, because Git Bash can mangle backslashes and non-ASCII characters.

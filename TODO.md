@@ -176,11 +176,8 @@ ReCalc (reca.lc) is inspiration only: build our own versions, don't reuse its co
 - **Maybe:** weight, power density and kT in a motor spec table; FTC motors.
 
 ## Windows laptop setup (do when back at the laptop)
-1. **Make Python use UTF-8:** open PowerShell and run `setx PYTHONUTF8 1`, then close and reopen terminals and Claude. Stops scripts garbling "½", "×" and "’".
-2. **Install Node.js (LTS)** from nodejs.org, default options. Check it worked: `node --version` in a new terminal.
-3. **Ask Claude for the Node test runner:** one command that runs every calculator's Validation table (and the bolted joint tests in `tests/`) before each commit.
-4. **Optional, fewer approval prompts:** run `/fewer-permission-prompts` in a Claude terminal to allow the read-only commands Claude uses all the time.
-5. **Mac:** `git pull` before working there. The new `.gitattributes` keeps line endings the same on both computers.
+Done: Python set to UTF-8, Node.js installed, test runner `node tests/run_all.mjs`, read-only commands allowed in `.claude/settings.json`.
+1. **Mac:** `git pull` before working there. To use the test runner there too, install Node.js (LTS) from nodejs.org. The new `.gitattributes` keeps line endings the same on both computers.
 
 ## Other open items
 - **Friend as collaborator:** add the software-engineer friend to the GitHub repo for code review (see CLAUDE.md).
